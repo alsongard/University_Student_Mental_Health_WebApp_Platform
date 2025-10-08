@@ -8,7 +8,9 @@ const feedBackSchema = new mongoose.Schema({
     bookingId: {type:mongoose.Schema.Types.ObjectId, ref:BookSession, required:true},
     studentId: {type:mongoose.Schema.Types.ObjectId, ref:Student, required:true},
     pyschiatricId: {type:mongoose.Schema.Types.ObjectId, ref:Psychatriast, required:true},
-    rating:{type:Number, required:true}
+    rating:{type:Number, required:true},
+    feedbackMessage: {type:String, required:true},
+    anonymity: {type:Boolean, default:True}
 })
 
 
