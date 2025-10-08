@@ -6,8 +6,9 @@ const pyschiatristSession = new mongoose.Schema({
     date:{type:Date , required:true},
     startTime: {type:String, required:true},
     endTime: {type:String, required:true},
+    sessionType: {type:String, enum:["one-on-one", "group sessions"], default:true},
     sessionStatus: {type:String, enum:["Available", "Booked"], required:true}
-})
+});
 
 
 const PsychiatristSession = mongoose.model("PsychiatristSession", pyschiatristSession);
