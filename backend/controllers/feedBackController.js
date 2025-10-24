@@ -1,7 +1,7 @@
 const FeedBack = require("../models/feedback.model");
 
 // feedback is based afer the session: sesssionId
-const createFeedBack = async (req, res)=>{
+module.exports.createFeedBack = async (req, res)=>{
     const {studentId, bookingId, psychiastricId, rating, feedbackMessage,anonymity } = req.body;
     if (!studentId || !bookingId || !psychiastricId || !rating || !feedbackMessage || !!anonymity)
     {
@@ -27,7 +27,7 @@ const createFeedBack = async (req, res)=>{
 }
 
 // get Student feedback
-const getStudentFeedBack = async (req, res)=>{
+module.exports.getStudentFeedBack = async (req, res)=>{
     const {studentId} = req.params;
     if (!studentId)
     {
