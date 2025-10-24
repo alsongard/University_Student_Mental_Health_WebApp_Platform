@@ -1,12 +1,10 @@
 // register student and pyschatriast
 // admin functionalities
-const Student = require("../models/user.model");
+const Student = require("../models/student.model");
 const crypto = require("crypto");
 const transporter = require("../config/nodemailerTransporter");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
-
 
 const genSalt = 10;
 const registerStudent = async (req, res)=>{
@@ -16,7 +14,6 @@ const registerStudent = async (req, res)=>{
     {
         return res.status(400).json({success:false, msg:"Invalid input"})
     }
-
 
     try
     {
@@ -42,7 +39,11 @@ const registerStudent = async (req, res)=>{
             from: "alsongadizo@gmail.com",
             to: email,
             subject:"Account Verification",
-            body:"Enter the following otp: 123441314",
+            html:`<h2>Account Verification</h2>
+                <p>Enter the following OTP for your account verification:</p>
+                <b>${otp}</b>
+                <p>These otp expires in 15 minutes</p>`
+                ,
         }
 
         const info = await transporter.sendMail(mailOptions);
@@ -52,6 +53,7 @@ const registerStudent = async (req, res)=>{
         // generate tempToken using jwt
         const userObject = {userId: new_student._id};
         const tempTKN =  jwt.sign(userObject, process.env.JWT_SECRET, {expiresIn:'15m'});
+        
         res.cookie('tempToken', tempTKN, {
             httpOnly:true,
             secure: process.env.NODE_ENV === 'production', 
@@ -64,18 +66,23 @@ const registerStudent = async (req, res)=>{
     catch(err)
     {
         console.log(`Error: ${err}`);
+        return res.status(500).json({success:false, msg:`Server Error: ${err}`});
     }
     
 }
 
 // performing verification // button onclick=verifyAccount
 const getOTPUser = async (req,res)=>{
-    const userOtp = req.body;
+    const {userOtp} = req.body;
     if (!userOtp)
     {
         return res.status(400).json({success:false, msg:"Invalid parameters"});
     }
-    const token = req.cookie.tempTKN;
+    console.log(`userOtp: ${userOtp}`);
+    const token = req.cookies.tempToken;
+
+    console.log(`token`);
+    console.log(token);
     const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
     console.log("verifyToken");
     console.log(verifyToken);
