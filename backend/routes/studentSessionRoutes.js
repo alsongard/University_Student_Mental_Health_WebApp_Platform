@@ -6,3 +6,8 @@ const router = express.Router();
 const {ViewSessions} = require("../controllers/psySessionController.js");
 
 router.get("/getAllSessions", ViewSessions);
+
+
+
+const studentSessionRoutes = router;
+module.exports = studentSessionRoutes;

@@ -9,3 +9,7 @@ router.post("/createSession",createSession);
 router.put("/updateSession/:sessionId", UpdateSession);
 router.get("/viewSession/:psychiatristId", ViewPsychiatristSession);
 router.delete("/deleteSession/:sessionId", DeleteSession)
+
+
+const sessionRoutes = router;
+module.exports = sessionRoutes;
