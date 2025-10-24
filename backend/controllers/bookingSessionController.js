@@ -3,7 +3,7 @@
 const BookSession = require("../models/bookSession.model");
 
 // create BookingSession
-const CreateBookingSession = async (req, res)=>{
+module.exports.CreateBookingSession = async (req, res)=>{
     const {sessionId, studentId,  psychiatristId,  status}  = req.body;
 
     if (!sessionId || !studentId || !psychiatristId || !status)
@@ -27,7 +27,7 @@ const CreateBookingSession = async (req, res)=>{
 }
 
 // delete Booking Session : only performed by Student
-const DeleteBookingSession = async (req, res)=>{
+module.exports.DeleteBookingSession = async (req, res)=>{
     const {bookingId} = req.params;
     try
     {
@@ -48,7 +48,7 @@ const DeleteBookingSession = async (req, res)=>{
 
 
 // get  Booked Session For Psychiatrist
-const ViewPsychiatristSession  = async (req,res)=>{
+module.exports.ViewPsychiatristSession  = async (req,res)=>{
     const {psychiatristId} = req.params;
     if (!psychiatristId)
     {
@@ -71,7 +71,7 @@ const ViewPsychiatristSession  = async (req,res)=>{
 }
 
 // get StudenttBookedSessions
-const ViewStudentBookedSessions  = async (req,res)=>{
+module.exports.ViewStudentBookedSessions  = async (req,res)=>{
     const {studentId} = req.params;
     if (!studentId)
     {
