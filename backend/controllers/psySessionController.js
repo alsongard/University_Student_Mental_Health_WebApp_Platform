@@ -1,4 +1,3 @@
-
 const PsychiatristSession = require("../models/psychiatristSession.model")
 
 // createSession Controller
@@ -110,7 +109,7 @@ module.exports.ViewPsychiatristSession = async (req,res)=>{
     const {psychiatristId} = req.params;
     try
     {
-        const foundPsychiatricSessions = await PsychiatristSession.findById({psychiatristId:psychiatristId});
+        const foundPsychiatricSessions = await PsychiatristSession.find({psychiatristId:psychiatristId});
         console.log(typeof(foundPsychiatricSessions)); // 
         return res.status(200).json({success:true , data:foundPsychiatricSessions});
     }
