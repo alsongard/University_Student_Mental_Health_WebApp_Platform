@@ -1,271 +1,321 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import { Heart, Shield, Clock, Users, ArrowRight, CheckCircle } from 'lucide-react';
+import React from 'react';
+import { Heart, Shield, Users, Target, Award, Building2, Handshake, BookOpen, Phone, Mail, MapPin } from 'lucide-react';
 
-export default function LandingPage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  
-  const slides = [
-    {
-      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&h=600&fit=crop",
-      alt: "Diverse students studying together"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&h=600&fit=crop",
-      alt: "Students in university campus"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1200&h=600&fit=crop",
-      alt: "Students collaborating"
-    }
-  ];
+export default function AboutPage() {
+	const team = [
+		{
+		name: "Dr. Sarah Mwangi",
+		title: "Lead University Psychiatrist",
+		qualification: "MD, MRCPsych",
+		experience: "12 years",
+		specialization: "Anxiety, Depression, Academic Stress",
+		image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop"
+		},
+		{
+		name: "Dr. James Ochieng",
+		title: "Clinical Psychologist",
+		qualification: "PhD in Clinical Psychology",
+		experience: "8 years",
+		specialization: "Student Wellbeing, Trauma Recovery",
+		image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop"
+		},
+		{
+		name: "Dr. Amina Hassan",
+		title: "Counseling Psychiatrist",
+		qualification: "MD, Dip. Psychiatry",
+		experience: "10 years",
+		specialization: "Relationship Issues, Self-Esteem",
+		image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop"
+		},
+		{
+		name: "Dr. Peter Kamau",
+		title: "Student Mental Health Specialist",
+		qualification: "MD, MSc in Mental Health",
+		experience: "6 years",
+		specialization: "Substance Use, ADHD, Learning Support",
+		image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop"
+		}
+	];
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+	const values = [
+	{
+		icon: <Shield className="w-12 h-12" />,
+		title: "Confidentiality First",
+		description: "Your privacy is paramount. All sessions are protected under medical confidentiality laws and university privacy policies."
+	},
+	{
+		icon: <Heart className="w-12 h-12" />,
+		title: "Student-Centered Care",
+		description: "We understand the unique pressures of university life and tailor our approach to support your academic and personal growth."
+	},
+	{
+		icon: <Users className="w-12 h-12" />,
+		title: "Inclusive Support",
+		description: "We provide culturally sensitive, non-judgmental care that respects the diversity of the Zetech community."
+	},
+	{
+		icon: <Target className="w-12 h-12" />,
+		title: "Accessible Care",
+		description: "Easy booking, flexible scheduling, and multiple support options ensure help is always within reach."
+	}
+	];
 
-  const stats = [
-    { number: "1 in 3", text: "students experience mental health challenges" },
-    { number: "75%", text: "of mental health issues begin before age 24" },
-    { number: "80%", text: "of students feel overwhelmed by responsibilities" }
-  ];
+	const partners = [
+		{
+		icon: <Building2 className="w-8 h-8" />,
+		name: "Student Affairs Department",
+		description: "Collaborative support for academic accommodations and student advocacy"
+		},
+		{
+		icon: <Heart className="w-8 h-8" />,
+		name: "University Health Services",
+		description: "Integrated healthcare approach for holistic student wellness"
+		},
+		{
+		icon: <BookOpen className="w-8 h-8" />,
+		name: "Academic Support Center",
+		description: "Coordinated assistance for students balancing mental health and academics"
+		},
+		{
+		icon: <Handshake className="w-8 h-8" />,
+		name: "Peer Support Network",
+		description: "Student-led initiatives working alongside professional services"
+		}
+	];
 
-  const features = [
-    {
-      icon: <Shield className="w-8 h-8" />,
-      title: "Complete Confidentiality",
-      description: "Your privacy is our priority. All sessions are completely confidential and secure."
-    },
-    {
-      icon: <Clock className="w-8 h-8" />,
-      title: "Flexible Scheduling",
-      description: "Book appointments that fit your academic schedule with easy online booking."
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Professional Support",
-      description: "Connect with qualified university psychiatrists who understand student life."
-    },
-    {
-      icon: <Heart className="w-8 h-8" />,
-      title: "Student-Centered Care",
-      description: "Tailored mental health support designed specifically for university students."
-    }
-  ];
+	const privacyPoints = [
+		"All sessions are completely confidential and protected by medical privacy laws",
+		"Your academic records remain separate from your mental health records",
+		"Information is only shared with your consent, except in rare cases of imminent danger",
+		"Digital communications are encrypted and stored securely",
+		"You control who has access to your treatment information",
+		"Faculty and staff cannot access your mental health records without permission"
+	];
 
-  const benefits = [
-    "Free or subsidized sessions for enrolled students",
-    "No referral needed - direct access to care",
-    "Crisis support available",
-    "Individual and group therapy options",
-    "Academic accommodation support when needed"
-  ];
+	return (
+		<div className="min-h-screen bg-white">
+			{/* Hero Section */}
+			<section className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-20">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+				<h1 className="text-5xl font-bold mb-6">About MindBridge</h1>
+				<p className="text-xl text-blue-100 max-w-3xl mx-auto">
+				Supporting Zetech University students on their mental health journey with professional, 
+				confidential, and compassionate care
+				</p>
+			</div>
+			</section>
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Heart className="w-8 h-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">MindBridge</span>
-          </div>
-          <div className="flex space-x-4">
-            <button className="px-6 py-2 text-blue-600 font-semibold hover:text-blue-700 transition">
-              Login
-            </button>
-            <button className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-md">
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </header>
+			{/* Zetech's Commitment */}
+			<section className="py-16">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="grid md:grid-cols-2 gap-12 items-center">
+				<div>
+					<img 
+					src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=600&fit=crop" 
+					alt="Zetech University Campus"
+					className="rounded-2xl shadow-xl"
+					/>
+				</div>
+				<div>
+					<h2 className="text-3xl font-bold text-gray-900 mb-6">
+					Zetech's Commitment to Student Wellbeing
+					</h2>
+					<p className="text-gray-700 text-lg mb-4">
+					At Zetech University, we believe that academic excellence goes hand-in-hand with mental 
+					and emotional wellbeing. We recognize that university life brings unique challenges—from 
+					academic pressure and financial stress to social adjustments and future uncertainties.
+					</p>
+					<p className="text-gray-700 text-lg mb-4">
+					MindBridge was established as part of Zetech's comprehensive student support framework, 
+					ensuring that every student has access to professional mental health care when they need it most.
+					</p>
+					<p className="text-gray-700 text-lg">
+					Our commitment extends beyond treatment—we're dedicated to creating a campus culture where 
+					mental health is prioritized, stigma is eliminated, and seeking help is seen as a sign of strength.
+					</p>
+				</div>
+				</div>
+			</div>
+			</section>
 
-      {/* Hero Section with Slideshow */}
-      <section className="relative h-[600px] overflow-hidden">
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <img
-              src={slide.image}
-              alt={slide.alt}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-blue-900/40" />
-          </div>
-        ))}
-        
-        <div className="relative z-10 h-full flex items-center">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Your Mental Health<br />Matters
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-2xl">
-              Connect with professional university psychiatrists who understand your journey. 
-              Confidential, accessible, and designed for students.
-            </p>
-            <div className="flex space-x-4">
-              <button className="px-8 py-4 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-xl flex items-center space-x-2">
-                <span>Get Started</span>
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-lg hover:bg-white/10 transition">
-                Learn More
-              </button>
-            </div>
-          </div>
-        </div>
+			{/* Mission Statement */}
+			<section className="py-16 bg-blue-50">
+			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+				<Award className="w-16 h-16 text-blue-600 mx-auto mb-6" />
+				<h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
+				<p className="text-xl text-gray-700 leading-relaxed">
+				To provide accessible, professional, and confidential mental health support specifically 
+				tailored to the needs of Zetech University students. We exist to ensure that no student 
+				faces their mental health challenges alone, and that seeking help is as simple and 
+				stigma-free as possible. Through MindBridge, we aim to empower students to thrive 
+				academically, socially, and personally.
+				</p>
+			</div>
+			</section>
 
-        {/* Slide Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition ${
-                index === currentSlide ? 'bg-white' : 'bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-      </section>
+			{/* Core Values */}
+			<section className="py-16">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Our Core Values</h2>
+				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+				{values.map((value, index) => (
+					<div key={index} className="text-center">
+					<div className="inline-flex items-center justify-center w-20 h-20 bg-blue-100 text-blue-600 rounded-full mb-4">
+						{value.icon}
+					</div>
+					<h3 className="text-xl font-bold text-gray-900 mb-3">{value.title}</h3>
+					<p className="text-gray-600">{value.description}</p>
+					</div>
+				))}
+				</div>
+			</div>
+			</section>
 
-      {/* Statistics Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Why Mental Health Support Matters
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center p-6 bg-blue-50 rounded-xl">
-                <div className="text-5xl font-bold text-blue-600 mb-4">{stat.number}</div>
-                <p className="text-gray-700 text-lg">{stat.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+			{/* Team Section */}
+			<section className="py-16 bg-gray-50">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<h2 className="text-3xl font-bold text-center text-gray-900 mb-4">Meet Our Professional Team</h2>
+				<p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+				Our psychiatrists and psychologists are fully qualified professionals with extensive experience 
+				in student mental health. All team members are affiliated with Zetech University and understand 
+				the unique context of student life.
+				</p>
+				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+				{team.map((member, index) => (
+					<div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+					<img 
+						src={member.image} 
+						alt={member.name}
+						className="w-full h-64 object-cover"
+					/>
+					<div className="p-6">
+						<h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+						<p className="text-blue-600 font-semibold mb-2">{member.title}</p>
+						<div className="space-y-1 text-sm text-gray-600 mb-3">
+						<p><strong>Qualification:</strong> {member.qualification}</p>
+						<p><strong>Experience:</strong> {member.experience}</p>
+						</div>
+						<p className="text-sm text-gray-700">
+						<strong>Specializes in:</strong> {member.specialization}
+						</p>
+					</div>
+					</div>
+				))}
+				</div>
+				<div className="mt-8 bg-blue-100 rounded-xl p-6">
+				<p className="text-center text-gray-700">
+					<strong>University Affiliation:</strong> All our mental health professionals are licensed, 
+					registered with the Kenya Medical Practitioners and Dentists Council, and employed directly 
+					by Zetech University to serve the student community.
+				</p>
+				</div>
+			</div>
+			</section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            How MindBridge Supports You
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition">
-                <div className="text-blue-600 mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+			{/* Confidentiality Section */}
+			<section className="py-16">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-12 text-white">
+				<div className="text-center mb-12">
+					<Shield className="w-20 h-20 mx-auto mb-6" />
+					<h2 className="text-3xl font-bold mb-4">Your Privacy is Protected</h2>
+					<p className="text-xl text-blue-100 max-w-3xl mx-auto">
+					We understand that confidentiality is crucial when seeking mental health support. 
+					Here's our commitment to your privacy:
+					</p>
+				</div>
+				<div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+					{privacyPoints.map((point, index) => (
+					<div key={index} className="flex items-start space-x-3">
+						<Shield className="w-6 h-6 flex-shrink-0 mt-1" />
+						<p className="text-blue-50">{point}</p>
+					</div>
+					))}
+				</div>
+				<div className="mt-8 text-center">
+					<a href="#" className="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition">
+					Read Our Full Privacy Policy
+					</a>
+				</div>
+				</div>
+			</div>
+			</section>
 
-      {/* Benefits Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                Student Benefits & Services
-              </h2>
-              <div className="space-y-4">
-                {benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700 text-lg">{benefit}</p>
-                  </div>
-                ))}
-              </div>
-              <button className="mt-8 px-8 py-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md">
-                Create Your Account
-              </button>
-            </div>
-            <div className="bg-gradient-to-br from-blue-100 to-blue-50 p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Getting Started is Easy</h3>
-              <ol className="space-y-4">
-                <li className="flex items-start space-x-3">
-                  <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</span>
-                  <p className="text-gray-700 pt-1">Create your free student account</p>
-                </li>
-                <li className="flex items-start space-x-3">
-                  <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">2</span>
-                  <p className="text-gray-700 pt-1">Browse available psychiatrists and time slots</p>
-                </li>
-                <li className="flex items-start space-x-3">
-                  <span className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">3</span>
-                  <p className="text-gray-700 pt-1">Book your first appointment</p>
-                </li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </section>
+			{/* Partnerships */}
+			<section className="py-16 bg-gray-50">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
+				University Partnerships & Collaborations
+				</h2>
+				<p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+				MindBridge works closely with various university departments to provide comprehensive 
+				support for students. Our integrated approach ensures you receive holistic care.
+				</p>
+				<div className="grid md:grid-cols-2 gap-8">
+				{partners.map((partner, index) => (
+					<div key={index} className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
+					<div className="flex items-start space-x-4">
+						<div className="flex-shrink-0 w-16 h-16 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
+						{partner.icon}
+						</div>
+						<div>
+						<h3 className="text-xl font-bold text-gray-900 mb-2">{partner.name}</h3>
+						<p className="text-gray-600">{partner.description}</p>
+						</div>
+					</div>
+					</div>
+				))}
+				</div>
+			</div>
+			</section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Take the First Step Towards Better Mental Health
-          </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Join thousands of students who have found support through MindBridge
-          </p>
-          <button className="px-10 py-4 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-xl text-lg">
-            Sign Up Now - It's Free
-          </button>
-        </div>
-      </section>
+			{/* Contact Information */}
+			<section className="py-16">
+			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="bg-blue-50 rounded-2xl p-12">
+				<h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Get In Touch</h2>
+				<div className="grid md:grid-cols-3 gap-8 text-center">
+					<div>
+					<Phone className="w-10 h-10 text-blue-600 mx-auto mb-4" />
+					<h3 className="font-bold text-gray-900 mb-2">Phone</h3>
+					<p className="text-gray-600">+254 709 668 000</p>
+					<p className="text-sm text-gray-500 mt-1">Mon-Fri, 8AM-5PM</p>
+					</div>
+					<div>
+					<Mail className="w-10 h-10 text-blue-600 mx-auto mb-4" />
+					<h3 className="font-bold text-gray-900 mb-2">Email</h3>
+					<p className="text-gray-600">mindbridge@zetech.ac.ke</p>
+					<p className="text-sm text-gray-500 mt-1">Response within 24hrs</p>
+					</div>
+					<div>
+					<MapPin className="w-10 h-10 text-blue-600 mx-auto mb-4" />
+					<h3 className="font-bold text-gray-900 mb-2">Location</h3>
+					<p className="text-gray-600">Student Wellness Center</p>
+					<p className="text-sm text-gray-500 mt-1">Zetech University Campus</p>
+					</div>
+				</div>
+				<div className="mt-8 text-center">
+					<p className="text-gray-700 mb-4"><strong>Crisis Support Available 24/7</strong></p>
+					<p className="text-gray-600">If you're experiencing a mental health emergency, call our crisis line: <strong className="text-blue-600">+254 700 000 000</strong></p>
+				</div>
+				</div>
+			</div>
+			</section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Heart className="w-6 h-6" />
-                <span className="text-xl font-bold">MindBridge</span>
-              </div>
-              <p className="text-gray-400">Connecting students with mental health support</p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition">Services</a></li>
-                <li><a href="#" className="hover:text-white transition">FAQ</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Resources</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition">Crisis Support</a></li>
-                <li><a href="#" className="hover:text-white transition">Mental Health Tips</a></li>
-                <li><a href="#" className="hover:text-white transition">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Emergency</h4>
-              <p className="text-gray-400 mb-2">If you're in crisis:</p>
-              <p className="text-white font-bold">Call 988 (Suicide & Crisis Lifeline)</p>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 MindBridge. All rights reserved. | Privacy Policy | Terms of Service</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+			{/* CTA Section */}
+			<section className="py-16 bg-gradient-to-r from-blue-600 to-blue-700">
+			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+				<h2 className="text-3xl font-bold text-white mb-6">
+				Ready to Take the First Step?
+				</h2>
+				<p className="text-xl text-blue-100 mb-8">
+				Join hundreds of Zetech students who have found support through MindBridge
+				</p>
+				<button className="px-10 py-4 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-xl text-lg">
+				Create Your Account
+				</button>
+			</div>
+			</section>
+		</div>
   );
 }
