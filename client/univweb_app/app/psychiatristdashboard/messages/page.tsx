@@ -1,0 +1,12 @@
+import React from 'react'
+
+export default function MessagePage() {
+  return (
+    <div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Messages</h1>
+        <div className="bg-white rounded-2xl shadow-md p-6">
+            <p className="text-gray-600">Messages content here...</p>
+        </div>
+    </div>
+  )
+}
