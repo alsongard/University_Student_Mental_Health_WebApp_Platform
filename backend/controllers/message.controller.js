@@ -3,7 +3,8 @@ const jwt = require("jsonwebtoken");
 const Message = require("../models/messages.model");
 
 const sendMessage = async (req, res)=>{
-    const { receiverId, message, image} = req.body;
+    const receiverId = req.params.id;
+    const { message, image} = req.body;
     try
     {
         const authToken = getAuthToken(req);
