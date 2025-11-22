@@ -1,5 +1,5 @@
 'use client'
-import { Heart, ChevronDown, ChevronUp } from "lucide-react"
+import { Heart, Sun, Moon , ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { useRouter } from "next/navigation"
 export default function Header()
 {
+	const [darkMode, setDarkMode] = useState(false);
 	const pathName = usePathname();
 	const router = useRouter();
 	const [displayLogin,setDisplayLogin] = useState(false);
@@ -50,6 +51,18 @@ export default function Header()
 						<p onClick={()=>{sendLoginProp("psychiatrist")}} className="text-left text-gray-600 hover:text-blue-600 text-[15px]">as psychiatrist </p>
 					</div>
 				</div>
+				{
+					darkMode ?
+					(
+						<Sun size={24} strokeWidth={1.2}/>
+
+					)
+					: 
+					(
+						<Moon size={24} strokeWidth={1.2}/>
+
+					)
+				}
 			</nav>
 		</div>
 	</header>

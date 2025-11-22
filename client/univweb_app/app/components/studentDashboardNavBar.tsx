@@ -21,7 +21,7 @@ export default function StudentSideBar()
     return (
         // {/* Sidebar */}
         <aside className={`bg-gradient-to-b from-blue-600 to-blue-700 text-white transition-all duration-300 ${
-            sidebarCollapsed ? 'w-20' : 'w-96'
+            sidebarCollapsed ? 'w-20' : 'w-70'
             } flex flex-col`}
         >
             {/* Logo */}
