@@ -1,5 +1,6 @@
 'use client'
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 export default function SessionPage()
 {
@@ -48,8 +49,9 @@ export default function SessionPage()
         mode: "Virtual"
         }
     ];
+    const router = useRouter()
     return (
-        <section className='p-8 w-full'>
+        <section className='p-8 flex flex-col space-y-[50px] w-full'>
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-bold text-gray-900">Available Sessions</h1>
@@ -93,7 +95,7 @@ export default function SessionPage()
 
                             <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                                 <span className="text-sm text-gray-600">Mode: {session.mode}</span>
-                                <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                                <button onClick={()=>{router.push(`/studentdashboard/booking/${session.id}`)}} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
                                     Book Now
                                 </button>
                             </div>
@@ -131,6 +133,49 @@ export default function SessionPage()
                     </div>
                 )}
             </div>
+
+
+            {/* STUDENT BOOKED SESSIONS */}
+            <div className="space-y-6">
+                 <div className="flex items-center justify-between">
+                    <h1 className="text-3xl font-bold text-gray-900">Booked Sessions</h1>
+                </div>
+                <div className="grid lg:grid-cols-2 gap-6">
+                    {availableSessions.map((session) => (
+                        <div key={session.id} className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition">
+                            <div className="flex items-start justify-between mb-4">
+                                <div>
+                                    <h3 className="text-xl font-bold text-gray-900 mb-1">{session.psychiatristName}</h3>
+                                    <p className="text-blue-600 font-semibold">{session.specialization}</p>
+                                </div>
+                                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                                    Available
+                                </span>
+                            </div>
+
+                            <div className="mb-4">
+                                <p className="text-sm font-semibold text-gray-700 mb-2">Booked Time Slots:</p>
+                                <div className="space-y-2">
+                                    {/* CHANGE THIS TO SHOW ONLY THE SELECTED SLOT */}
+                                    {session.availableSlots.map((slot, index) => (
+                                    <button
+                                        key={index}
+                                        // onClick={() => setSelectedSession({ ...session, selectedSlot: slot })} // WORK ON THESE
+                                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition text-sm font-medium text-gray-700"
+                                    >
+                                        {slot}
+                                    </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+            </div>
+
+
+            {/* STUDENT PREVIOUS SESSIONS: MAYBE */}
         </section>
     )
 }

@@ -1,9 +1,26 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, MoreVertical, Paperclip, Smile, Send, Phone, Video, Check, CheckCheck, Heart } from 'lucide-react';
+import {io} from "socket.io-client";
 
 export default function MessagingComponent()
 {
+    let socket:any = null;
+    
+    useEffect(()=>{
+        socket = io("http://localhost:5000", 
+            {
+                transports: ['websocket', 'polling'],
+                autoConnect: true,
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 1000
+            }
+        );
+        return ()=>{
+            socket.disconnect()
+        }
+    })
     const [selectedChat, setSelectedChat] = useState(null);
     const [messageInput, setMessageInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -21,46 +38,46 @@ export default function MessagingComponent()
             online: true,
             messages: [
                 {
-                id: 1,
-                sender: "them",
-                text: "Good morning John! How are you feeling today?",
-                timestamp: "9:15 AM",
-                status: "read"
+                    id: 1,
+                    sender: "them",
+                    text: "Good morning John! How are you feeling today?",
+                    timestamp: "9:15 AM",
+                    status: "read"
                 },
                 {
-                id: 2,
-                sender: "me",
-                text: "Good morning Dr. Mwangi! I'm doing much better, thank you.",
-                timestamp: "9:20 AM",
-                status: "read"
+                    id: 2,
+                    sender: "me",
+                    text: "Good morning Dr. Mwangi! I'm doing much better, thank you.",
+                    timestamp: "9:20 AM",
+                    status: "read"
                 },
                 {
-                id: 3,
-                sender: "them",
-                text: "That's great to hear! Have you been practicing the breathing exercises we talked about?",
-                timestamp: "9:22 AM",
-                status: "read"
+                    id: 3,
+                    sender: "them",
+                    text: "That's great to hear! Have you been practicing the breathing exercises we talked about?",
+                    timestamp: "9:22 AM",
+                    status: "read"
                 },
                 {
-                id: 4,
-                sender: "me",
-                text: "Yes, I've been doing them every morning and they really help with my anxiety.",
-                timestamp: "9:25 AM",
-                status: "read"
+                    id: 4,
+                    sender: "me",
+                    text: "Yes, I've been doing them every morning and they really help with my anxiety.",
+                    timestamp: "9:25 AM",
+                    status: "read"
                 },
                 {
-                id: 5,
-                sender: "them",
-                text: "Excellent! Keep up the good work. Remember, consistency is key.",
-                timestamp: "9:30 AM",
-                status: "read"
+                    id: 5,
+                    sender: "them",
+                    text: "Excellent! Keep up the good work. Remember, consistency is key.",
+                    timestamp: "9:30 AM",
+                    status: "read"
                 },
                 {
-                id: 6,
-                sender: "them",
-                text: "Hi John, just checking in to see how you're doing with the strategies we discussed.",
-                timestamp: "10:30 AM",
-                status: "delivered"
+                    id: 6,
+                    sender: "them",
+                    text: "Hi John, just checking in to see how you're doing with the strategies we discussed.",
+                    timestamp: "10:30 AM",
+                    status: "delivered"
                 }
             ]
         },
@@ -176,7 +193,15 @@ export default function MessagingComponent()
             ...selectedChat,
             messages: [...selectedChat.messages, newMessage]
         };
-        
+        const data2Send = "this is my data"
+        if (socket)
+        {
+            socket.emit("sendMessage", data2Send,  (response)=>{
+                console.log("argument from backend");
+                console.log(response);
+    
+            })
+        }
         setSelectedChat(updatedChat);
         setMessageInput('');
         }
@@ -348,13 +373,13 @@ export default function MessagingComponent()
                 
                 <div className="flex-1">
                     <textarea
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Type a message..."
-                    rows="1"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
-                    style={{ minHeight: '48px', maxHeight: '120px' }}
+                        value={messageInput}
+                        onChange={(e) => setMessageInput(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                        placeholder="Type a message..."
+                        rows="1"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
+                        style={{ minHeight: '48px', maxHeight: '120px' }}
                     />
                 </div>
                 

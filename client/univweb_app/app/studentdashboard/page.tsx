@@ -1,5 +1,6 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Heart, Home, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search } from 'lucide-react';
 export default function StudentDashboard()
 {
@@ -14,6 +15,7 @@ export default function StudentDashboard()
         email: "john.kamau@zetech.ac.ke",
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"
     };
+    
 
     // Sample upcoming sessions
     const upcomingSessions = [
