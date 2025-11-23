@@ -1,13 +1,24 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 import { Heart, Home, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search } from 'lucide-react';
 export default function StudentDashboard()
 {
+    const {data:session, status }= useSession();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [activeView, setActiveView] = useState('overview');
     const [selectedSession, setSelectedSession] = useState(null);
 
+    if(status === 'loading')
+    {
+        return <div>....Loading</div>
+    }
+    if (!session)
+    {
+        redirect("/about")
+    }
     // Sample student data
     const studentData = {
         name: "John Kamau",
