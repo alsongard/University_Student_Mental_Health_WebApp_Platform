@@ -18,24 +18,24 @@ export default function Home()
 
 	const features = [
 		{
-		icon: <Shield className="w-8 h-8" />,
-		title: "Complete Confidentiality",
-		description: "Your privacy is our priority. All sessions are completely confidential and secure."
+			icon: <Shield className="w-8 h-8" />,
+			title: "Complete Confidentiality",
+			description: "Your privacy is our priority. All sessions are completely confidential and secure."
 		},
 		{
-		icon: <Clock className="w-8 h-8" />,
-		title: "Flexible Scheduling",
-		description: "Book appointments that fit your academic schedule with easy online booking."
+			icon: <Clock className="w-8 h-8" />,
+			title: "Flexible Scheduling",
+			description: "Book appointments that fit your academic schedule with easy online booking."
 		},
 		{
-		icon: <Users className="w-8 h-8" />,
-		title: "Professional Support",
-		description: "Connect with qualified university psychiatrists who understand student life."
+			icon: <Users className="w-8 h-8" />,
+			title: "Professional Support",
+			description: "Connect with qualified university psychiatrists who understand student life."
 		},
 		{
-		icon: <Heart className="w-8 h-8" />,
-		title: "Student-Centered Care",
-		description: "Tailored mental health support designed specifically for university students."
+			icon: <Heart className="w-8 h-8" />,
+			title: "Student-Centered Care",
+			description: "Tailored mental health support designed specifically for university students."
 		}
 	];
 	return (
@@ -74,7 +74,7 @@ export default function Home()
 			</div>
 			</div>
 		</section>
-{/* Benefits Section */}
+		{/* Benefits Section */}
 		<section className="py-16 bg-white">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 			<div className="grid md:grid-cols-2 gap-12 items-center">
