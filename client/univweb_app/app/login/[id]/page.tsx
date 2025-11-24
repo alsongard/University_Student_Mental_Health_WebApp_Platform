@@ -95,7 +95,7 @@ export default function AuthForms(props:any)
             console.error("Error verifying OTP:", error);
         }
     }
-    const handleStudentSignupSubmit = async (e:FormEvent<HTMLFormElement>) => {
+    const handleStudentSignupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try
         {
@@ -111,7 +111,8 @@ export default function AuthForms(props:any)
                 const response = await signIn('credentials',{
                     email: studentSignupData.email,
                     password: studentSignupData.password,
-                    admissionNum: studentSignupData.admissionNumber
+                    admissionNum: studentSignupData.admissionNumber,
+                    redirect:false
                 })
                 console.log(response);
                 if (response)
@@ -162,7 +163,7 @@ export default function AuthForms(props:any)
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
+        <div className="min-h-screen  bg-gradient-to-br from-blue-50 dark:from-gray-800 to-blue-100 dark:to-gray-800 flex items-center justify-center p-4">
             {
                 otpForm && 
                 (
@@ -183,13 +184,13 @@ export default function AuthForms(props:any)
                         <div className="text-center mb-8">
                             <div className="flex items-center justify-center space-x-2 mb-2">
                                 <Heart className="w-10 h-10 text-blue-600" />
-                                <span className="text-3xl font-bold text-gray-900">MindBridge</span>
+                                <span className="text-3xl font-bold dark:text-white text-gray-900">MindBridge</span>
                             </div>
-                            <p className="text-gray-600">Student Mental Health Support</p>
+                            <p className="text-gray-600 dark:text-white">Student Mental Health Support</p>
                         </div>
 
                         {/* MANAGING FORM TYPE  BUTTONS FOR FORM: LOGIN/SIGNUP */}
-                        <div className="bg-white rounded-lg p-2 mb-6 flex space-x-2 shadow-md">
+                        <div className="bg-white  dark:bg-gray-200 rounded-lg p-2 mb-6 flex space-x-2 shadow-md">
                             {
                                 displayPsychiatrist === true && 
                                 (
@@ -212,7 +213,7 @@ export default function AuthForms(props:any)
                                 displayStudent === true && 
                                 (
                                     <button
-                                        className="flex-1 py-3 px-4 rounded-md font-semibold transition flex items-center justify-center space-x-2 bg-gray-100 text-gray-600"
+                                        className="flex-1 dark:bg-gray-300 py-3 px-4 rounded-md font-semibold transition flex items-center justify-center space-x-2 bg-gray-100 text-gray-600"
                                     >
                                         <User className="w-5 h-5" />
                                         <span>Student</span>
@@ -222,7 +223,7 @@ export default function AuthForms(props:any)
                         </div>
 
 
-                        <div className="bg-white rounded-2xl shadow-xl p-8">
+                        <div className="bg-white dark:bg-gray-200 rounded-2xl shadow-xl p-8">
                             {
                                 displayStudent === true && 
                                 (
@@ -255,154 +256,154 @@ export default function AuthForms(props:any)
             
                                         {/* STUDENT FORM ON  BOTH LOGIN AND SIGNUP */}
                                         <form onSubmit={handleStudentSignupSubmit}>
-                                            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                                            <h2 className="text-2xl font-bold  text-gray-900 mb-6 text-center">
                                                 {formMode === "login" ?  "Student Login" : "Student Sign Up"}
                                             </h2>
 
-                                        <div className="space-y-4">
-                                            {/* commented code below */}
-                                                <div>
-                                                    {/* <div>
-                                                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                                            Username *
-                                                        </label>
-                                                        <div className="relative">
-                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <UserCircle className="w-5 h-5 text-gray-400" />
+                                            <div className="space-y-4">
+                                                {/* commented code below */}
+                                                    <div>
+                                                        {/* <div>
+                                                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                                Username *
+                                                            </label>
+                                                            <div className="relative">
+                                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                <UserCircle className="w-5 h-5 text-gray-400" />
+                                                                </div>
+                                                                <input
+                                                                    type="text"
+                                                                    name="username"
+                                                                    value={studentSignupData.username}
+                                                                    onChange={handleStudentSignupChange}
+                                                                    required
+                                                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                                                    placeholder="Choose a username"
+                                                                />
                                                             </div>
-                                                            <input
-                                                                type="text"
-                                                                name="username"
-                                                                value={studentSignupData.username}
-                                                                onChange={handleStudentSignupChange}
-                                                                required
-                                                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                                                placeholder="Choose a username"
-                                                            />
+                                                        </div> */}
+                                                    </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        Email *
+                                                    </label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Mail className="w-5 h-5 text-gray-400" />
                                                         </div>
-                                                    </div> */}
+                                                        <input
+                                                            type="email"
+                                                            name="email"
+                                                            value={studentSignupData.email}
+                                                            onChange={handleStudentSignupChange}
+                                                            required
+                                                            className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                                            placeholder="student@zetech.ac.ke"
+                                                        />
+                                                    </div>
                                                 </div>
 
-                                            <div>
-                                                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    Email *
-                                                </label>
-                                                <div className="relative">
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <Mail className="w-5 h-5 text-gray-400" />
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        Admission Number *
+                                                    </label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <CreditCard className="w-5 h-5 text-gray-400" />
+                                                        </div>
+                                                        <input
+                                                            type="text"
+                                                            name="admissionNumber"
+                                                            value={studentSignupData.admissionNumber}
+                                                            onChange={handleStudentSignupChange}
+                                                            required
+                                                            className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                                            placeholder="ADM12345"
+                                                        />
                                                     </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        Password *
+                                                    </label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Lock className="w-5 h-5 text-gray-400" />
+                                                        </div>
+                                                        <input
+                                                            type={showPassword ? 'text' : 'password'}
+                                                            name="password"
+                                                            value={studentSignupData.password}
+                                                            onChange={handleStudentSignupChange}
+                                                            required
+                                                            minLength={8}
+                                                            className="w-full text-black pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                                            placeholder="Minimum 8 characters"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowPassword(!showPassword)}
+                                                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                                        >
+                                                            {showPassword ? (
+                                                                <EyeOff className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                                                            ) : (
+                                                                <Eye className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className={clsx(formMode === "signup" ? "block": "hidden")}>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        Confirm Password *
+                                                    </label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Lock className="w-5 h-5 text-gray-400" />
+                                                        </div>
+                                                        <input
+                                                            type={showConfirmPassword ? 'text' : 'password'}
+                                                            name="confirmPassword"
+                                                            value={studentSignupData.confirmPassword}
+                                                            onChange={handleStudentSignupChange}
+                                                            required={formMode === "signup" && true}
+                                                            className="w-full text-black pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                                            placeholder="Re-enter your password"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                                        >
+                                                            {showConfirmPassword ? (
+                                                                <EyeOff className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                                                            ) : (
+                                                                <Eye className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-start">
                                                     <input
-                                                        type="email"
-                                                        name="email"
-                                                        value={studentSignupData.email}
-                                                        onChange={handleStudentSignupChange}
+                                                        type="checkbox"
                                                         required
-                                                        className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                                        placeholder="student@zetech.ac.ke"
+                                                        className="w-4 h-4 mt-1 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
                                                     />
+                                                    <label className="ml-2 text-sm text-gray-600">
+                                                        I agree to the <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">Terms of Service</a> and <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">Privacy Policy</a>
+                                                    </label>
                                                 </div>
-                                            </div>
 
-                                            <div>
-                                                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    Admission Number *
-                                                </label>
-                                                <div className="relative">
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <CreditCard className="w-5 h-5 text-gray-400" />
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        name="admissionNumber"
-                                                        value={studentSignupData.admissionNumber}
-                                                        onChange={handleStudentSignupChange}
-                                                        required
-                                                        className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                                        placeholder="ADM12345"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    Password *
-                                                </label>
-                                                <div className="relative">
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <Lock className="w-5 h-5 text-gray-400" />
-                                                    </div>
-                                                    <input
-                                                        type={showPassword ? 'text' : 'password'}
-                                                        name="password"
-                                                        value={studentSignupData.password}
-                                                        onChange={handleStudentSignupChange}
-                                                        required
-                                                        minLength={8}
-                                                        className="w-full text-black pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                                        placeholder="Minimum 8 characters"
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setShowPassword(!showPassword)}
-                                                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                                    >
-                                                        {showPassword ? (
-                                                            <EyeOff className="w-5 h-5 text-gray-400 hover:text-gray-600" />
-                                                        ) : (
-                                                            <Eye className="w-5 h-5 text-gray-400 hover:text-gray-600" />
-                                                        )}
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className={clsx(formMode === "signup" ? "block": "hidden")}>
-                                                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    Confirm Password *
-                                                </label>
-                                                <div className="relative">
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <Lock className="w-5 h-5 text-gray-400" />
-                                                    </div>
-                                                    <input
-                                                        type={showConfirmPassword ? 'text' : 'password'}
-                                                        name="confirmPassword"
-                                                        value={studentSignupData.confirmPassword}
-                                                        onChange={handleStudentSignupChange}
-                                                        required={formMode === "signup" && true}
-                                                        className="w-full text-black pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                                        placeholder="Re-enter your password"
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                                    >
-                                                        {showConfirmPassword ? (
-                                                            <EyeOff className="w-5 h-5 text-gray-400 hover:text-gray-600" />
-                                                        ) : (
-                                                            <Eye className="w-5 h-5 text-gray-400 hover:text-gray-600" />
-                                                        )}
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-start">
                                                 <input
-                                                    type="checkbox"
-                                                    required
-                                                    className="w-4 h-4 mt-1 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
+                                                    type="submit"
+                                                    value={formMode === "login" ? "Login In" : "Create Account"}
+                                                    className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md cursor-pointer"
                                                 />
-                                                <label className="ml-2 text-sm text-gray-600">
-                                                    I agree to the <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">Terms of Service</a> and <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">Privacy Policy</a>
-                                                </label>
                                             </div>
-
-                                            <input
-                                                type="submit"
-                                                value={formMode === "login" ? "Login In" : "Create Account"}
-                                                className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md cursor-pointer"
-                                            />
-                                        </div>
                                         </form>
                                     </>
                                 )
