@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import axios from "axios";
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 export default function AuthForms(props:any) 
 {
     const pathName =usePathname();
@@ -32,10 +33,6 @@ export default function AuthForms(props:any)
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const [studentLoginData, setStudentLoginData] = useState({
-        emailOrAdmission: '',
-        password: ''
-    });
 
     const [studentSignupData, setStudentSignupData] = useState({
         username: '',
@@ -50,13 +47,13 @@ export default function AuthForms(props:any)
         password: ''
     });
 
-    const handleStudentLoginChange = (e) => {
-        const { name, value } = e.target;
-        setStudentLoginData(prev => ({
-        ...prev,
-        [name]: value
-        }));
-    };
+    // const handleStudentLoginChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setStudentLoginData(prev => ({
+    //     ...prev,
+    //     [name]: value
+    //     }));
+    // };
 
     const handleStudentSignupChange = (e) => {
         const { name, value } = e.target;
@@ -107,12 +104,17 @@ export default function AuthForms(props:any)
                 console.log(`entering loginform submit`)
                 console.log('formDAta submitted');
                 console.log(studentSignupData)
-                const response = await axios.post("http://localhost:5000/api/student/studentLogin", {
-                    studentAdmission: studentSignupData.admissionNumber,
-                    password:  studentSignupData.password
-                });
+                // const response = await axios.post("http://localhost:5000/api/student/studentLogin", {
+                //     studentAdmission: studentSignupData.admissionNumber,
+                //     password:  studentSignupData.password
+                // });
+                const response = await signIn('credentials',{
+                    email: studentSignupData.email,
+                    password: studentSignupData.password,
+                    admissionNum: studentSignupData.admissionNumber
+                })
                 console.log(response);
-                if (response.data.success)
+                if (response)
                 {
                     setStudentSuccess(true);
                     setTimeout(()=>{
