@@ -1,11 +1,12 @@
 'use client'
 import { Heart, Sun, Moon , ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
-import { usePathname } from "next/navigation"
+import { redirect, usePathname } from "next/navigation"
 import Link from "next/link"
 import clsx from "clsx";
-import { useRouter } from "next/navigation"
-import ThemeSwitch from "./themeSwitch"
+import { useRouter } from "next/navigation";
+import ThemeSwitch from "./themeSwitch";
+import { signOut } from "next-auth/react"
 export default function Header()
 {
 	const pathName = usePathname();
@@ -16,6 +17,9 @@ export default function Header()
 		setDisplayLogin((prevValue)=>{
 			return !prevValue;
 		})
+		setTimeout(()=>{
+			setDisplayLogin(false)
+		}, 5000)
 	};
 
 	const sendLoginProp = (data:string)=>{
@@ -27,6 +31,9 @@ export default function Header()
 		{
 			router.push("/login/psychiatrist");
 		}
+	}
+	const handleLogout = ()=>{
+		signOut({callbackUrl: 'http://localhost:3000/'})
 	}
     return (
 	// {/* Header */}
@@ -49,11 +56,12 @@ export default function Header()
 					<div className={clsx(displayLogin == true ? "block": "hidden", "absolute top-[30px] right-[0] w-[120px] bg-slate-200 rounded-md py-[5px] px-[10px]")}>
 						<p onClick={()=>{sendLoginProp("student")}} className="text-left text-gray-600 hover:text-blue-600 text-[15px]">as student</p>
 						<p onClick={()=>{sendLoginProp("psychiatrist")}} className="text-left text-gray-600 hover:text-blue-600 text-[15px]">as psychiatrist </p>
-					</div>
+					</div> 
 				</div>
+				<button onClick={handleLogout}>Logout</button>
 				<ThemeSwitch/>
 			</nav>
 		</div>
-	</header>
+	</header>                         
     )
 }
