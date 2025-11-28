@@ -17,7 +17,7 @@ export default function StudentDashboard()
     }
     if (!session)
     {
-        redirect("/about")
+        redirect("/login/student")
     }
     // Sample student data
     const studentData = {
@@ -447,7 +447,7 @@ export default function StudentDashboard()
 
 
     return (
-        <div className="flex h-screen bg-gray-50">
+        <div className="flex h-screen dark:bg-slate-800 bg-gray-50">
 
             {/* Main Content */}
             <main className="flex-1 overflow-y-auto">
