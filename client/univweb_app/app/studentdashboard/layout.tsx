@@ -1,7 +1,6 @@
 import { Metadata } from 'next'; 
 import StudentSideBar from "../components/studentDashboardNavBar";
 import StudentDashboardHeader from '../components/studentDashboardHeader';
-
 export default function Layout({ children }: { children: React.ReactNode })
 {
     return ( 
