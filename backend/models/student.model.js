@@ -6,6 +6,7 @@ const StudentSchema = new  mongoose.Schema({
     email: {type:String, required:true},
     password: {type:String, required:true},
     isAccountVerified: {type:Boolean, default:false},
+    role: {type:String, default:"student"},
     verifyOtp: {type:String, default:"0"},
     verifyOtpExpiresIn: {type:Number, default:0},
     resentOTP: {type:String, default:"0"},
