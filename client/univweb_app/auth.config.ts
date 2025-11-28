@@ -11,11 +11,13 @@ export const authConfig: NextAuthConfig = {
 	providers: [
 		Credentials(
 			{
+				// credentials: this is the object whose values are mapped in your handleSubmit form
 				credentials: {
 					email: { label: 'Email', type: 'email' },
 					password: { label: 'Password', type: 'password' },
 					admissionNum: {label: "AdmissionNumber", type:'text'}
 				},
+				// authorize: used to interact with the database for checking the user
 				async authorize(credentials) {
 					// Validate credentials exist
 					console.log(`credentials: `);
@@ -71,7 +73,7 @@ export const authConfig: NextAuthConfig = {
 			// Add user data to JWT token on initial sign in
 			if (user) 
 			{
-				token.id = user._id;
+				token.id = user.id;
 				token.role = user.role;
 			}
 			return token;
