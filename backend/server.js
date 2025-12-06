@@ -1,5 +1,5 @@
 // import neccessary modules:functions
-const express = require("express");
+const express = require("express");c
 require("dotenv").config();
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
@@ -17,7 +17,7 @@ const app = express();
 const httpServer = createServer(app);
 
 const corsOption = {
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://university-student-psychiatrist-web.vercel.app"],
     credentials: true,
     method: ['POST', 'GET', 'DELETE', 'PUT', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -96,6 +96,7 @@ io.on("connection", (socket)=>{
 });
 
 
+const PORT = process.env.PORT || 5000;
 
 const serverStart = async()=>
 {
@@ -103,8 +104,8 @@ const serverStart = async()=>
     {
         connectDB();
         // LISTENING 
-        httpServer.listen(5000, ()=>{
-            console.log("Listening on port http://localhost:5000");
+        httpServer.listen(PORT, ()=>{
+            console.log(`Listening on port http://localhost:${PORT}`);
         });
     }
     catch(err)
