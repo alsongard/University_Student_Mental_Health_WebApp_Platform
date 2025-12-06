@@ -10,106 +10,107 @@ export default function PsychiatristFeedback() {
 
 	// Sample feedback data
 	const [feedbackList] = useState([
-		{
-			id: 1,
-			studentName: "John Kamau",
-			studentAdmissionNum: "ADM12345",
-			studentAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-			sessionDate: "2025-10-28",
-			sessionType: "Individual Therapy",
-			rating: 5,
-			feedbackMessage: "Dr. Mwangi was incredibly helpful and understanding. The strategies she provided for managing anxiety have been working wonderfully. I felt comfortable opening up and she made me feel heard.",
-			anonymity: false,
-			sessionHelpful: "yes",
-			wouldRecommend: "yes",
-			specificPositives: "Great listening skills, practical advice, made me feel safe",
-			areasOfImprovement: "None, session was perfect",
-			submittedDate: "2025-10-30"
-		},
-		{
-			id: 2,
-			studentName: "Sarah Johnson",
-			studentAdmissionNum: "ADM12346",
-			studentAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-			sessionDate: "2025-10-22",
-			sessionType: "Follow-up Session",
-			rating: 4,
-			feedbackMessage: "The follow-up session was helpful in addressing some of the concerns from the previous meeting. I appreciated the continuity of care.",
-			anonymity: false,
-			sessionHelpful: "yes",
-			wouldRecommend: "yes",
-			specificPositives: "Professional approach, knowledgeable about my case",
-			areasOfImprovement: "Could have provided more written resources to take home",
-			submittedDate: "2025-10-25"
-		},
-		{
-			id: 3,
-			studentName: "Anonymous Student",
-			studentAdmissionNum: "ADM12347",
-			studentAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-			sessionDate: "2025-10-15",
-			sessionType: "Initial Consultation",
-			rating: 3,
-			feedbackMessage: "The session was informative but I felt rushed. Would have appreciated more time to discuss my concerns in depth.",
-			anonymity: true,
-			sessionHelpful: "maybe",
-			wouldRecommend: "maybe",
-			specificPositives: "Clear explanation of treatment options",
-			areasOfImprovement: "More time allocation per session, better follow-up planning",
-			submittedDate: "2025-10-18"
-		},
-		{
-			id: 4,
-			studentName: "Emily Davis",
-			studentAdmissionNum: "ADM12348",
-			studentAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-			sessionDate: "2025-10-08",
-			sessionType: "Individual Therapy",
-			rating: 5,
-			feedbackMessage: "Exceptional care! Dr. Mwangi went above and beyond to help me through a difficult time. The techniques shared are life-changing.",
-			anonymity: false,
-			sessionHelpful: "yes",
-			wouldRecommend: "yes",
-			specificPositives: "Compassionate, empathetic, practical techniques, excellent communication",
-			areasOfImprovement: "None",
-			submittedDate: "2025-10-12"
-		},
-		{
-			id: 5,
-			studentName: "Michael Chen",
-			studentAdmissionNum: "ADM12349",
-			studentAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-			sessionDate: "2025-09-28",
-			sessionType: "Medication Management",
-			rating: 4,
-			feedbackMessage: "Good discussion about medication adjustments. Clear explanation of side effects and benefits.",
-			anonymity: false,
-			sessionHelpful: "yes",
-			wouldRecommend: "yes",
-			specificPositives: "Thorough explanation, answered all questions",
-			areasOfImprovement: "Could have provided more detail about long-term outcomes",
-			submittedDate: "2025-10-02"
-		},
-		{
-			id: 6,
-			studentName: "Anonymous Student",
-			studentAdmissionNum: "ADM12350",
-			studentAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-			sessionDate: "2025-09-21",
-			sessionType: "Individual Therapy",
-			rating: 2,
-			feedbackMessage: "While the psychiatrist was professional, I didn't feel a strong connection. Didn't feel like my specific concerns were fully addressed.",
-			anonymity: true,
-			sessionHelpful: "no",
-			wouldRecommend: "no",
-			specificPositives: "Professional demeanor",
-			areasOfImprovement: "Better personalization of approach, more active listening",
-			submittedDate: "2025-09-24"
-		}
+			{
+				id: 1,
+				studentName: "John Kamau",
+				studentAdmissionNum: "ADM12345",
+				studentAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+				sessionDate: "2025-10-28",
+				sessionType: "Individual Therapy",
+				rating: 5,
+				feedbackMessage: "Dr. Mwangi was incredibly helpful and understanding. The strategies she provided for managing anxiety have been working wonderfully. I felt comfortable opening up and she made me feel heard.",
+				anonymity: false,
+				sessionHelpful: "yes",
+				wouldRecommend: "yes",
+				specificPositives: "Great listening skills, practical advice, made me feel safe",
+				areasOfImprovement: "None, session was perfect",
+				submittedDate: "2025-10-30"
+			},
+			{
+				id: 2,
+				studentName: "Sarah Johnson",
+				studentAdmissionNum: "ADM12346",
+				studentAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+				sessionDate: "2025-10-22",
+				sessionType: "Follow-up Session",
+				rating: 4,
+				feedbackMessage: "The follow-up session was helpful in addressing some of the concerns from the previous meeting. I appreciated the continuity of care.",
+				anonymity: false,
+				sessionHelpful: "yes",
+				wouldRecommend: "yes",
+				specificPositives: "Professional approach, knowledgeable about my case",
+				areasOfImprovement: "Could have provided more written resources to take home",
+				submittedDate: "2025-10-25"
+			},
+			{
+				id: 3,
+				studentName: "Anonymous Student",
+				studentAdmissionNum: "ADM12347",
+				studentAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+				sessionDate: "2025-10-15",
+				sessionType: "Initial Consultation",
+				rating: 3,
+				feedbackMessage: "The session was informative but I felt rushed. Would have appreciated more time to discuss my concerns in depth.",
+				anonymity: true,
+				sessionHelpful: "maybe",
+				wouldRecommend: "maybe",
+				specificPositives: "Clear explanation of treatment options",
+				areasOfImprovement: "More time allocation per session, better follow-up planning",
+				submittedDate: "2025-10-18"
+			},
+			{
+				id: 4,
+				studentName: "Emily Davis",
+				studentAdmissionNum: "ADM12348",
+				studentAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
+				sessionDate: "2025-10-08",
+				sessionType: "Individual Therapy",
+				rating: 5,
+				feedbackMessage: "Exceptional care! Dr. Mwangi went above and beyond to help me through a difficult time. The techniques shared are life-changing.",
+				anonymity: false,
+				sessionHelpful: "yes",
+				wouldRecommend: "yes",
+				specificPositives: "Compassionate, empathetic, practical techniques, excellent communication",
+				areasOfImprovement: "None",
+				submittedDate: "2025-10-12"
+			},
+			{
+				id: 5,
+				studentName: "Michael Chen",
+				studentAdmissionNum: "ADM12349",
+				studentAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+				sessionDate: "2025-09-28",
+				sessionType: "Medication Management",
+				rating: 4,
+				feedbackMessage: "Good discussion about medication adjustments. Clear explanation of side effects and benefits.",
+				anonymity: false,
+				sessionHelpful: "yes",
+				wouldRecommend: "yes",
+				specificPositives: "Thorough explanation, answered all questions",
+				areasOfImprovement: "Could have provided more detail about long-term outcomes",
+				submittedDate: "2025-10-02"
+			},
+			{
+				id: 6,
+				studentName: "Anonymous Student",
+				studentAdmissionNum: "ADM12350",
+				studentAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+				sessionDate: "2025-09-21",
+				sessionType: "Individual Therapy",
+				rating: 2,
+				feedbackMessage: "While the psychiatrist was professional, I didn't feel a strong connection. Didn't feel like my specific concerns were fully addressed.",
+				anonymity: true,
+				sessionHelpful: "no",
+				wouldRecommend: "no",
+				specificPositives: "Professional demeanor",
+				areasOfImprovement: "Better personalization of approach, more active listening",
+				submittedDate: "2025-09-24"
+			}
 		]);
 
 	// Calculate statistics
-	const averageRating = (feedbackList.reduce((sum, f) => sum + f.rating, 0) / feedbackList.length).toFixed(1);
+	// const averageRating:Number = (feedbackList.reduce((sum, f) => sum + f.rating, 0) / feedbackList.length).toFixed(1);
+	const averageRating:Number = (feedbackList.reduce((sum, f) => sum + f.rating, 0) / feedbackList.length);
 	const totalFeedbacks = feedbackList.length;
 	const recommendationRate = Math.round((feedbackList.filter(f => f.wouldRecommend === 'yes').length / totalFeedbacks) * 100);
 	const helpfulRate = Math.round((feedbackList.filter(f => f.sessionHelpful === 'yes').length / totalFeedbacks) * 100);
@@ -174,7 +175,7 @@ export default function PsychiatristFeedback() {
 				<div className="bg-white rounded-xl shadow-md p-6">
 					<p className="text-gray-600 text-sm mb-2">Average Rating</p>
 					<div className="flex items-center space-x-2">
-					<p className="text-3xl font-bold text-gray-900">{averageRating}</p>
+					<p className="text-3xl font-bold text-gray-900">{String(averageRating)}</p>
 					<div className="flex space-x-1">
 						{[...Array(5)].map((_, i) => (
 						<Star
