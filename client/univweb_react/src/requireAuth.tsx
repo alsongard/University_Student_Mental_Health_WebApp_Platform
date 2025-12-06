@@ -11,7 +11,8 @@ function requireAuth(ComposedComponent)
         const isAuthenticated = useSelector((state:any)=>{
             {
                 console.log(`state value is: ${state.isLoggedIn}`)
-                return state.isLoggedIn}
+                return state.isLoggedIn
+            }
         })
 
         console.log(`isAuthenticated ${isAuthenticated}`)
@@ -19,6 +20,7 @@ function requireAuth(ComposedComponent)
         useEffect(()=>{
             if(isAuthenticated != true)
             {
+                console.log('why run this if authenticated is True')
                 navigate("/login/student")
             }
         },[navigate, isAuthenticated])

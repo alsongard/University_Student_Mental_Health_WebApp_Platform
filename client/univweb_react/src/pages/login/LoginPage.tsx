@@ -10,8 +10,6 @@ function AuthForms(props:any)
 
     const navigate = useNavigate();
     const params = useParams();
-    console.log('params');
-    console.log(params);  // Object { id: "student" }
     const pageArgument = params.id || 'student';
 
     
@@ -79,29 +77,50 @@ function AuthForms(props:any)
         }));
     };
 
-
+    const [errorMsg, setErrorMsg] = useState('');
     // state for success
     const [studentSuccess, setStudentSuccess] = useState(false);
 
     // state for otp verification
-    const [otpForm, setOtpForm] = useState(false);
+    const [ otpForm, setOtpForm] = useState(false);
 
     // state for otp value
     const [otpValue, setOtpValue] = useState('');
-    const handleOtp = async (event:FormEvent<HTMLFormElement>)=>{
+    const handleOtp = async (event)=>{
         // console.log(`Otp Value: ${otpValue}`);
         event.preventDefault()
         try 
         {
-            const response = await axios.post("http://localhost:5000/api/student/getOTP", {
-                userOtp: otpValue
-            })
+            const studentId = localStorage.getItem("studentId")
+            const token = localStorage.getItem('token');
+            const response = await axios.post("http://localhost:5000/api/student/getOTP",
+                {
+                    userOtp: otpValue,
+                    token: token,
+                    studentId: studentId
+                },
+                {withCredentials:true},
+            )
             if (response.data.success) {
                 // Handle successful OTP verification
-                console.log('this is response')
+                console.log('this is response');
+                setStudentSuccess(true);
+                navigate("/studentdetails");
             }
-        } catch (error) {
-            console.error("Error verifying OTP:", error);
+        } catch (err) {
+            console.error("Error verifying OTP:", err);
+            if (err.response.data.msg === 'No user found')
+            {
+                setErrorMsg(err.response.data.msg)
+            }
+            if (err.response.data.msg === '  TokenExpiredError: jwt expired')
+            {
+                setErrorMsg('OTP token entered is invalid!')
+            }
+            else
+            {
+                setErrorMsg("Invalid OTP. Please try again.");
+            }
         }
     }
     const handleStudentSignupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -113,7 +132,7 @@ function AuthForms(props:any)
                 console.log(`entering loginform submit`)
                 console.log('formDAta submitted');
                 console.log(studentSignupData)
-                const response = await axios.post("http://localhost:5000/api/student/studentLogin", {
+                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
                     studentAdmission: studentSignupData.admissionNumber,
                     password:  studentSignupData.password
                 });
@@ -123,11 +142,13 @@ function AuthForms(props:any)
                 //     admissionNum: studentSignupData.admissionNumber,
                 //     redirect:false
                 // })
-                console.log(response);
-                if (response.status === 200)
+                console.log(Loginresponse);
+                if (Loginresponse.status === 200)
                 {
                     // get student name
-                    const {email} = response.data.data;
+                    const email = Loginresponse.data.data.studentInfo;
+                    const {authToken} = Loginresponse.data.data;
+                    localStorage.setItem('authToken', authToken);    
                     localStorage.setItem("email", email);
                     setStudentSuccess(true);
                     props.onLoggedIn()
@@ -139,9 +160,9 @@ function AuthForms(props:any)
             }
             if (formMode === "signup")
             {
+
                 console.log(`entering singnupform submit`)
 
-                e.preventDefault();
                 if (studentSignupData.password !== studentSignupData.confirmPassword)
                 {
                     alert('Passwords do not match!');
@@ -156,19 +177,36 @@ function AuthForms(props:any)
                 {
 
                     setStudentSuccess(true);
-                    setOtpForm(true);
                     setTimeout(()=>{
                         setStudentSuccess((prevValue)=>{return !prevValue});
+                        setOtpForm(true);
                     }, 5000);
+                    
+                    console.log(response.data.data.token);
+                    console.log(response.data.data.studentId);
+                    localStorage.setItem('token', response.data.data.token);
+                    localStorage.setItem("studentId", response.data.data.studentId);
                 }
             }
         }
         catch(err)
         {
             console.log(`Error: ${err}`);
+            console.log('err.response');
+            console.log(err.response.data.msg);
 
+            icf (err.response.data.msg === "Invalid credentials")
+            {
+                setErrorMsg("Invalid credentials.");
+                setInterval(()=>{
+                    setErrorMsg('');
+                }, 5000);
+            }
+            // handling error from backend
+            // if (err)
         }
     };
+    
 
     const handlePsychiatristLoginSubmit = async (e) => {
         e.preventDefault();
@@ -201,6 +239,13 @@ function AuthForms(props:any)
                         <button onClick={handleOtp} className="mt-2 w-full py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md cursor-pointer">
                             Verify Otp
                         </button>
+
+                        {
+                            // HANDLING ERROR
+                            errorMsg && (
+                                <p className="text-red-600  font-semibold">{errorMsg}</p>
+                            )
+                        }
                     </div>
                 )
             }   
@@ -507,9 +552,9 @@ function AuthForms(props:any)
                                             </div>
 
                                             <input
-                                            type="submit"
-                                            value="Login"
-                                            className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md cursor-pointer"
+                                                type="submit"
+                                                value="Login"
+                                                className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md cursor-pointer"
                                             />
                                         </div>
 
@@ -533,11 +578,23 @@ function AuthForms(props:any)
                                             )
                                             :
                                             (
-                                                <p className="text-green-800  font-semibold">Signup success. Login to continue...</p>
+                                                <p className="text-green-800  font-semibold">Signup success. Enter OTP</p>
                                             )
         
                                         }
+                                        {
+                                            otpForm && (
+                                                <p>Account Verified Successfully... You are being navigated to student student details</p>
+                                            )
+                                        }
+                                        
                                     </>
+                                )
+                            }
+                            {
+                                // HANDLING ERROR
+                                errorMsg && (
+                                    <p className="text-red-600  font-semibold">{errorMsg}</p>
                                 )
                             }
                             </div>

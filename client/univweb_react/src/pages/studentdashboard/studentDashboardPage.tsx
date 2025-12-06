@@ -6,8 +6,35 @@ import StudentSessionComponent from '../../components/studentSessionComponent';
 import MessagingComponent from '../../components/studentMessageComponent';
 import StudentFeedBack from '../../components/studentFeedbackComponent';
 import StudentProfile from '../../components/studentProfileComponent';
+import {  useNavigate } from 'react-router-dom';
 export default function StudentDashboard()
 {
+    const navigate = useNavigate();
+    // check if studentDetails Exist in DB:
+    const studentId = localStorage.getItem("studentId");
+
+    const checkStudentDetailsExist = async()=>{
+        try
+        {
+            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/${studentId}`);
+            console.log(response.data.data);
+            if (response.data.success)
+            {
+                if (Object.keys(response.data.data).length === 0)
+                {
+                    navigate("/studentdetails")
+                }
+            }
+        }
+        catch(err)
+        {
+            console.log(`Error: ${err}`);
+        }
+    }
+    useEffect(()=>{
+        checkStudentDetailsExist();
+    }, []);
+    
     const email = localStorage.getItem("email");
     
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
