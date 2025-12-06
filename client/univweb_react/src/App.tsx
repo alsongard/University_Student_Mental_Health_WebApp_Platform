@@ -1,35 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import Header from "./components/header";
+import Home from "./pages/home/homePage";
+import AboutPage from "./pages/about/AboutPage";
+import ServicesPage from "./pages/services/servicesPage";
+import ContactPage from "./pages/contact/ContactPage";
+import AuthForms from "./pages/login/LoginPage";
+import StudentDashboard from "./pages/studentdashboard/studentDashboardPage";
+import Footer from "./components/footer";
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider, useDispatch } from "react-redux";
+import requireAuth from "./requireAuth";
+import reducerer from "./store/reducer";
+import PsychiatristDashboard from "./pages/psychiatristdashboard/psychiatristPage";
+import axios from "axios";
+import ErrorpPage from "./pages/error/page";
+import StudentDetailsRegistration from "./pages/studentdetails/studentDetails";
+export default function App()
+{
+	
+	const dispatch = useDispatch();
 
-function App() {
-  const [count, setCount] = useState(0)
+	// we use localstorage
+	const emailExist = localStorage.getItem("email")
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+	console.log(`this is emailExist: ${emailExist}`);
+	// the below is a ADANCED SOLUTION TO REDUX PERSISTENCE
+	const [darkMode, setDarkMode] = useState(false);
+
+	async function CheckSession()
+	{
+		console.log('Running getVerifiedSession')
+		try
+		{
+			const response = await axios.get("http://localhost:5000/api/student/getMe", {withCredentials:true})
+			if (response.status === 200)
+			{
+				dispatch({type: 'ON_LOGGED_IN'});
+			}
+
+		}
+		catch(err)
+		{
+			console.log(`Error: ${err}`)
+		}
+	}
+	useEffect(()=>{
+		const result = window.matchMedia('(prefers-color-scheme: dark)')
+		setDarkMode(result.matches);
+		if (emailExist)
+		{
+			dispatch({type: 'ON_LOGGED_IN'});
+		}
+	}, [dispatch]);
+
+	
+	const ProtectedStudentDashboard = requireAuth(StudentDashboard);
+
+	// how to handle persistence
+	
+
+	const dark = darkMode == true  ? 'dark': ''
+	return (
+		<div className={`${dark}`}>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={<div><Header darkMode={darkMode} setDarkMode={setDarkMode}/><Outlet/><Footer/></div>}>
+						<Route index element={<Home/>}/>
+						<Route path="/about" element={<AboutPage/>}/>
+						<Route path='/services' element={<ServicesPage/>}/>
+						<Route path="/contact" element={<ContactPage/>}/>
+						<Route path="/login/:id" element={<AuthForms/>}/>
+						<Route path="/studentdashboard" element={<ProtectedStudentDashboard/>}/>
+						<Route path="/psychiatristdashboard" element={<PsychiatristDashboard/>}/>
+						<Route path="/studentdetails" element={<StudentDetailsRegistration/>}/>
+						<Route path="*" element={<ErrorpPage/>}/>
+					</Route>
+				</Routes>
+			</BrowserRouter>
+		</div>
+	)	
 }
 
-export default App

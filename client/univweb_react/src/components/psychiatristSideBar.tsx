@@ -14,7 +14,9 @@ function PsychiatristSidebar(props:any)
 	const handleLogout =()=>{
 		console.log('I was clicked!')
 		props.LogoutFun()
-	}
+	};
+
+
 	let retrievedData;
 	const [psychiatristDetails, setPsychiatristDetails] = useState({
 		name: "",
