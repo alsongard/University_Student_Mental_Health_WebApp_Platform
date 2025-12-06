@@ -2,13 +2,24 @@ const PsychiatristSession = require("../models/psychiatristSession.model")
 
 // createSession Controller
 module.exports.createSession = async (req, res)=>{
-    const {psychiatristId,date,startTime,endTime,sessionType,sessionStatus} = req.body;
-    if (!psychiatristId || !date || !startTime || !endTime || !sessionType || !sessionStatus) {
+    const {psychiatristId, date,  startTime, endTime, sessionType, sessionMode, sessionDuration, maxBookings, sessionStatus} = req.body;
+    if (!psychiatristId || !date || !startTime || !endTime || !sessionDuration || !sessionType || !sessionMode || !sessionDuration ) {
         return res.status(400).json({error: "Invalid Input for creating session"});
     }
     try
     {
-        const new_session = await PsychiatristSession.create({psychiatristId:psychiatristId,date:date,startTime:startTime,endTime:endTime,sessionType:sessionType,sessionStatus:sessionStatus});
+        const new_session = await PsychiatristSession.create({
+            psychiatristId:psychiatristId,
+            date:date,
+            startTime:startTime,
+            endTime:endTime,
+            sessionMode:sessionMode,
+            sessionDuration: sessionDuration,
+            sessionType:sessionType,
+            sessionStatus:sessionStatus,
+            maxBookings:maxBookings,
+        });
+            
     
         if (!new_session)
         {
@@ -33,8 +44,12 @@ module.exports.createSession = async (req, res)=>{
  */
 module.exports.UpdateSession = async (req, res)=>{
     const {sessionId} = req.params;
-    const {psychiatristId,date,startTime,endTime,sessionType,sessionStatus} = req.body;
+    const {psychiatristId, date,  startTime, endTime, sessionType, sessionMode, sessionDuration, maxBookings, sessionStatus} = req.body;
+    console.log(`${psychiatristId}\n ${date}\  ${startTime}\n ${endTime}\n ${sessionType}\n ${sessionMode}\n ${sessionDuration}`)
+    if (!psychiatristId || !date || !startTime || !endTime || !sessionDuration || !sessionType || !sessionMode || !sessionDuration ) {
+        return res.status(400).json({error: "Invalid Input for creating session"});
 
+    }
     if (!sessionId)
     {
         return res.status(400).json({success:false, msg: "No sessionId "});
@@ -54,7 +69,7 @@ module.exports.UpdateSession = async (req, res)=>{
             return res.status(404).json({success:false, msg:`No session found with the id: ${sessionId}`})
         }
     
-        // to update
+        // to update we tenary operation if value is given we do the following:
     
         foundSession.psychiatristId = psychiatristId;
         foundSession.date = date;
@@ -117,6 +132,24 @@ module.exports.ViewPsychiatristSession = async (req,res)=>{
     {
         console.log(`Error: ${err}`);
         return res.status(500).json({success:false, msg:"Internal Server Error!"})      
+    }
+}
+
+module.exports.GetAllSessions = async(req, res)=>{
+    try
+    {
+        const allSesions = await PsychiatristSession.find().populate().populate('psychiatristId' ,  'psychiatristName specilization' );;
+        if (allSesions.length < 0)
+        {
+            return res.status(200).json({success:false, msg:"No  sessions at the moment"})
+        }
+        // console.log(allSesions);
+        return res.status(200).json({success:true, data:allSesions})
+
+    }
+    catch(err)
+    {
+        console.log(`Error: ${err}`);
     }
 }
 

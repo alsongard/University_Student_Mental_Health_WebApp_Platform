@@ -2,18 +2,26 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
-
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
 const path = require("node:path");
 const connectDB = require("./config/connectDB");
 const cookieParser = require("cookie-parser");
 const {Server} = require("socket.io");
-const {createServer} = require("node:http")
+const {createServer} = require("node:http");
+const swaggerDocument = require("./swagger.json");
+
 // const {registerStudent} = require("./controllers/studentAuthController")
-const studentRouter = require("./routes/studentRouter")
 // create app:express instance
 const app = express();
 const httpServer = createServer(app);
 
+const corsOption = {
+    origin: ["http://localhost:5173"],
+    credentials: true,
+    method: ['POST', 'GET', 'DELETE', 'PUT', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}
 
 // middleware configuration
 app.use(express.static(path.join(__dirname, "public")));
@@ -21,11 +29,15 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser());
 
-app.use(cors());
+app.use(cors(corsOption));
 
 // ROUTES
-const authPsychatriastRouter = require("./routes/authPsychatriastRouter");
-const authStudentRouter = require("./routes/authStudentRouter");
+const authPsychatriastRouter = require("./routes/authpsychatriast.router");
+const authStudentRouter = require("./routes/authstudent.router");
+const psychiatristSession = require("./routes/pyschiatristsession.router");
+const bookingRoutes = require("./routes/booking.routes");
+const studentRouter = require("./routes/studentdetails.router");
+const feedBackRouter = require("./routes/feedback.router");
 
 app.get("/", (req,res)=>{
     res.sendFile("index.html");
@@ -37,7 +49,16 @@ app.get("/api/trial", (req,res)=>{
 // app.post("/api/trial/studentCreate",  registerStudent );
 app.use("/api/student", authStudentRouter);
 app.use("/api/psychatriast", authPsychatriastRouter);
+app.use("/api/psychiatristSession", psychiatristSession);
 app.use("/api/studentDetails", studentRouter);
+app.use("/api/bookSession",bookingRoutes );
+app.use("/api/feedback", feedBackRouter);
+// swaggerdocs
+
+var options = {
+    explorer : true
+}
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 
 // app.get("/student", async (req,res)=>{
 //     try {
@@ -48,6 +69,9 @@ app.use("/api/studentDetails", studentRouter);
 //         res.status(500).json({success:false, msg:"Error fetching users"});
 //     }
 // });
+
+
+
 const io  = new Server(httpServer, {
     cors: "*",
     methods: ["POST", "GET", "DELETE", "PUT"]
@@ -69,11 +93,11 @@ io.on("connection", (socket)=>{
     socket.emit("supportTeam", someData, (response)=>{
 
     })
-})
+});
 
 
 
-const serverStart  =  async()=>
+const serverStart = async()=>
 {
     try
     {

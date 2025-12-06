@@ -16,7 +16,11 @@ const studentDetailsSchema = new mongoose.Schema(
             relationship: {type:String, required:true}
         },
         dateofBirth: {type:Date, required:false}
-});
+    },
+    {
+        timestamps: true
+    }
+);
 
 const StudentDetails = mongoose.model('StudentDetails', studentDetailsSchema);
 module.exports = StudentDetails;

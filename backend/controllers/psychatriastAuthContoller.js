@@ -14,8 +14,22 @@ const registerMedic = async (req, res)=>{
         return res.status(400).json({success:false, msg:"Invalid input"})
     }
 
+    // before creating we check if psychiatrist exists
+    const existPsychiatrist = await Psychatriast.findOne({psychiatristId:psychiatristId})
+    if(existPsychiatrist)
+    {
+        return res.status(409).json({ success: false, msg: "Psychiatrist already exists" });
+    }
+
     const hashPassword = await bcrypt.hash(psychiatristPassword, genSalt);
-    const new_psychiatrist = await Psychatriast.create({psychiatristId:psychiatristId, psychiatristName:psychiatristName, psychiatristEmail:psychiatristEmail, psychiatristPassword:hashPassword})
+    const new_psychiatrist = await Psychatriast.create(
+        {
+            psychiatristId:psychiatristId,
+            psychiatristName:psychiatristName,
+            psychatriastEmail:psychiatristEmail,
+            psychiatristPassword:hashPassword
+        }
+    )
 
     if (!new_psychiatrist)
     {
@@ -25,16 +39,16 @@ const registerMedic = async (req, res)=>{
     const otp = crypto.randomBytes(64).toString('hex').slice(0,11);
     new_psychiatrist.verifyOtp = otp;
 
-    const otpExpireTimer = Date.now() + (15 * 60 * 1000);
+    const otpExpireTimer = Date.now() + (20 * 60 * 1000);
     new_psychiatrist.verifyOtpExpiresIn = otpExpireTimer;
 
 
     await new_psychiatrist.save();
     const mailOptions = {
-        from: "universpsychatriac@gmail.com",
+        from: process.env.GMAIL_SERVICE_APP_USER,
         to: psychiatristEmail,
         subject: "Account Verification",
-        html: `<p>Copy your <strong>${otp}</strong> to verfiy your account <br> This otp expires in 15 minutes</p> `
+        html: `<p>Copy your <strong>${otp}</strong> to verfiy your account <br> This otp expires in 20 minutes</p> `
     }
     const info = await transporter.sendMail(mailOptions);
     console.log(`info`);
@@ -46,8 +60,8 @@ const registerMedic = async (req, res)=>{
     res.cookie('tempToken', tempTKN, {
         httpOnly:true,
         secure: process.env.NODE_ENV === 'production', 
-        sameSite: "strict", 
-        maxAge: 15 * 60 *1000 //15 minutes
+        sameSite: "lax", 
+        maxAge:  15 * 60 *1000 //15 minutes
 
     })
     return res.status(201).json({success:true, msg:'Psychiatrist Created and Otp sent'});
@@ -56,11 +70,14 @@ const registerMedic = async (req, res)=>{
 // performing verification // button onclick=verifyAccount
 const getOTPUser = async (req,res)=>{
     const userOtp = req.body;
+    console.log(req.cookies)
     if (!userOtp)
     {
         return res.status(400).json({success:false, msg:"Invalid parameters"});
     }
-    const token = req.cookie.tempTKN;
+    const token = req.cookies["tempToken"]
+    console.log('token from psychiatrist: GETOTP')
+    console.log(token);
     const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
     console.log("verifyToken");
     console.log(verifyToken);
@@ -72,18 +89,21 @@ const getOTPUser = async (req,res)=>{
     }
 
     const foundPsychiatrist = await Psychatriast.findOne({_id:id});
-
+    console.log('foundPsychiatrist');
+    console.log(foundPsychiatrist)
     if (!foundPsychiatrist)
     {
         return res.status(500).json({success:false, msg:`No psychiatrist found with the id: ${id}`});
     }
-    if (foundPsychiatrist.verifyOtp == userOtp )
+    if (userOtp == foundPsychiatrist.verifyOtp )
     {
+        console.log(`the OTP Value is correct`)
         foundPsychiatrist.isAccountVerified = true;
         foundPsychiatrist.verifyOtp = 0;
         foundPsychiatrist.verifyOtpExpiresIn = 0;
         await foundPsychiatrist.save();
         
+        // verifyOtp: '278e593eea0',
         return res.status(200).json({success:true, msg:"Account Verified"});
     }
     else
@@ -131,6 +151,24 @@ const medicLogin = async (req, res)=>{
     }
 }
 
+const getPsychiatristInfo = async (req,res)=>{
+
+    const {id} = req.params;
+    try
+    {
+        const foundPsychiatrist = await Psychatriast.findById({_id:id}).select("psychiatristId psychiatristName specilization psychatriastEmail")
+        if (!foundPsychiatrist)
+        {
+            return res.status(400).json({success:false, msg:`No user with id: ${id}`})
+        }
+
+        return res.status(200).json({success:true, data:foundPsychiatrist})
+    }
+    catch(err)
+    {
+
+    }
+}
 
 
 /**
@@ -142,4 +180,4 @@ const medicLogin = async (req, res)=>{
 */
 
 
-module.exports = {medicLogin, getOTPUser, registerMedic};
+module.exports = {medicLogin, getOTPUser, getPsychiatristInfo, registerMedic};
