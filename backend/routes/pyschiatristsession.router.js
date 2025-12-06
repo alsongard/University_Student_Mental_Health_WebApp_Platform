@@ -1,15 +1,14 @@
-
 // view session info routers for Psychiatrist
 const express = require("express");
 
-const router = express.Router();
-const {UpdateSession, DeleteSession, createSession, ViewPsychiatristSession, DeleteSession} = require("../controllers/psySessionController")
+const pyschiatristSessionRouter = express.Router();
+const {UpdateSession, DeleteSession, createSession, ViewPsychiatristSession, GetAllSessions} = require("../controllers/psySessionController")
 
-router.post("/createSession",createSession);
-router.put("/updateSession/:sessionId", UpdateSession);
-router.get("/viewSession/:psychiatristId", ViewPsychiatristSession);
-router.delete("/deleteSession/:sessionId", DeleteSession)
+pyschiatristSessionRouter.post("/createSession",createSession);
+pyschiatristSessionRouter.put("/updateSession/:sessionId", UpdateSession);
+pyschiatristSessionRouter.get("/viewSession/:psychiatristId", ViewPsychiatristSession);
+pyschiatristSessionRouter.delete("/deleteSession/:sessionId", DeleteSession);
+pyschiatristSessionRouter.get("/getAllSessions", GetAllSessions); 
 
 
-const sessionRoutes = router;
-module.exports = sessionRoutes;
+module.exports = pyschiatristSessionRouter;

@@ -4,10 +4,13 @@ const BookSession = require("../models/bookSession.model");
 
 // create BookingSession
 module.exports.CreateBookingSession = async (req, res)=>{
-    const {sessionId, studentId,  psychiatristId,  status}  = req.body;
+    const {id} = req.params;
+    const studentId = id;
+    const {sessionId, psychiatristId,  status}  = req.body;
 
     if (!sessionId || !studentId || !psychiatristId || !status)
     {
+        console.log(`${sessionId}\n ${studentId}\n ${psychiatristId}\n ${status}`);
         return res.status(400).json({success:false, msg:"Invalid parameters"});
     }
     try
@@ -56,7 +59,8 @@ module.exports.ViewPsychiatristSession  = async (req,res)=>{
     }
     try
     {
-        const foundPsychiatristBookedSessions = await BookSession.find({psychiatristId:psychiatristId});
+        const foundPsychiatristBookedSessions = await BookSession.find({psychiatristId:psychiatristId}).populate([{ path: 'studentId', select: 'studentName studentAdmissionNum  email'}, { path: 'sessionId',  select:'sessionMode date startTime endTime sessionDuration sessionType sessionStatus'}]);
+
         if (foundPsychiatristBookedSessions.length == 0)
         {
             return res.status(200).json({success:true, msg:"You have no booked sessions"});
@@ -72,14 +76,15 @@ module.exports.ViewPsychiatristSession  = async (req,res)=>{
 
 // get StudenttBookedSessions
 module.exports.ViewStudentBookedSessions  = async (req,res)=>{
-    const {studentId} = req.params;
+    const {id} = req.params;
+    const studentId = id;
     if (!studentId)
     {
         return res.status(400).json({success:false, msg:"No studentId found"});
     }
     try
     {
-        const foundStudentBookedSessions = await BookSession.find({studentId:studentId});
+        const foundStudentBookedSessions = await BookSession.find({studentId:studentId}).populate("psychiatristId", "psychiatristName specilization");
         if (foundStudentBookedSessions.length == 0)
         {
             return res.status(200).json({success:true, msg:"You have no booked sessions"});
