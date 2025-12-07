@@ -146,8 +146,11 @@ function AuthForms(props:any)
                 if (Loginresponse.status === 200)
                 {
                     // get student name
-                    const email = Loginresponse.data.data.studentInfo;
-                    const {authToken} = Loginresponse.data.data;
+                    const {email} = Loginresponse.data.data.studentInfo;
+                    console.log(Loginresponse.data.data)
+                    const authToken = Loginresponse.data.data.authToken;
+                    const studentId = Loginresponse.data.data.studentId;
+                    localStorage.setItem("studentId", studentId);
                     localStorage.setItem('authToken', authToken);    
                     localStorage.setItem("email", email);
                     setStudentSuccess(true);
@@ -157,6 +160,8 @@ function AuthForms(props:any)
                         navigate("/studentdashboard")
                     }, 5000);
                 }
+
+
             }
             if (formMode === "signup")
             {
@@ -195,13 +200,21 @@ function AuthForms(props:any)
             console.log('err.response');
             console.log(err.response.data.msg);
 
-            icf (err.response.data.msg === "Invalid credentials")
+            if (err.response.data.msg === "Invalid credentials")
             {
                 setErrorMsg("Invalid credentials.");
                 setInterval(()=>{
                     setErrorMsg('');
                 }, 5000);
             }
+            if (err.response.data.msg)
+            {
+                setErrorMsg(err.response.data.msg);
+            }
+
+            setTimeout(()=>{
+                setErrorMsg("")
+            }, 5000)
             // handling error from backend
             // if (err)
         }
