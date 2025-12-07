@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { User, Phone, MapPin, AlertCircle, BookOpen, Calendar, Users } from 'lucide-react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function StudentDetailsRegistration() 
 {
+	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		studentId: '',
 		studentName: '',
@@ -56,12 +58,13 @@ export default function StudentDetailsRegistration()
 		if (!formData.emergencyContact.name.trim()) newErrors.emergencyName = 'Emergency contact name is required';
 		if (!formData.emergencyContact.phoneNumber.trim()) newErrors.emergencyPhone = 'Emergency contact phone is required';
 		if (!formData.emergencyContact.relationship.trim()) newErrors.emergencyRelationship = 'Relationship is required';
-
+		if (!formData.dateofBirth) newErrors.dateofBirth = 'Date of birth is required';
 		setErrors(newErrors);
 		console.log('New Errors:');
 		console.log(newErrors)
 		return Object.keys(newErrors).length === 0;
 	};
+	const [successMessage, setSuccessMessage] = useState('');
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -71,7 +74,7 @@ export default function StudentDetailsRegistration()
 		{
 			if (validate()) 
 			{	
-				const token = localStorage.getItem("token");
+				const token = localStorage.getItem("authToken");
 
 				const response = await axios.post("http://localhost:5000/api/studentDetails/createDetails/", {
 					studentName: formData.studentName,
@@ -88,26 +91,35 @@ export default function StudentDetailsRegistration()
 					},
 					dateofBirth:formData.dateofBirth,
 					token: token
-				})
+				});
+
+				if (response.data.success)
+				{
+					navigate('/studentdashboard');
+				}
 				console.log('Form submitted:', formData);
-				// alert('Student registration submitted successfully!');
+				setInterval(()=>{
+
+					setFormData({
+						studentId: '',
+						studentName: '',
+						studentAge: '',
+						gender: '',
+						phoneNumber: '',
+						course: '',
+						yearOfStudy: '',
+						address: '',
+						emergencyContact: {
+							name: '',
+							phoneNumber: '',
+							relationship: ''
+						},
+						dateofBirth: ''
+				});
+				setErrors({});
+				}, 6000);
 				// Reset form
-				// setFormData({
-				// 	studentId: '',
-				// 	studentName: '',
-				// 	studentAge: '',
-				// 	gender: '',
-				// 	phoneNumber: '',
-				// 	course: '',
-				// 	yearOfStudy: '',
-				// 	address: '',
-				// 	emergencyContact: {
-				// 	name: '',
-				// 	phoneNumber: '',
-				// 	relationship: ''
-				// 	}
-				// });
-				// setErrors({});
+				
 			}
 		}
 		catch(err)
@@ -131,7 +143,8 @@ export default function StudentDetailsRegistration()
 			name: '',
 			phoneNumber: '',
 			relationship: ''
-		}
+			},
+		dateofBirth: ''
 		});
 		setErrors({});
 	};
@@ -155,32 +168,6 @@ export default function StudentDetailsRegistration()
 					</div>
 					
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-					{/* Student ID */}
-						{/* <div className="space-y-2">
-							<label className="block text-sm font-semibold dark:text-white text-gray-700">
-								Student ID 
-								<span className="text-red-500 dark:text-white"> *</span>
-							</label>
-							<input
-								type="text"
-								name="studentId"
-								value={formData.studentId}
-								onChange={handleChange}
-								className={`w-full px-4 py-3 dark:text-white rounded-xl border-2 ${
-									errors.studentId ? 'border-red-300' : 'border-gray-300'
-								} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all`}
-								placeholder="Enter student ID"
-							/>
-							{
-								errors.studentId && 
-								(
-									<p className="text-red-500 text-xs flex items-center gap-1">
-										<AlertCircle className="w-3 h-3" />
-										{errors.studentId}
-									</p>
-								)
-							}
-						</div> */}
 
 						{/* Student Name */}
 						<div className="space-y-2">
@@ -291,6 +278,31 @@ export default function StudentDetailsRegistration()
 							</p>
 							)}
 						</div>
+
+						{/* Date of Birth */}
+						<div className='space-y-2'>
+							<label className="block text-sm font-semibold dark:text-white text-gray-700">
+								Date of Birth 
+								<span className="text-red-500 dark:text-white"> *</span>
+							</label>
+							<input 
+								type='date'
+								value={formData.dateofBirth}
+								name='dateofBirth'
+								onChange={handleChange}
+								className={`w-full px-4 py-3 dark:text-white rounded-xl border-2 ${
+									errors.dateofBirth ? 'border-red-300' : 'border-gray-300'
+								} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all`}
+							/>
+							{
+								errors.dateofBirth && (
+								<p className="text-red-500 text-xs flex items-center gap-1">
+									<AlertCircle className="w-3 h-3" />
+									{errors.dateofBirth}
+								</p>
+								)
+							}
+						</div>
 					</div>
 				</div>
 
@@ -390,6 +402,7 @@ export default function StudentDetailsRegistration()
 								)
 							}
 						</div>
+
 					</div>
 				</div>
 
@@ -501,6 +514,10 @@ export default function StudentDetailsRegistration()
 						Reset
 					</button>
 				</div>
+				{
+					successMessage &&
+					<p className='bg-green-700 py-3 px-2 rounded-md'>Successfully created your student details?</p>
+				}
 			</div>
 		</div>
     </div>
