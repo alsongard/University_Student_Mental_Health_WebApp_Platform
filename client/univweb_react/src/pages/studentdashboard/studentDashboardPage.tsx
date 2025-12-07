@@ -17,23 +17,28 @@ export default function StudentDashboard()
         try
         {
             const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/${studentId}`);
-            console.log(response.data.data);
-            if (response.data.success)
-            {
-                if (Object.keys(response.data.data).length === 0)
-                {
-                    navigate("/studentdetails")
-                }
-            }
+            
+       
         }
         catch(err)
         {
             console.log(`Error: ${err}`);
+            console.log('response.data.data')
+            console.log(err.response.data.data);
+
+            console.log('response.status')
+            console.log(err.response.status);
+            if (!err.response.data.success)
+            {
+                if (err.response.status === 400)
+                {
+                    
+                    navigate("/studentdetails");
+                }
+            }
         }
     }
-    useEffect(()=>{
-        checkStudentDetailsExist();
-    }, []);
+
     
     const email = localStorage.getItem("email");
     
@@ -67,56 +72,13 @@ export default function StudentDashboard()
 			console.log(`Error: ${err}`);
 		}
 	}
-    
     useEffect(()=>{
-        getAllSessions();
-    }, [])
-    // Sample upcoming sessions
-    const upcomingSessions = [
-        {
-            id: 1,
-            psychiatristName: "Dr. Sarah Mwangi",
-            date: "2025-10-28",
-            time: "10:00 AM",
-            type: "Individual Therapy",
-            status: "confirmed",
-            mode: "In-Person"
-        },
-        {
-            id: 2,
-            psychiatristName: "Dr. James Ochieng",
-            date: "2025-11-02",
-            time: "2:00 PM",
-            type: "Follow-up Session",
-            status: "pending",
-            mode: "Virtual"
-        }
-    ];
+        checkStudentDetailsExist();
+        setInterval(()=>{
+            getAllSessions();   
+        }, 60000);
+    }, []);
 
-  // Sample available sessions : ARRay
-    const availableSessions = [
-        {
-            id: 101,
-            psychiatristName: "Dr. Sarah Mwangi",
-            specialization: "Anxiety & Depression",
-            availableSlots: ["2025-10-30 9:00 AM", "2025-10-30 11:00 AM", "2025-10-31 2:00 PM"],
-            mode: "Both"
-        },
-        {
-            id: 102,
-            psychiatristName: "Dr. Amina Hassan",
-            specialization: "Relationship Issues",
-            availableSlots: ["2025-10-29 10:00 AM", "2025-10-30 3:00 PM"],
-            mode: "In-Person"
-        },
-        {
-            id: 103,
-            psychiatristName: "Dr. Peter Kamau",
-            specialization: "ADHD & Learning Support",
-            availableSlots: ["2025-10-31 9:00 AM", "2025-11-01 1:00 PM"],
-            mode: "Virtual"
-        }
-    ];
 
   // Sample calendar events
     const calendarEvents = [
@@ -125,25 +87,7 @@ export default function StudentDashboard()
         { date: "2025-11-02", title: "Follow-up", type: "session" }
     ];
 
-    // Sample feedbacks : ARRAY
-    const feedbacks = [
-        {
-        id: 1,
-        sessionDate: "2025-10-15",
-        psychiatristName: "Dr. Sarah Mwangi",
-        rating: 5,
-        comment: "Very helpful session. Dr. Mwangi was understanding and provided practical strategies.",
-        response: "Thank you for your feedback! I'm glad our session was beneficial."
-        },
-        {
-        id: 2,
-        sessionDate: "2025-10-10",
-        psychiatristName: "Dr. James Ochieng",
-        rating: 4,
-        comment: "Good session, but I wish we had more time to discuss everything.",
-        response: null
-        }
-    ];
+   
 
     // Sample messages : ARRAY
     const messages = [
@@ -326,10 +270,6 @@ export default function StudentDashboard()
                     </div>
                 </div>
     );
-
-
-
-
     
     return (
         <div className="flex flex-row h-screen dark:bg-slate-800 bg-gray-50">
@@ -337,34 +277,7 @@ export default function StudentDashboard()
             <StudentSideBar activeView={activeView} setActiveView={setActiveView}/>
             {/* Main Content */}
             <main className="flex-1 overflow-y-auto">
-            {/* Top Bar */}
-                {/* <div className="bg-white shadow-sm sticky top-0 z-10">
-                    <div className="px-8 py-4 flex items-center justify-between">
-                        <h2 className="text-2xl font-bold text-gray-900">
-                            <p>I am just</p>
-                        </h2>
-                        <div className="flex items-center space-x-4">
-                        <button className="relative p-2 text-gray-600 hover:text-blue-600 transition">
-                            <Bell className="w-6 h-6" />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                        </button>
-                        <div className="flex items-center space-x-3">
-                            <img
-                            src={studentData.avatar}
-                            alt={studentData.name}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-blue-600"
-                            />
-                            {!sidebarCollapsed && (
-                            <div>
-                                <p className="font-semibold text-gray-900 text-sm">{studentData.name}</p>
-                                <p className="text-xs text-gray-600">{studentData.admissionNumber}</p>
-                            </div>
-                            )}
-                        </div>
-                        </div>
-                    </div>
-                </div> */}
-
+           
             {/* Content Area */}
                 <div className="p-8">
                     {activeView === "overview" && renderOverview}
