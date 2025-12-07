@@ -63,7 +63,7 @@ export default function PsychiatristSessionsManagement()
 		e.preventDefault();
 		try
 		{
-			const response = await axios.post("http://localhost:5000/api/psychiatristSession/createSession", {
+			const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/createSession", {
 				psychiatristId:"692bbcb9946ace680fc7e177",
 				date:formData.date,
 				startTime: formData.startTime,
