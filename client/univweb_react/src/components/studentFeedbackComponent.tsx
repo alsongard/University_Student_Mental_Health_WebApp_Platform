@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export default function StudentFeedBack() 
 {
-
+    const studentId = localStorage.getItem('studentId');
     // set state for feedbacks
     const [myFeedBack, setMyFeedbacks] = useState([]);
     // get StudentFeedback from backend API here
@@ -11,7 +11,7 @@ export default function StudentFeedBack()
     {
         try
         {
-            const response = await axios.get("http://localhost:5000/api/feedback/getStudentFeedback/6903a4963253494881272acb");
+            const response = await axios.get(`http://localhost:5000/api/feedback/getStudentFeedback/${studentId}`);
     
             if (response.data.success)
             {
