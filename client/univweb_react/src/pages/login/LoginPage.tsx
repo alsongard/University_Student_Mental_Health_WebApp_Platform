@@ -93,7 +93,7 @@ function AuthForms(props:any)
         {
             const studentId = localStorage.getItem("studentId")
             const token = localStorage.getItem('token');
-            const response = await axios.post("http://localhost:5000/api/student/getOTP",
+            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/getOTP",
                 {
                     userOtp: otpValue,
                     token: token,
@@ -132,7 +132,7 @@ function AuthForms(props:any)
                 console.log(`entering loginform submit`)
                 console.log('formDAta submitted');
                 console.log(studentSignupData)
-                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
+                const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", {
                     studentAdmission: studentSignupData.admissionNumber,
                     password:  studentSignupData.password
                 });
@@ -173,7 +173,7 @@ function AuthForms(props:any)
                     alert('Passwords do not match!');
                     return;
                 }
-                const response = await axios.post("http://localhost:5000/api/student/studentCreate", {
+                const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", {
                     studentAdmissionNum:studentSignupData.admissionNumber,
                     email:studentSignupData.email,
                     password:studentSignupData.password,
@@ -225,7 +225,7 @@ function AuthForms(props:any)
         e.preventDefault();
         try
         {
-            const response = await axios.post("http://localhost:5000")
+            const response = await axios.post("https://university-student-psychiatrist.onrender.com/")
             if (response.data.success)
             {
                 navigate("/")
