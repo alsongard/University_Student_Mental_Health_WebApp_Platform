@@ -9,7 +9,7 @@ export default function StudentSessionComponent()
      const getAllSessions = async()=>{
 		try
 		{
-			const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions");
+			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
             console.log(response)
             if (response.data.success)
             {
@@ -34,7 +34,7 @@ export default function StudentSessionComponent()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/${studentId}`);
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/bookSession/getStudentBookedSessions/${studentId}`);
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")
@@ -59,7 +59,7 @@ export default function StudentSessionComponent()
     const handleBookSubmit = async(id:String)=>{
         try
         {
-            const response = await axios.post("http://localhost:5000/api/bookSession/690362a78d4fa3a14a78a9e3", {
+            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/bookSession/690362a78d4fa3a14a78a9e3", {
                 sessionId: singleSession.id,
                 psychiatristId: singleSession.psychiatristId._id,
                 status: "scheduled",

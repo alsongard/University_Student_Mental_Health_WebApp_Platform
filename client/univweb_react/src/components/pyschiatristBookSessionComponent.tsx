@@ -14,7 +14,7 @@ export default function PsychiatristBookedSessions()
 	const getBookedSessions = async ()=>{
 		try
 		{
-			const response = await axios.get('http://localhost:5000/api/bookSession/psychiatristViewBooked/692bbcb9946ace680fc7e177');
+			const response = await axios.get('https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked/692bbcb9946ace680fc7e177');
 			if (response.data.success)
 			{
 				setPsychBookedSessions(response.data.data);
