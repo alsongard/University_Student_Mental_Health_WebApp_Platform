@@ -168,8 +168,8 @@ const studentLogin = async (req, res)=>{
         if (decodePass && foundStudent.isAccountVerified === true)
         {
             const authToken = jwt.sign({userId: foundStudent._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
-            console.log("token");
-            console.log(authToken);
+j            // console.log("token");
+            // console.log(authToken);
             
             // res.cookie("authToken", token, {
             //     httpOnly:true,
@@ -178,7 +178,7 @@ const studentLogin = async (req, res)=>{
             //     maxAge: 120 * 60 *1000 //15 minutes
             // });
             const studentInfo = {email: foundStudent.email}
-            return res.status(200).json({success:true, data:{ studentInfo, authToken } ,   msg:"Login Success"})
+            return res.status(200).json({success:true, data:{ studentInfo, authToken: authToken, studentId: foundStudent._id } ,   msg:"Login Success"})
         }
     }
     catch(err)
