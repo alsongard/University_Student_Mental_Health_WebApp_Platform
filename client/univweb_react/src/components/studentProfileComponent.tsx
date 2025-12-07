@@ -19,10 +19,11 @@ export default  function StudentProfile()
             address: ""
         }
     );
+    const studentId = localStorage.getItem("studentId");
     const getStudentDetails = async ()=>{
         try
         {
-            const response = await axios.get("http://localhost:5000/api/studentDetails/getStudentDetails/690362a78d4fa3a14a78a9e3")
+            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/${studentId}`)
             console.log(response);
             if (response.data.success)
             {

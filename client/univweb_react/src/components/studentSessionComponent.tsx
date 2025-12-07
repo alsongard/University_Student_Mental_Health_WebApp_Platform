@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Search, MoveRight } from "lucide-react";
+import { Search, MoveRight, Calendar } from "lucide-react";
 import axios from "axios";
 export default function StudentSessionComponent()
 {
     const [selectedSession, setSelectedSession] = useState(null);
-    
+    const studentId = localStorage.getItem("studentId");    
     const [myUpcomingSessions, setMyUpcomingSessions] = useState([]);
      const getAllSessions = async()=>{
 		try
@@ -34,9 +34,14 @@ export default function StudentSessionComponent()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            const response = await axios.get("http://localhost:5000/api/bookSession/getStudentBookedSessions/690362a78d4fa3a14a78a9e3")
+            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/${studentId}`);
             if (response.data.success)
             {
+                if (response.data.msg === "You have no booked sessions")
+                {
+                    setStudentBookedSessions([]);
+                    return;
+                }
                 setStudentBookedSessions(response.data.data);
             }
         }
@@ -327,13 +332,24 @@ export default function StudentSessionComponent()
                                 </div>
                             ))
                     }
-                    {
-                        studentBookedSessions.length === 0 && 
-                        (
-                            <p className="text-white text-[18px]">Loading</p>
-                        )
-                    }
                 </div>
+                {
+                    studentBookedSessions.length === 0 && 
+                    (
+                        <div className="w-full">
+                            <div className="text-center  dark:bg-slate-600   rounded-md py-8 text-gray-500">
+                                <Calendar className="w-16 dark:text-white h-16 mx-auto mb-4 opacity-30" />
+                                    <p className="text-white">No upcoming sessions scheduled</p>
+                                <button
+                                    onClick={() => setActiveView('sessions')}
+                                    className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                                >
+                                    Book a Session
+                                </button>
+                            </div>
+                        </div>
+                    )
+                }
 
             </div>
 

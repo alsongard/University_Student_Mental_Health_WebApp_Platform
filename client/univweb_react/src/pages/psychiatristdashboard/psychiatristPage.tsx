@@ -9,7 +9,8 @@ import axios from 'axios';
 
 
 
-export default function PsychiatristDashboard() {
+export default function PsychiatristDashboard()
+{
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 	const [activeView, setActiveView] = useState('overview');
 	const [userDetails, setUserDetials] = useState(null);
