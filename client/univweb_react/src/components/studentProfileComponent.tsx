@@ -23,7 +23,7 @@ export default  function StudentProfile()
     const getStudentDetails = async ()=>{
         try
         {
-            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/${studentId}`)
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`)
             console.log(response);
             if (response.data.success)
             {
@@ -90,7 +90,7 @@ export default  function StudentProfile()
     const handleUpdatePassword = async ()=>{
         try
         {
-            const response = await axios.put("http://localhost:5000/api/studentDetails/updateStudentPassword/690362a78d4fa3a14a78a9e3", passwordInfo)  
+            const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/studentDetails/updateStudentPassword/690362a78d4fa3a14a78a9e3", passwordInfo)  
             console.log(response);
             if (response.data.success)
             {
