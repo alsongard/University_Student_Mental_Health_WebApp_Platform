@@ -30,6 +30,7 @@ const corsOption = {
         }
         const allowedDomains = [
             "https://university-student-psychiatrist-web.vercel.app",
+            "https://university-student-psychiatrist-web-application-4yl8d1ske.vercel.app"
             "http://localhost:5173"
         ]
         if (allowedDomains.includes(origin))// not equal the indexOf() method returns -1 if no value ns found in the array
