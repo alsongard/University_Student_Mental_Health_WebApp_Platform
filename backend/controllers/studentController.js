@@ -67,6 +67,9 @@ const getStudentDetails = async (req, res)=>{
         const {id} = req.params;
 
         const studentDetails = await StudentDetails.findOne({studentId: id}).populate({path: 'studentId', select: 'studentAdmissionNum email'});
+        console.log('this is studentDetails');
+        console.log(studentDetails);
+        console.log(typeof(studentDetails));
         if (!studentDetails) {
             return res.status(404).json({success:false, msg:"Student details not found"});
         }

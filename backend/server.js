@@ -1,5 +1,5 @@
 // import neccessary modules:functions
-const express = require("express");c
+const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
