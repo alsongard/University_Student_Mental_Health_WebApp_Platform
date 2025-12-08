@@ -21,7 +21,7 @@ const corsOption = {
     origin: function (origin, callback){
         if (process.env.NODE_ENV !== "production") // checks the environment at which t's running
         {
-            // console.log(`[DEV] Allowing origin: ${origin}`)
+            console.log(`[DEV] Allowing origin: ${origin}`)
             return callback(null, true);
         }
         if (!origin)
@@ -29,10 +29,8 @@ const corsOption = {
             return callback(null,true); // remember second argument: returns true(permit domain) or false(permit domain) 
         }
         const allowedDomains = [
-            "https://university-student-psychiatrist-web.vercel.app",
-            "https://university-student-psychiatrist-web-application-4yl8d1ske.vercel.app",
-            "https://university-student-psychiatrist-web-application-74fyufj85.vercel.app/",
             "http://localhost:5173"
+            // "https://university-student-psychiatrist-web.vercel.app"
         ]
         if (allowedDomains.includes(origin))// not equal the indexOf() method returns -1 if no value ns found in the array
         {
@@ -99,7 +97,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options))
 
 
 const io  = new Server(httpServer, {
-    cors: "*",
+    cors: ["http://localhost:5173", "https://university-student-psychiatrist-web.vercel.app"],
     methods: ["POST", "GET", "DELETE", "PUT"]
 });
 

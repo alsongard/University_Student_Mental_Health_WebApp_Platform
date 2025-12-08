@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 
 const StudentSchema = new  mongoose.Schema({
-    studentAdmissionNum : {type:String, required:true},
-    email: {type:String, required:true}, // changeThis to studentEmail
+    studentAdmissionNum : {type:String, unique:true, required:true},
+    email: {type:String, required:true,  unique:true}, // changeThis to studentEmail
     password: {type:String, required:true},
     isAccountVerified: {type:Boolean, default:false},
     role: {type:String, default:"student"},
