@@ -95,7 +95,17 @@ export default function StudentDetailsRegistration()
 
 				if (response.data.success)
 				{
-					navigate('/studentdashboard');
+					console.log('this is authToken:');
+					console.log(response.data.data.authToken);
+					const token = response.data.data.authToken;
+					localStorage.setItem('authToken', token);
+
+					setSuccessMessage('Student details created successfully!');
+
+					setInterval(()=>{
+						setSuccessMessage('');
+						navigate('/studentdashboard');
+					}, 6000);
 				}
 				console.log('Form submitted:', formData);
 				setInterval(()=>{
