@@ -18,6 +18,14 @@ const registerStudent = async (req, res)=>{
     try
     {
         const hashPassword = await bcrypt.hash(password, genSalt);
+        // check if student already exists
+        const already_exist = await Student.findOne({email: email, studentAdmissionNum: studentAdmissionNum});
+
+        if (already_exist)
+        {
+            return res.status(409).json({success:false, msg:"Student already exists"});
+        }
+
         const new_student = await Student.create({studentAdmissionNum:studentAdmissionNum, email:email, password:hashPassword})
 
         if (!new_student)
@@ -29,7 +37,7 @@ const registerStudent = async (req, res)=>{
         const otp = crypto.randomBytes(64).toString('hex').slice(0,11);
         new_student.verifyOtp = otp;
 
-        const otpExpireTimer = Date.now() + (15 * 60 * 1000); // milliseconds minutes * seconds * milliseconds
+        const otpExpireTimer = Date.now() + (25 * 60 * 1000); // milliseconds minutes * seconds * milliseconds
         new_student.verifyOtpExpiresIn = otpExpireTimer;
 
 
@@ -41,7 +49,7 @@ const registerStudent = async (req, res)=>{
             html:`<h2>Account Verification</h2>
                 <p>Enter the following OTP for your account verification:</p>
                 <b>${otp}</b>
-                <p>These otp expires in 15 minutes</p>`
+                <p>These otp expires in 25 minutes</p>`
         }
 
         const info = await transporter.sendMail(mailOptions);
@@ -120,13 +128,14 @@ const getOTPUser = async (req,res)=>{
             foundStudent.isAccountVerified = true;
             foundStudent.verifyOtp = 0;
             foundStudent.verifyOtpExpiresIn = 0;
+            const authToken = jwt.sign({userId: foundStudent._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
             await foundStudent.save();
             
             return res.status(200).json({success:true, msg:"Account Verified"});
         }
         else
         {
-            return res.status(400).json({success:false, msg:"Invalid OPT"})
+            return res.status(400).json({success:false, msg:"Invalid OPT", data: {authToken: authToken}});
         }
     }
     catch(err)
