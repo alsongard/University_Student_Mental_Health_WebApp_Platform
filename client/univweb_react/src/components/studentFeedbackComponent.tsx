@@ -11,7 +11,9 @@ export default function StudentFeedBack()
     {
         try
         {
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/feedback/getStudentFeedback/${studentId}`);
+            // http://localhost:5000/
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/feedback/getStudentFeedback/${studentId}`);
+            const response = await axios.get(`http://localhost:5000/api/feedback/getStudentFeedback/${studentId}`);
     
             if (response.data.success)
             {
@@ -34,7 +36,7 @@ export default function StudentFeedBack()
         <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Session Feedback</h1>
             <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
-            New Feedback
+                New Feedback
             </button>
         </div>
 
