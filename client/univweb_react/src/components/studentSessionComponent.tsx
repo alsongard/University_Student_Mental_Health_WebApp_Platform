@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Search, MoveRight, Calendar } from "lucide-react";
+import { Search, MoveRight, Calendar, Loader } from "lucide-react";
 import axios from "axios";
 export default function StudentSessionComponent()
 {
     const [selectedSession, setSelectedSession] = useState(null);
     const studentId = localStorage.getItem("studentId");    
     const [myUpcomingSessions, setMyUpcomingSessions] = useState([]);
-     const getAllSessions = async()=>{
+    const getAllSessions = async()=>{
 		try
 		{
 			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
@@ -56,17 +56,22 @@ export default function StudentSessionComponent()
     const [singleSession, setSingleSession] = useState();
     const [successMessage, setSuccessMessage] = useState(false);
 
-    const handleBookSubmit = async(id:String)=>{
+    const handleBookSubmit = async(singleSession:any)=>{
         try
         {
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/bookSession/690362a78d4fa3a14a78a9e3", {
-                sessionId: singleSession.id,
+            console.log('sucess is success');
+            // const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/${studentId}`, {
+            const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking/${studentId}`, {
+                sessionId: singleSession._id,
                 psychiatristId: singleSession.psychiatristId._id,
                 status: "scheduled",
             })
             if (response.data.success)
             {
                 setSuccessMessage(true);
+                setTimeout(()=>{
+                    setBookSession(false);
+                }, 6000);
             }
         }
         catch(err)
@@ -79,112 +84,126 @@ export default function StudentSessionComponent()
     {
         return (
             <>
-                <div className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-semibold dark:text-white text-gray-700 mb-2">
-                                Psychiatrist Name
-                            </label>
-                            <p
-                                className="w-full  dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                            >
-                                {singleSession.psychiatristId.psychiatristName}
-                            </p>
+                {singleSession &&
+                    (
+                        <div className="space-y-6">
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-semibold dark:text-white text-gray-700 mb-2">
+                                        Psychiatrist Name
+                                    </label>
+                                    <p
+                                        className="w-full  dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                    >
+                                        {singleSession.psychiatristId.psychiatristName}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold dark:text-white text-gray-700 mb-2">
+                                        Date 
+                                    </label>
+                                    <p className="w-full px-4 py-3 border dark:text-white border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                        {new Date(singleSession.date).toISOString().split('T')[0]}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm dark:text-white font-semibold text-gray-700 mb-2">
+                                        Time 
+                                    </label>
+                                    <p className="w-full px-4 py-3 border dark:text-white border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                        {singleSession.startTime} - {singleSession.endTime}
+                                    </p>  
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold dark:text-white text-gray-700 mb-2">
+                                        Duration 
+                                    </label>
+                                    <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                        {singleSession.sessionDuration}
+                                    </p>
+                                    
+                                </div>
+
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">
+                                        Session Type *
+                                    </label>
+                                    <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                        {singleSession.sessionType}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">
+                                        Mode *
+                                    </label>
+                                    <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                        {singleSession.sessionMode}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">
+                                        Max Bookings *
+                                    </label>
+                                    <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                        {singleSession.maxBookings} 
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">
+                                        Session Status *
+                                    </label>
+                                    <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                        {singleSession.sessionStatus}     
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div className="flex space-x-4 pt-6 border-t border-gray-200">
+                                <button
+                                    onClick={() => {
+                                        setBookSession(false);
+                                    }}
+                                    className="flex-1 px-6 py-3 border-2 border-gray-300  dark:bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600  transition"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={()=>{handleBookSubmit(singleSession)}}
+                                    className="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                            {
+                                successMessage &&
+                                (
+                                    <p className='bg-green-600 py-3  px-5 rounded-lg text-[15px]'>New Session Successfuly created</p>
+                                )
+                            }
+
                         </div>
-
-                        <div>
-                            <label className="block text-sm font-semibold dark:text-white text-gray-700 mb-2">
-                                Date 
-                            </label>
-                            <p className="w-full px-4 py-3 border dark:text-white border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                                {new Date(singleSession.date).toISOString().split('T')[0]}
-                            </p>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm dark:text-white font-semibold text-gray-700 mb-2">
-                                Time 
-                            </label>
-                            <p className="w-full px-4 py-3 border dark:text-white border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                                {singleSession.startTime} - {singleSession.endTime}
-                            </p>  
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-semibold dark:text-white text-gray-700 mb-2">
-                                Duration 
-                            </label>
-                            <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                                {singleSession.duration}
-                            </p>
-                            
-                        </div>
-
-                        <div>
-                            <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">
-                                Session Type *
-                            </label>
-                            <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                                {singleSession.sessionType}
-                            </p>
-                        </div>
-
-                        <div>
-                            <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">
-                                Mode *
-                            </label>
-                            <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                                {singleSession.sessionMode}
-                            </p>
-                        </div>
-
-                        <div>
-                            <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">
-                                Max Bookings *
-                            </label>
-                            <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                                {singleSession.maxBookings} 
-                            </p>
-                        </div>
-
-                        <div>
-                            <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">
-                                Session Status *
-                            </label>
-                            <p className="w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                                {singleSession.sessionStatus}     
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <div className="flex space-x-4 pt-6 border-t border-gray-200">
-                        <button
-                            onClick={() => {
-                                setBookSession(false);
-                            }}
-                            className="flex-1 px-6 py-3 border-2 border-gray-300  dark:bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600  transition"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleBookSubmit(singleSession)}
-                            className="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
-                        >
-                            Submit
-                        </button>
-                    </div>
-                    {
-                        successMessage &&
-                        (
-                            <p className='bg-green-600 py-3  px-5 rounded-lg text-[15px]'>New Session Successfuly created</p>
-                        )
-                    }
-
-                </div>
+                    )
+                }
             </>
         )
     }
+
+    const newSessions = myUpcomingSessions && myUpcomingSessions.filter((session)=>{
+        const theDate = new Date(session.date.split("T")[0]);
+        const today = new Date()
+        if (theDate > today)
+        {
+            return session
+        }
+    })
+
     return (
         <section className='p-8 flex flex-col space-y-[50px] w-full'>
             <div className="space-y-6">
@@ -202,9 +221,9 @@ export default function StudentSessionComponent()
 
                 <div className="grid lg:grid-cols-2 gap-6">
                     {
-                        myUpcomingSessions.length > 0  && (
+                        newSessions.length > 0  && (
 
-                            myUpcomingSessions.map((session) => (
+                            newSessions.map((session) => (
                                 <div key={session._id} className="bg-white rounded-xl shadow-md p-6 dark:hover:shadow-[0px_0px_0px_5px_gray] hover:shadow-xl transition">
                                     <div className="flex items-start justify-between mb-4">
                                         <div>
@@ -256,6 +275,7 @@ export default function StudentSessionComponent()
                         (
                             <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition">
                                 <p>Loading Sessions</p>
+                                <Loader/>
                             </div>
                         )
                     }
