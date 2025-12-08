@@ -1,10 +1,11 @@
 // booking session controller
 
 const BookSession = require("../models/bookSession.model");
-
+const Student = require("../models/student.model");
 // create BookingSession
 module.exports.CreateBookingSession = async (req, res)=>{
     const {id} = req.params;
+    console.log('entering createBook Session Student')
     const studentId = id;
     const {sessionId, psychiatristId,  status}  = req.body;
 
@@ -84,7 +85,13 @@ module.exports.ViewStudentBookedSessions  = async (req,res)=>{
     }
     try
     {
-        const foundStudentBookedSessions = await BookSession.find({studentId:studentId}).populate("psychiatristId", "psychiatristName specilization");
+        // check is student exist first
+        const foundStudentId = await Student.findById({_id:studentId});
+        if (!foundStudentId)
+        {
+            return res.status(404).json({success:false, msg:"Student not found"});
+        }
+        const foundStudentBookedSessions = await BookSession.find({studentId:studentId}).populate([{path: 'psychiatristId', select:"psychiatristName specilization"}, {path: 'sessionId', select: 'sessionType date'}] );
         if (foundStudentBookedSessions.length == 0)
         {
             return res.status(200).json({success:true, msg:"You have no booked sessions"});
