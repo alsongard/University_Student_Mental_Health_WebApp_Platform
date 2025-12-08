@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import StudentSideBar from '../../components/studentSideBar';
-import { Heart, Home, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search, Sidebar } from 'lucide-react';
+import { Heart, Home, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search, Sidebar, Loader } from 'lucide-react';
 import StudentSessionComponent from '../../components/studentSessionComponent';
 import MessagingComponent from '../../components/studentMessageComponent';
 import StudentFeedBack from '../../components/studentFeedbackComponent';
@@ -17,8 +17,12 @@ export default function StudentDashboard()
         try
         {
             const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`);
-            
-       
+            console.log('response');
+            console.log(response);
+            if (response.data.success)
+            {
+                console.log('Student details exist');
+            }
         }
         catch(err)
         {
@@ -39,7 +43,7 @@ export default function StudentDashboard()
         }
     }
 
-    
+
     const email = localStorage.getItem("email");
     
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -54,30 +58,76 @@ export default function StudentDashboard()
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"
     };
     
-    const [myUpcomingSessions, setUpcomingSessions] = useState([]);
+    const [allSessions, setAllSessions] = useState([]);
 
     const getAllSessions = async()=>{
 		try
 		{
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
+			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
+			const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions");
             console.log(response)
             if (response.data.success)
             {
-                setUpcomingSessions(response.data.data);
-                
+                setAllSessions(response.data.data);     
             }
 		}
 		catch(err)
 		{
 			console.log(`Error: ${err}`);
 		}
-	}
+	};
+
+    const [studentBookedSessions, setStudentBookedSessions] = useState([]);
+    const GetStudentBookedSessions = async ()=>{
+        try
+        {
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/bookSession/getStudentBookedSessions/${studentId}`);
+            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/${studentId}`);
+            if (response.data.success)
+            {
+                if (response.data.msg === "You have no booked sessions")
+                {
+                    setStudentBookedSessions([]);
+                    return;
+                }
+                setStudentBookedSessions(response.data.data);
+            }
+        }
+        catch(err)
+        {
+            console.log(`Error: ${err}`)
+        }
+    }
     useEffect(()=>{
         checkStudentDetailsExist();
-        setInterval(()=>{
+        GetStudentBookedSessions();
+        setTimeout(()=>{
             getAllSessions();   
         }, 60000);
-    }, []);
+
+
+        setTimeout(()=>
+            {
+                const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>{
+                    const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
+                    console.log('theDate');
+                    console.log(theDate);
+                    const today = new Date()
+                    if (theDate > today)
+                    {
+                        return studentSession
+                    }
+                    }).map((studentSession)=>{
+                            return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
+                    });
+
+                    console.log("calenderSessions");
+                    console.log(calenderSessions);
+                }, 8000)
+        }, [8000]
+    );
+
+
 
 
   // Sample calendar events
@@ -92,21 +142,59 @@ export default function StudentDashboard()
     // Sample messages : ARRAY
     const messages = [
         {
-        id: 1,
-        from: "Dr. Sarah Mwangi",
-        preview: "Hi John, just checking in to see how you're doing with the...",
-        timestamp: "2 hours ago",
-        unread: true
+            id: 1,
+            from: "Dr. Sarah Mwangi",
+            preview: "Hi John, just checking in to see how you're doing with the...",
+            timestamp: "2 hours ago",
+            unread: true
         },
         {
-        id: 2,
-        from: "MindBridge Support",
-        preview: "Your appointment for October 28th has been confirmed.",
-        timestamp: "1 day ago",
-        unread: false
+            id: 2,
+            from: "MindBridge Support",
+            preview: "Your appointment for October 28th has been confirmed.",
+            timestamp: "1 day ago",
+            unread: false
         }
     ];
 
+    // check sessions
+    const newUpComingSessions = allSessions.filter((sessions)=>{
+        const theDate = new Date(sessions.date.split("T")[0]);
+        const today = new Date()
+        if (theDate > today)
+        {
+            return sessions
+        }
+    })
+
+
+
+
+    const newSessions = allSessions.filter((sessions)=>{
+        const theDate = new Date(sessions.date.split("T")[0]);
+        const today = new Date()
+        if (theDate >= today)
+        {
+            return sessions
+        }
+    })
+
+
+    const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>{
+        const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
+        console.log('theDate');
+        console.log(theDate);
+        const today = new Date()
+        if (theDate > today)
+        {
+            return studentSession
+        }
+        }).map((studentSession)=>{
+                return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
+        });
+
+        console.log("calenderSessions");
+        console.log(calenderSessions);
 
     // RENDERPROFILE
     const renderOverview = 
@@ -115,6 +203,7 @@ export default function StudentDashboard()
             {/* Welcome Section */}
             <div className="bg-linear-to-r from-blue-600 to-blue-700 flex flex-row justify-between items-center rounded-2xl p-8 text-white">
                 <div>
+
                     <h1 className="text-3xl font-bold mb-2">Welcome back, {email?.split("@")[0]}!</h1>
                     <p className="text-blue-100">Here's an overview of your mental health journey</p>
                 </div>
@@ -131,7 +220,8 @@ export default function StudentDashboard()
                     <div className="flex items-center justify-between  ">
                         <div>
                             <p className="text-gray-600 text-sm">Upcoming Sessions</p>
-                            <p className="text-3xl font-bold text-gray-900">{myUpcomingSessions.length > 0 ? myUpcomingSessions.length : 0}</p>
+                            {/* <p className="text-3xl font-bold text-gray-900">{allSessions.length > 0 ? allSessions.length : 0}</p> */}
+                            <p className="text-3xl font-bold text-gray-900">{newUpComingSessions.length}</p>
                         </div>
                         <Calendar className="w-12 h-12 text-blue-600 opacity-20" />
                     </div>
@@ -173,9 +263,11 @@ export default function StudentDashboard()
                 </div>
                 
                 {
-                    myUpcomingSessions.length > 0 ? (
+                    allSessions.length > 0 ? (
                     <div className="space-y-4">
-                        {myUpcomingSessions.map((session) => (
+                        {
+                            newSessions.map((session) => (
+
                             <div key={session._id} className="border-2 border-gray-200 rounded-xl p-4 hover:border-blue-600 transition">
                                 <div className="flex items-start justify-between">
                                 <div className="flex-1">
@@ -196,7 +288,9 @@ export default function StudentDashboard()
                                     </div>
                                     <div className="flex items-center space-x-1">
                                         <Clock className="w-4 h-4" />
-                                        <span>{session.startTime - session.endTime}</span>
+                                        <span>{session.startTime}</span>
+                                        &#x2192;
+                                        <span>{ session.endTime}</span>
                                     </div>
                                     <div className="flex items-center space-x-1">
                                         <Video className="w-4 h-4" />
@@ -231,15 +325,29 @@ export default function StudentDashboard()
                         <div className="bg-white rounded-2xl shadow-md p-6">
                         <h2 className="text-xl font-bold text-gray-900 mb-4">Calendar</h2>
                         <div className="space-y-2">
-                            {calendarEvents.map((event, index) => (
-                            <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-                                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                                <div className="flex-1">
-                                <p className="font-semibold text-gray-900">{event.title}</p>
-                                <p className="text-sm text-gray-600">{event.date}</p>
-                                </div>
-                            </div>
-                            ))}
+                            {
+                                calenderSessions.length > 0 && 
+                                ( 
+                                    calenderSessions.map((event, index) => (
+                                        <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                                            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                                            <div className="flex-1">
+                                            <p className="font-semibold text-gray-900">{event.sessionType}</p>
+                                            <p className="text-sm text-gray-600">{new Date(event.sessionDate).toISOString().split("T")[0]}</p>
+                                            </div>
+                                        </div>
+                                        )
+                                    )
+                                )
+                            }
+                            {
+                                calendarEvents.length < 0 && 
+                                (
+                                    <div>
+                                        <Loader/>
+                                    </div>
+                                )
+                            }
                         </div>
                         </div>
 
