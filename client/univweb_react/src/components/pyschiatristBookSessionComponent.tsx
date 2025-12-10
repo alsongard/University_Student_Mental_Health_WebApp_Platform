@@ -135,7 +135,7 @@ export default function PsychiatristBookedSessions()
 		const matchesSearch = 
 		session.studentId.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
 		session.studentId.studentAdmissionNum.toLowerCase().includes(searchQuery.toLowerCase()) ||
-		session.email.toLowerCase().includes(searchQuery.toLowerCase());
+		session.studentId.email.toLowerCase().includes(searchQuery.toLowerCase());
 		
 		const matchesStatus = filterStatus === 'all' || session.sessionId.sessionStatus === filterStatus;
 		
@@ -169,7 +169,7 @@ export default function PsychiatristBookedSessions()
       	return styles[status] || styles.pending;
     };
 
-    const getStatusIcon = (status) => {
+    const getStatusIcon = (status:String) => {
 		switch(status) 
 		{
 			case 'confirmed':
@@ -215,29 +215,28 @@ export default function PsychiatristBookedSessions()
 						<p className="text-3xl font-bold text-gray-900 dark:text-white">{bookedSessions.length}</p>
 					</div>
 					<div className="bg-white rounded-xl dark:bg-slate-500 shadow-md p-6">
-						<p className="text-gray-600 text-sm mb-1 dark:text-white">Confirmed</p>
+						<p className="text-gray-600 text-sm mb-1 dark:text-white">Confirmed</p> {/* will need to change the backend enum fields for booked sessions to Completed, Scheduled, Completed */}
 						<p className="text-3xl font-bold text-green-600 dark:text-white">
-						{bookedSessions.filter(s => s.status === 'confirmed').length}
+						{bookedSessions.filter(s => s.sessionId.sessionStatus === 'Available').length}
 						</p>
 					</div>
 
 					<div className="bg-white rounded-xl dark:bg-slate-500 shadow-md p-6">
 						<p className="text-gray-600 text-sm mb-1 dark:text-white">Pending</p>
 						<p className="text-3xl font-bold dark:text-white text-yellow-600">
-						{bookedSessions.filter(s => s.status === 'pending').length}
+						{bookedSessions.filter(s => s.sessionId.sessionStatus === 'pending').length}
 						</p>
 					</div>
 					<div className="bg-white rounded-xl dark:bg-slate-500 shadow-md p-6">
 						<p className="text-gray-600 text-sm mb-1 dark:text-white">Completed</p>
 						<p className="text-3xl font-bold dark:text-white text-blue-600">
-						{bookedSessions.filter(s => s.status === 'completed').length}
+						{bookedSessions.filter(s => s.sessionId.sessionStatus === 'completed').length}
 						</p>
 					</div>
 				</div>
 
 				{/* Filters and Search */}
 				<div className="bg-white dark:bg-slate-500 rounded-xl shadow-md p-6 mb-6">
-					<h1 className='text-red-500'>This Feature Will Not Be Implemented</h1>
 					<div className="grid md:grid-cols-3 gap-4">
 						<div className="relative">
 							<Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -378,157 +377,157 @@ export default function PsychiatristBookedSessions()
 				</div>
 			</div>
 
-		{/* Session Details Modal */}
-		{
-			showSessionDetails && selectedSession && (
-				<div className="fixed inset-0 bg-linear-to-tr from-slate-400 to-slate-800 bg-opacity-50 flex items-center justify-center p-4 z-50">
-					<div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-						{/* Modal Header */}
-						<div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between">
-								<h2 className="text-2xl font-bold">Session Details</h2>
-							<button
-								onClick={() => setShowSessionDetails(false)}
-								className="p-2 hover:bg-blue-500 rounded-full transition"
-							>
-								<X className="w-6 h-6" />
-							</button>
-						</div>
+			{/* Session Details Modal */}
+			{
+				showSessionDetails && selectedSession && (
+					<div className="fixed inset-0 bg-linear-to-tr from-slate-400 to-slate-800 bg-opacity-50 flex items-center justify-center p-4 z-50">
+						<div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+							{/* Modal Header */}
+							<div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between">
+									<h2 className="text-2xl font-bold">Session Details</h2>
+								<button
+									onClick={() => setShowSessionDetails(false)}
+									className="p-2 hover:bg-blue-500 rounded-full transition"
+								>
+									<X className="w-6 h-6" />
+								</button>
+							</div>
 
-						<div className="p-8">
-						{/* Student Information */}
-						<div className="mb-6">
-							<h3 className="text-lg font-bold text-gray-900 mb-4">Student Information</h3>
-							<div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
-							<img
-								src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop"
-								alt={selectedSession.studentId.studentAdmissionNum}
-								className="w-16 h-16 rounded-full object-cover"
-							/>
-							<div>
-								<p className="text-lg font-bold text-gray-900">'SET NAME'</p>
-								<p className="text-gray-600">Admission: {selectedSession.studentId.studentAdmissionNum}</p>
-								<p className="text-gray-600">Age: {selectedSession.studentAge} years</p>
-							</div>
-							</div>
-						</div>
-
-						{/* Contact Information */}
-						<div className="mb-6 p-4 bg-gray-50 rounded-lg">
-							<h3 className="font-bold text-gray-900 mb-3">Contact Information</h3>
-							<div className="space-y-2">
-							<div className="flex items-center space-x-3">
-								<Phone className="w-5 h-5 text-blue-600" />
-								<div>
-								<p className="text-xs text-gray-600">Phone</p>
-								<p className="font-semibold text-gray-900">'SET CONTACT'</p>
-								</div>
-							</div>
-							<div className="flex items-center space-x-3">
-								<MessageSquare className="w-5 h-5 text-blue-600" />
-								<div>
-								<p className="text-xs text-gray-600">Email</p>
-								<p className="font-semibold text-gray-900 truncate">{selectedSession.studentId.email}</p>
-								</div>
-							</div>
-							</div>
-						</div>
-
-						{/* Session Details */}
-						<div className="mb-6">
-							<h3 className="font-bold text-gray-900 mb-3">Session Information</h3>
-							<div className="grid md:grid-cols-2 gap-4">
-							<div className="p-4 bg-gray-50 rounded-lg">
-								<p className="text-xs text-gray-600 mb-1">Date</p>
-								<p className="font-semibold text-gray-900 flex items-center space-x-2">
-								<Calendar className="w-4 h-4 text-blue-600" />
-								<span>{new Date(selectedSession.sessionId.date).toISOString().split('T')[0]}</span>
-								</p>
-							</div>
-							<div className="p-4 bg-gray-50 rounded-lg">
-								<p className="text-xs text-gray-600 mb-1">Time</p>
-								<p className="font-semibold text-gray-900 flex items-center space-x-2">
-								<Clock className="w-4 h-4 text-blue-600" />
-								<span>{selectedSession.sessionId.startTime}</span>
-								</p>
-							</div>
-							<div className="p-4 bg-gray-50 rounded-lg">
-								<p className="text-xs text-gray-600 mb-1">Type</p>
-								<p className="font-semibold text-gray-900">{selectedSession.sessionId.sessionType}</p>
-							</div>
-							<div className="p-4 bg-gray-50 rounded-lg">
-								<p className="text-xs text-gray-600 mb-1">Duration</p>
-								<p className="font-semibold text-gray-900">{selectedSession.sessionId.sessionDuration} minutes</p>
-							</div>
-							<div className="p-4 bg-gray-50 rounded-lg">
-								<p className="text-xs text-gray-600 mb-1">Mode</p>
-								<p className="font-semibold text-gray-900 flex items-center space-x-2">
-								{selectedSession.sessionId.sessionMode === 'Virtual' && <Video className="w-4 h-4" />}
-								{selectedSession.sessionId.sessionMode === 'In-Person' && <MapPin className="w-4 h-4" />}
-								{selectedSession.sessionId.sessionMode === 'Phone' && <Phone className="w-4 h-4" />}
-								<span>{selectedSession.sessionId.sessionMode}</span>
-								</p>
-							</div>
-							<div className="p-4 bg-gray-50 rounded-lg">
-								<p className="text-xs text-gray-600 mb-1">Status</p>
-								<div className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(selectedSession.sessionId.sessionStatus)}`}>
-								{getStatusIcon(selectedSession.sessionId.sessionStatus)}
-								<span className="capitalize">{selectedSession.sessionId.sessionStatus}</span>
-								</div>
-							</div>
-							</div>
-							{selectedSession.location && (
-							<div className="mt-4 p-4 bg-gray-50 rounded-lg">
-								<p className="text-xs text-gray-600 mb-1">Location</p>
-								<p className="font-semibold text-gray-900 flex items-center space-x-2">
-								<MapPin className="w-4 h-4 text-blue-600" />
-								<span>{selectedSession.location}</span>
-								</p>
-							</div>
-							)}
-						</div>
-
-						{/* Session Reason */}
-						<div className="mb-6">
-							<h3 className="font-bold text-gray-900 mb-3">Session Reason</h3>
-							<div className="p-4 bg-gray-50 rounded-lg">
-							<p className="text-gray-700">{selectedSession.reason} This part is not configured on Backend</p>
-							</div>
-						</div>
-
-						{/* Notes */}
-						{selectedSession.notes && (
+							<div className="p-8">
+							{/* Student Information */}
 							<div className="mb-6">
-							<h3 className="font-bold text-gray-900 mb-3">
-								<FileText className="w-5 h-5 inline mr-2" />
-								Notes
-							</h3>
-							<div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-								<p className="text-gray-700">{selectedSession.notes}</p>
+								<h3 className="text-lg font-bold text-gray-900 mb-4">Student Information</h3>
+								<div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
+								<img
+									src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop"
+									alt={selectedSession.studentId.studentAdmissionNum}
+									className="w-16 h-16 rounded-full object-cover"
+								/>
+								<div>
+									<p className="text-lg font-bold text-gray-900">'SET NAME'</p>
+									<p className="text-gray-600">Admission: {selectedSession.studentId.studentAdmissionNum}</p>
+									<p className="text-gray-600">Age: {selectedSession.studentAge} years</p>
+								</div>
+								</div>
 							</div>
-							</div>
-						)}
 
-						{/* Action Buttons */}
-						<div className="flex space-x-4 pt-6 border-t border-gray-200">
-							<button className="flex-1 px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
-							Send Message
-							</button>
-							{selectedSession.status === 'confirmed' && isSessionUpcoming(selectedSession.date) && (
-							<button className="flex-1 px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
-								Start Session
-							</button>
+							{/* Contact Information */}
+							<div className="mb-6 p-4 bg-gray-50 rounded-lg">
+								<h3 className="font-bold text-gray-900 mb-3">Contact Information</h3>
+								<div className="space-y-2">
+								<div className="flex items-center space-x-3">
+									<Phone className="w-5 h-5 text-blue-600" />
+									<div>
+									<p className="text-xs text-gray-600">Phone</p>
+									<p className="font-semibold text-gray-900">'SET CONTACT'</p>
+									</div>
+								</div>
+								<div className="flex items-center space-x-3">
+									<MessageSquare className="w-5 h-5 text-blue-600" />
+									<div>
+									<p className="text-xs text-gray-600">Email</p>
+									<p className="font-semibold text-gray-900 truncate">{selectedSession.studentId.email}</p>
+									</div>
+								</div>
+								</div>
+							</div>
+
+							{/* Session Details */}
+							<div className="mb-6">
+								<h3 className="font-bold text-gray-900 mb-3">Session Information</h3>
+								<div className="grid md:grid-cols-2 gap-4">
+								<div className="p-4 bg-gray-50 rounded-lg">
+									<p className="text-xs text-gray-600 mb-1">Date</p>
+									<p className="font-semibold text-gray-900 flex items-center space-x-2">
+									<Calendar className="w-4 h-4 text-blue-600" />
+									<span>{new Date(selectedSession.sessionId.date).toISOString().split('T')[0]}</span>
+									</p>
+								</div>
+								<div className="p-4 bg-gray-50 rounded-lg">
+									<p className="text-xs text-gray-600 mb-1">Time</p>
+									<p className="font-semibold text-gray-900 flex items-center space-x-2">
+									<Clock className="w-4 h-4 text-blue-600" />
+									<span>{selectedSession.sessionId.startTime}</span>
+									</p>
+								</div>
+								<div className="p-4 bg-gray-50 rounded-lg">
+									<p className="text-xs text-gray-600 mb-1">Type</p>
+									<p className="font-semibold text-gray-900">{selectedSession.sessionId.sessionType}</p>
+								</div>
+								<div className="p-4 bg-gray-50 rounded-lg">
+									<p className="text-xs text-gray-600 mb-1">Duration</p>
+									<p className="font-semibold text-gray-900">{selectedSession.sessionId.sessionDuration} minutes</p>
+								</div>
+								<div className="p-4 bg-gray-50 rounded-lg">
+									<p className="text-xs text-gray-600 mb-1">Mode</p>
+									<p className="font-semibold text-gray-900 flex items-center space-x-2">
+									{selectedSession.sessionId.sessionMode === 'Virtual' && <Video className="w-4 h-4" />}
+									{selectedSession.sessionId.sessionMode === 'In-Person' && <MapPin className="w-4 h-4" />}
+									{selectedSession.sessionId.sessionMode === 'Phone' && <Phone className="w-4 h-4" />}
+									<span>{selectedSession.sessionId.sessionMode}</span>
+									</p>
+								</div>
+								<div className="p-4 bg-gray-50 rounded-lg">
+									<p className="text-xs text-gray-600 mb-1">Status</p>
+									<div className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(selectedSession.sessionId.sessionStatus)}`}>
+									{getStatusIcon(selectedSession.sessionId.sessionStatus)}
+									<span className="capitalize">{selectedSession.sessionId.sessionStatus}</span>
+									</div>
+								</div>
+								</div>
+								{selectedSession.location && (
+								<div className="mt-4 p-4 bg-gray-50 rounded-lg">
+									<p className="text-xs text-gray-600 mb-1">Location</p>
+									<p className="font-semibold text-gray-900 flex items-center space-x-2">
+									<MapPin className="w-4 h-4 text-blue-600" />
+									<span>{selectedSession.location}</span>
+									</p>
+								</div>
+								)}
+							</div>
+
+							{/* Session Reason */}
+							<div className="mb-6">
+								<h3 className="font-bold text-gray-900 mb-3">Session Reason</h3>
+								<div className="p-4 bg-gray-50 rounded-lg">
+								<p className="text-gray-700">{selectedSession.reason} This part is not configured on Backend</p>
+								</div>
+							</div>
+
+							{/* Notes */}
+							{selectedSession.notes && (
+								<div className="mb-6">
+								<h3 className="font-bold text-gray-900 mb-3">
+									<FileText className="w-5 h-5 inline mr-2" />
+									Notes
+								</h3>
+								<div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+									<p className="text-gray-700">{selectedSession.notes}</p>
+								</div>
+								</div>
 							)}
-							<button
-							onClick={() => setShowSessionDetails(false)}
-							className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition"
-							>
-							Close
-							</button>
+
+							{/* Action Buttons */}
+							<div className="flex space-x-4 pt-6 border-t border-gray-200">
+								<button className="flex-1 px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+								Send Message
+								</button>
+								{selectedSession.status === 'confirmed' && isSessionUpcoming(selectedSession.date) && (
+								<button className="flex-1 px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+									Start Session
+								</button>
+								)}
+								<button
+								onClick={() => setShowSessionDetails(false)}
+								className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition"
+								>
+								Close
+								</button>
+							</div>
+							</div>
 						</div>
-						</div>
-					</div>
-				</div>	
-		)}
+					</div>	
+			)}
 		</div>
   );
 }

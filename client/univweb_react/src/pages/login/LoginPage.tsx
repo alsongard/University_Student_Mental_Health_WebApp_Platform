@@ -232,20 +232,28 @@ function AuthForms(props:any)
         e.preventDefault();
         try
         {
-            const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin", {
-                
-            })
+            const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
+                {
+                    email : psychiatristLoginData.email,
+                    password: psychiatristLoginData.password
+                }
+            );
             if (response.data.success)
             {
-                navigate("/")
+                const psychId = response.data.data.id;
+                const authToken = response.data.data.token;
+                localStorage.setItem("psychId", psychId);
+                localStorage.setItem('authToken', authToken);
+                props.onLoggedIn();
+                navigate("/psychiatristdashboard");
             }
         }
         catch(err)
         {
             console.log(`Error: ${err}`);
         }
-        console.log('Psychiatrist Login Data:', psychiatristLoginData);
-        alert('Psychiatrist Login Submitted!\nCheck console for data.');
+        // console.log('Psychiatrist Login Data:', psychiatristLoginData);
+        // alert('Psychiatrist Login Submitted!\nCheck console for data.');
     };
 
     return (

@@ -45,7 +45,7 @@ export default function PsychiatristDashboard()
 		myTodaySessions = myBookedSessions.length > 0 &&  myBookedSessions.filter((sessionBooked)=>{
 			const today = new Date();
 			const sessionDate = new Date(sessionBooked.sessionId.date)
-			if (sessionDate >= today)
+			if (sessionDate == today)
 			{
 				return sessionBooked
 			}
