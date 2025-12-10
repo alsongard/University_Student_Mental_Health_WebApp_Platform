@@ -16,7 +16,10 @@ export default  function StudentProfile()
         phoneNumber: "", 
         course: "", 
         yearOfStudy: "",
-        address: ""
+        address: "",
+        emergencyContactName: "",
+        emergencyContactPhoneNumber: "",
+        emergencyContactRelation: ""
     });
 
     const studentId = localStorage.getItem("studentId");
@@ -43,7 +46,10 @@ export default  function StudentProfile()
                     phoneNumber: retrievedData.phoneNumber,
                     course: retrievedData.course,
                     yearOfStudy: retrievedData.yearOfStudy,
-                    address: retrievedData.address
+                    address: retrievedData.address,
+                    emergencyContactName: retrievedData.emergencyContact.name,
+                    emergencyContactPhoneNumber: retrievedData.emergencyContact.phoneNumber,
+                    emergencyContactRelation: retrievedData.emergencyContact.relationship
                 });
             }
         }
@@ -142,61 +148,205 @@ export default  function StudentProfile()
                                     </div>
                                 </div>
 
-                                <button onClick={()=>{setIsEditDetails((prevData)=>!prevData)}} className={`mt-2 px-4  py-2 ${isEditDetails === true && 'bg-red-600 hover:bg-red-700'} ${isEditDetails === false && 'bg-blue-600 hover:bg-blue-700'} text-white rounded-lg  transition font-semibold text-sm`}>
-                                    {isEditDetails == false && "Edit Details"}
-                                    {isEditDetails == true && "Exit Editing"}
-                                </button>
+                                <div className='space-x-2'>
+                                    {
+                                        isEditDetails &&
+                                        <button className="mt-2 px-4  py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition ">
+                                            Save Changes
+                                        </button>
+                                    }
+                                    <button onClick={()=>{setIsEditDetails((prevData)=>!prevData)}} className={`mt-2 px-4  py-2 ${isEditDetails === true && 'bg-red-600 hover:bg-red-700'} ${isEditDetails === false && 'bg-blue-600 hover:bg-blue-700'} text-white rounded-lg  transition font-semibold text-sm`}>
+                                        {isEditDetails == false && "Edit Details"}
+                                        {isEditDetails == true && "Exit Editing"}
+                                    </button>
+
+                                </div>
                             </div>
 
+
+                            <div className="space-y-4 ">
+                                {/* FULL NAME */}
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                                    {
+                                        isEditDetails && (
+                                            <input
+                                                name="name"
+                                                type="text"
+                                                value={studentDetails.name}
+                                                className="w-full px-4 dark:text-white py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                                onChange={handleChange}
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isEditDetails &&
+                                        <p className='w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.name}</p>
+                                    }
+                                </div>
+
+                                {/* EMAIL */}
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Email</label>
+                                    {
+                                        isEditDetails &&
+                                        (
+                                            <input
+                                                name="email"
+                                                type="email"
+                                                value={studentDetails.email}
+                                                className="w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isEditDetails &&
+                                        <p className='w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.email}</p>
+                                    }
+                                </div>
+
+
+                                {/* ADMISION NUMBER */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2 dark:text-white">Admission Number</label>           
+                                    <p className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed">{studentDetails.admissionNumber}</p>
+                                </div>  
+
+                                {/* PHONE NUMBER */}
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                                    {
+                                        isEditDetails &&
+                                        (
+                                            <input
+                                                name="phoneNumber"
+                                                type="text"
+                                                value={studentDetails.phoneNumber}
+                                                className="w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isEditDetails &&
+                                        <p className='w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.phoneNumber}</p>
+                                    }
+                                </div>
+
+                                {/* COURSE */}
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Course</label>
+                                    {
+                                        isEditDetails &&
+                                        (
+                                            <input
+                                                name="course"
+                                                type="text"
+                                                value={studentDetails.course}
+                                                className="w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isEditDetails &&
+                                        <p className='w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.course}</p>
+                                    }
+                                </div>
+
+                                {/* ADDRESS */}
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Address</label>
+                                    {
+                                        isEditDetails &&
+                                        (
+                                            <input
+                                                name="address"
+                                                type="text"
+                                                value={studentDetails.address}
+                                                className="w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isEditDetails &&
+                                        <p className='w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.course}</p>
+                                    }
+                                </div>
+                                {/* <div className="pt-4">
+
+                                </div> */}
+                            </div>
+
+                            {/* <div className="space-y-4 ">
+                                <h2></h2>
+                            </div> */}
+                        </div>
+
+
+                        <div className="bg-white dark:bg-slate-600 rounded-2xl shadow-md p-8">
+                            <h2 className="text-2xl font-bold dark:text-white text-gray-900 mb-4">Ermegency Contact Details</h2>
+                            <p className="dark:text-white text-gray-600 mb-6">Manage and view Emergency Contact Details.</p>
+                            
                             <div className="space-y-4">
-                            <div>
-                                <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Full Name</label>
-                                {
-                                    isEditDetails && (
-                                        <input
-                                            name="name"
-                                            type="text"
-                                            value={studentDetails.name}
-                                            className="w-full px-4 dark:text-white py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                            onChange={handleChange}
-                                        />
-                                    )
-                                }
-                                {
-                                    !isEditDetails &&
-                                    <p className='w-full px-4 py-3 dark:text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.name}</p>
-                                }
-                            </div>
+                                {/* EMERGENCYCONTACT NAME */}
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Contact Name</label>
+                                    {
+                                        isEditDetails &&
+                                        (
+                                            <input
+                                                name="emergencyContactName"
+                                                type="text"
+                                                value={studentDetails.emergencyContactName}
+                                                className="w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isEditDetails &&
+                                        <p className='w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.emergencyContactName}</p>
+                                    }
+                                </div>
 
-                            <div>
-                                <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Email</label>
-                                {
-                                    isEditDetails &&
-                                    (
-                                        <input
-                                            name="email"
-                                            type="email"
-                                            value={studentDetails.email}
-                                            className="w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                        />
-                                    )
-                                }
-                                {
-                                    !isEditDetails &&
-                                    <p className='w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.email}</p>
-                                }
-                            </div>
+                                {/* EMERGENCYCONTACT PHONENUMBER */}
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Contact PhoneNumber</label>
+                                    {
+                                        isEditDetails &&
+                                        (
+                                            <input
+                                                name="emergencyContactPhoneNumber"
+                                                type="text"
+                                                value={studentDetails.emergencyContactPhoneNumber}
+                                                className="w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isEditDetails &&
+                                        <p className='w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.emergencyContactPhoneNumber}</p>
+                                    }
+                                </div>
 
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2 dark:text-white">Admission Number</label>           
-                                <p className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed">{studentDetails.admissionNumber}</p>
-                            </div>
+                                {/* EMERGENCYCONTACT RELATION */}
+                                <div>
+                                    <label className="block dark:text-white text-sm font-semibold text-gray-700 mb-2">Contact PhoneNumber</label>
+                                    {
+                                        isEditDetails &&
+                                        (
+                                            <input
+                                                name="emergencyContactRelation"
+                                                type="text"
+                                                value={studentDetails.emergencyContactRelation}
+                                                className="w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isEditDetails &&
+                                        <p className='w-full dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent'>{studentDetails.emergencyContactRelation}</p>
+                                    }
+                                </div>
 
-                            <div className="pt-4">
-                                <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
-                                Save Changes
-                                </button>
-                            </div>
                             </div>
                         </div>
 

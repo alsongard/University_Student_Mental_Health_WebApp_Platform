@@ -74,7 +74,7 @@ export default function StudentDetailsRegistration()
 		{
 			if (validate()) 
 			{	
-				const token = localStorage.getItem("authToken");
+				const token = localStorage.getItem("token");
 
 				const response = await axios.post("http://localhost:5000/api/studentDetails/createDetails/", {
 					studentName: formData.studentName,
