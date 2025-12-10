@@ -154,9 +154,18 @@ export default function PsychiatristSessionsManagement()
 		setSelectedSession(null);
 	};
 
-	const filteredSessions = sessions.length > 0 &&
+	const todaySessions = sessions.filter((sessionInfo)=>{
+		const today = new Date();
+		const theDate = new Date(sessionInfo.date);
+		if (theDate >= today)
+		{
+			return sessionInfo;
+		}
+	})
+
+	const filteredSessions = todaySessions.length > 0 &&
 	(
-		sessions.filter(session => {
+		todaySessions.filter(session => {
 			const matchesSearch = 
 			session.sessionType.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			session.date.includes(searchQuery) ||
@@ -489,7 +498,7 @@ export default function PsychiatristSessionsManagement()
 					<div className="bg-white rounded-xl shadow-md p-6">
 						<p className="text-gray-600 text-sm mb-1">Available</p>
 						<p className="text-3xl font-bold text-green-600">
-							{sessions.filter(s => s.sessionStatus === 'Available').length}
+							{todaySessions ? todaySessions.length : 0}
 						</p>
 					</div>
 					<div className="bg-white rounded-xl shadow-md p-6">
