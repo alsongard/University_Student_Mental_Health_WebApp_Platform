@@ -231,7 +231,7 @@ export default function StudentDashboard()
                     <div className="flex items-center justify-between">
                         <div>
                         <p className="text-gray-600 text-sm">Completed Sessions</p>
-                        <p className="text-3xl font-bold text-gray-900">8</p>
+                        <p className="text-3xl font-bold text-gray-900">{studentBookedSessions.length}</p>
                         </div>
                         <CheckCircle className="w-12 h-12 text-green-600 opacity-20" />
                     </div>

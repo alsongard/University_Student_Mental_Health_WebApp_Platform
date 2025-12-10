@@ -16,6 +16,7 @@ import PsychiatristDashboard from "./pages/psychiatristdashboard/psychiatristPag
 import axios from "axios";
 import ErrorpPage from "./pages/error/page";
 import StudentDetailsRegistration from "./pages/studentdetails/studentDetails";
+import MyUploadFile from "./pages/trial/trialFile";
 export default function App()
 {
 	
@@ -75,6 +76,7 @@ export default function App()
 						<Route path="/studentdashboard" element={<ProtectedStudentDashboard/>}/>
 						<Route path="/psychiatristdashboard" element={<PsychiatristDashboard/>}/>
 						<Route path="/studentdetails" element={<StudentDetailsRegistration/>}/>
+						<Route path='/trial' element={<MyUploadFile/>}/>
 						<Route path="*" element={<ErrorpPage/>}/>
 					</Route>
 				</Routes>
