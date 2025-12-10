@@ -16,15 +16,16 @@ export default function PsychiatristDashboard()
 	const [userDetails, setUserDetials] = useState(null);
 	// Sample psychiatrist data
 
-	const {todaySessions, setTodaySessions} = useState([]);
+	const [myBookedSessions, setmyBookedSessions] = useState([]);
 	// get Booked Sessions For Given Psychiatrist :: /id
-	const GetMyPschBookedSessios = async ()=>{
+	const GetMyPschBookedSessions = async ()=>{
 		try
 		{
 			const response = await axios.get("http://localhost:5000/api/bookSession/psychiatristViewBooked/692bbcb9946ace680fc7e177");
 			if (response.data.success)
 			{
-				setTodaySessions(response.data.data);
+				setmyBookedSessions(response.data.data);
+				// console.log(response.data.data);
 			}
 		}
 		catch(err)
@@ -32,9 +33,27 @@ export default function PsychiatristDashboard()
 			console.log(`Error: ${err}`);
 		}
 	};
+
 	useEffect(()=>{
-		GetMyPschBookedSessios();
+		GetMyPschBookedSessions();
 	}, [])
+
+	let myTodaySessions = [];
+	if (myBookedSessions)
+	{
+
+		myTodaySessions = myBookedSessions.length > 0 &&  myBookedSessions.filter((sessionBooked)=>{
+			const today = new Date();
+			const sessionDate = new Date(sessionBooked.sessionId.date)
+			if (sessionDate >= today)
+			{
+				return sessionBooked
+			}
+		});
+		console.log('myTodaySessions');
+		console.log(myTodaySessions);
+	}
+
 
 	// const userDetails = local
 	const renderOverView = ()=>{
@@ -50,7 +69,7 @@ export default function PsychiatristDashboard()
 						<div className="flex items-center justify-between">
 							<div>
 								<p className="text-gray-600 text-sm dark:text-white">Today's Sessions</p>
-								<p className="text-3xl font-bold text-gray-900 dark:text-white">5</p>
+								<p className="text-3xl font-bold text-gray-900 dark:text-white">{myTodaySessions.length > 0 ? myTodaySessions.length : 0 } </p>
 							</div>
 							<Calendar className="w-12 h-12 dark:text-white text-blue-600 opacity-20" />
 						</div>
@@ -60,7 +79,7 @@ export default function PsychiatristDashboard()
 						<div className="flex items-center justify-between">
 							<div>
 								<p className="text-gray-600 dark:text-white text-sm">Total Patients</p>
-								<p className="text-3xl dark:text-white font-bold text-gray-900">47</p>
+								<p className="text-3xl dark:text-white font-bold text-gray-900">{myTodaySessions.length > 0 ? myTodaySessions.length : 0 }</p>
 							</div>
 							<User className="w-12 h-12 dark:text-white text-green-600 opacity-20" />
 						</div>
@@ -79,21 +98,22 @@ export default function PsychiatristDashboard()
 				<div className="bg-white  dark:bg-slate-500 rounded-2xl shadow-md p-6">
 					<h2 className="text-2xl font-bold  text-gray-900 dark:text-white mb-6">Today's Schedule</h2>
 					<div className="space-y-4">
-						{[1, 2, 3].map((session) => (
-						<div key={session} className="border-2 border-gray-200  rounded-xl p-4 hover:border-blue-600 dark:hover:border-black transition">
+
+						{myTodaySessions.map((session) => (
+						<div key={session._id} className="border-2 border-gray-200  rounded-xl p-4 hover:border-blue-600 dark:hover:border-black transition">
 							<div className="flex items-center justify-between">
 								<div className="flex items-center space-x-4">
 									<div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
 										<User className="w-6 h-6 text-blue-600" />
 									</div>
 									<div>
-										<h3 className="font-bold dark:text-white text-gray-900">John Kamau</h3>
-										<p className="text-sm dark:text-white text-gray-600">Individual Therapy</p>
+										<h3 className="font-bold dark:text-white text-gray-900">{session.studentId.email}</h3>
+										<p className="text-sm dark:text-white text-gray-600">{session.sessionId.sessionType}</p>
 									</div>
 								</div>
 								<div className="text-right">
 									<p className="font-semibold dark:text-white text-gray-900">10:00 AM</p>
-									<p className="text-sm dark:text-white text-gray-600">In-Person</p>
+									<p className="text-sm dark:text-white text-gray-600">{session.sessionId.sessionMode}</p>
 								</div>
 							</div>
 						</div>
