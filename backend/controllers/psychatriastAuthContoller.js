@@ -113,32 +113,39 @@ const getOTPUser = async (req,res)=>{
 }  
 
 const medicLogin = async (req, res)=>{
-    const {psychiatristId, password } = req.body;
+    const {email, password } = req.body;
+    // console.log(`Login attempt for pschiatrist: `);
+    // console.log(email);
+    // console.log(password);
 
-    if(!psychiatristId || !password)
+    if(!email || !password)
     {
         return res.status(400).json({success:false, msg:"Invalid input"});
     }
 
-    const foundPsychiatrist = await Psychatriast.findOne({psychiatristId: psychiatristId});
+    const foundPsychiatrist = await Psychatriast.findOne({psychatriastEmail: email});
+    // console.log('foundPsychiatrist');
+    // console.log(foundPsychiatrist);
 
     if (!foundPsychiatrist)
     {
-        return res.status(404).json({success:false, msg:`No psychiatrist with the id: ${psychiatristId}`})
+        return res.status(404).json({success:false, msg:`No psychiatrist with the id: ${email}`})
     }
-    const decodePass = await bcrypt.compare(password, foundPsychiatrist.password)
 
-    if (foundPsychiatrist.password === decodePass && foundPsychiatrist.isAccountVerified === true)
+
+    const decodePass = await bcrypt.compare(password, foundPsychiatrist.psychiatristPassword);
+    // console.log('decodePass');
+    // console.log(decodePass);
+    if (decodePass == true && foundPsychiatrist.isAccountVerified === true) // both are true
     {
-
-        const token = jwt.sign({userId: foundPsychiatrist._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
-        res.cookie("theToken", token, {
-            httpOnly:true,
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: "strict", 
-            maxAge: 120 * 60 *1000 //15 minutes
-        });
-        return res.status(200).json({success:true, msg:"Login Success"})
+        const authToken = jwt.sign({userId: foundPsychiatrist._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
+        // res.cookie("authToken", authToken, {
+        //     httpOnly:true,
+        //     secure: process.env.NODE_ENV === 'production', 
+        //     sameSite: "strict", 
+        //     maxAge: 120 * 60 *1000 //15 minutes
+        // });
+        return res.status(200).json({success:true,  data: {id: foundPsychiatrist._id, token: authToken} ,  msg:"Login Success"})
     }
 
     if (foundPsychiatrist.password != decodePass)
