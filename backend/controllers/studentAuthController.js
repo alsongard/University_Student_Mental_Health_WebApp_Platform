@@ -17,15 +17,16 @@ const registerStudent = async (req, res)=>{
 
     try
     {
-        const hashPassword = await bcrypt.hash(password, genSalt);
+
         // check if student already exists
         const already_exist = await Student.findOne({email: email, studentAdmissionNum: studentAdmissionNum});
-
+        
         if (already_exist)
         {
             return res.status(409).json({success:false, msg:"Student already exists"});
         }
-
+        const hashPassword = await bcrypt.hash(password, genSalt);
+            
         const new_student = await Student.create({studentAdmissionNum:studentAdmissionNum, email:email, password:hashPassword})
 
         if (!new_student)
