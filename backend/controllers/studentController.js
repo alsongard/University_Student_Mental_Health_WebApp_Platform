@@ -1,5 +1,8 @@
 const StudentDetails = require('../models/studentDetails.model');
 const jwt = require("jsonwebtoken");
+const  { createUploadthing } = require("uploadthing/express");
+
+
 const createStudentDetails = async (req, res) => {
  ;
     
@@ -81,4 +84,32 @@ const getStudentDetails = async (req, res)=>{
     }
 }
 
-module.exports = { createStudentDetails, getStudentDetails };
+
+
+const f = createUploadthing();
+
+const uploadRouter = {
+  // Define as many FileRoutes as you like, each with a unique routeSlug
+    myFileRouter: f({
+        image: {
+        /**
+         * For full list of options and defaults, see the File Route API reference
+         * @see https://docs.uploadthing.com/file-routes#route-config
+         */
+        maxFileSize: "4MB",
+        maxFileCount: 1,
+        },
+    })
+    .middleware(async({input})=>{
+        const studentId = input.studentId;
+        console.log(`studentId: ${studentId}`);
+        return {studentId}
+    })
+    .onUploadComplete(async ({ metadata, file}) => {
+        console.log("Full file data:", file);
+        console.log(`studentId: ${metadata.studentId}`)
+    }),
+} ;
+
+
+module.exports = { createStudentDetails, getStudentDetails, uploadRouter };

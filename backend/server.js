@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const {Server} = require("socket.io");
 const {createServer} = require("node:http");
 const swaggerDocument = require("./swagger.json");
-
+const {uploadRouter} = require("./controllers/studentController")
 // const {registerStudent} = require("./controllers/studentAuthController")
 // create app:express instance
 const app = express();
@@ -70,6 +70,18 @@ app.get("/api/trial", (req,res)=>{
     console.log("starting on api/trial")
     res.status(200).json({success:true, msg:"Trial working"})
 })
+
+const { createRouteHandler } =  require("uploadthing/express");
+
+
+
+app.use(
+  "/api/uploadthing",
+  createRouteHandler({
+    router: uploadRouter,
+    config: { token: process.env.UPLOADTHING_TOKEN , dev: process.env.UPLOADTHING_IS_DEV, callbackUrl: "http://localhost:5000/api/uploadthing"},
+  }),
+);
 // app.post("/api/trial/studentCreate",  registerStudent );
 app.use("/api/student", authStudentRouter);
 app.use("/api/psychatriast", authPsychatriastRouter);
