@@ -4,13 +4,14 @@ import axios from 'axios';
 
 export default function PsychiatristSessionsManagement() 
 {
+	const psychId = localStorage.getItem('psychId');
 	const [view, setView] = useState('list'); // 'list', 'create', 'edit', 'view'
 	const [sessions, setSessions] = useState([]);
   
 	const getPsychiatristSessions = async ()=>{
 		try
 		{
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/viewSession/692bbcb9946ace680fc7e177")
+			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/viewSession/${psychId}`)
 			if (response.data.success)
 			{
 				setSessions(response.data.data);
@@ -64,7 +65,7 @@ export default function PsychiatristSessionsManagement()
 		try
 		{
 			const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/createSession", {
-				psychiatristId:"692bbcb9946ace680fc7e177",
+				psychiatristId: psychId,
 				date:formData.date,
 				startTime: formData.startTime,
 				endTime:formData.endTime,

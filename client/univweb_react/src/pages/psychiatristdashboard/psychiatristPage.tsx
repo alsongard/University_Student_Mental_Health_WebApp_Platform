@@ -11,6 +11,7 @@ import axios from 'axios';
 
 export default function PsychiatristDashboard()
 {
+	const psychId = localStorage.getItem('psychId');
 	const [refreshFlag, setRefreshFlag] = useState(false);
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 	const [activeView, setActiveView] = useState('overview');
@@ -22,7 +23,9 @@ export default function PsychiatristDashboard()
 	const GetMyPschBookedSessions = async ()=>{
 		try
 		{
-			const response = await axios.get("http://localhost:5000/api/bookSession/psychiatristViewBooked/692bbcb9946ace680fc7e177");
+			// https://university-student-psychiatrist.onrender.com/
+			// const response = await axios.get(`http://localhost:5000/api/bookSession/psychiatristViewBooked/${psychId}`);
+			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked/${psychId}`);
 			if (response.data.success)
 			{
 				setmyBookedSessions(response.data.data);
