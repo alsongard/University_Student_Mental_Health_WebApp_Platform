@@ -178,6 +178,45 @@ const getPsychiatristInfo = async (req,res)=>{
 }
 
 
+// update password
+const updatePsychiatPassword = async (req, res)=>{
+    const {currentPassword, newPassword, token} = req.body;
+    if (!currentPassword || !newPassword || !token)
+    {
+        return res.status(400).json({success:false, msg:"All fields are required"});
+    }
+    try
+    {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (!decoded)
+        {
+            return res.status(401).json({success:false, message:"Invalid token"});
+        }
+        const id = decoded.userId;
+        const foundPsychiatrist = await Psychatriast.findById(id);
+        if (!foundPsychiatrist)
+        {
+            return res.status(404).json({success:false, message:"Psychiatrist not found"});
+        }
+        
+        const isMatch = await bcrypt.compare(currentPassword, foundPsychiatrist.psychiatristPassword);
+        if (!isMatch)
+        {
+            return res.status(400).json({success:false, msg:"Current password is incorrect"});
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, genSalt);
+        foundPsychiatrist.psychiatristPassword = hashedNewPassword;
+        await foundPsychiatrist.save();
+
+        return res.status(200).json({success:true, msg:"Password updated successfully"});
+    }
+    catch(err)
+    {
+        console.error(`Error : ${err}`);
+        return res.status(500).json({success:false, message:`Error ${err}`});
+    }
+}
 /**
  * So instead of sending the userId in the frontend we use a jwt token: tempToken
  * we then retrieve the temp token
@@ -187,4 +226,4 @@ const getPsychiatristInfo = async (req,res)=>{
 */
 
 
-module.exports = {medicLogin, getOTPUser, getPsychiatristInfo, registerMedic};
+module.exports = {medicLogin, getOTPUser, getPsychiatristInfo, updatePsychiatPassword,  registerMedic};
