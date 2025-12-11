@@ -212,7 +212,7 @@ export default function PsychiatristBookedSessions()
 				<div className="grid md:grid-cols-4 gap-6 mb-6">
 					<div className="bg-white dark:bg-slate-500  rounded-xl shadow-md p-6">
 						<p className="text-gray-600 text-sm mb-1 dark:text-white ">Total Bookings</p>
-						<p className="text-3xl font-bold text-gray-900 dark:text-white">{bookedSessions.length}</p>
+						<p className="text-3xl font-bold text-gray-900 dark:text-white">{psychBookedSessions.length}</p>
 					</div>
 					<div className="bg-white rounded-xl dark:bg-slate-500 shadow-md p-6">
 						<p className="text-gray-600 text-sm mb-1 dark:text-white">Confirmed</p> {/* will need to change the backend enum fields for booked sessions to Completed, Scheduled, Completed */}
