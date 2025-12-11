@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 function PsychiatristSidebar(props:any) 
 {
+	const psychId = localStorage.getItem('psychId');
 
 	const {activeView, setActiveView, setUserDetials, setRefreshFlag, myNumber} = props;
 
@@ -31,7 +32,9 @@ function PsychiatristSidebar(props:any)
 	const GetPsychiatristInfo = async ()=>{
 		try
 		{
-			const response = await axios.get("http://localhost:5000/api/psychatriast/getpsychiatrist/692bbcb9946ace680fc7e177");
+			// https://university-student-psychiatrist.onrender.com/
+			// const response = await axios.get(`http://localhost:5000/api/psychatriast/getpsychiatrist/${psychId}`);
+			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychatriast/getpsychiatrist/${psychId}`);
 	
 			if (response.data.success)
 			{

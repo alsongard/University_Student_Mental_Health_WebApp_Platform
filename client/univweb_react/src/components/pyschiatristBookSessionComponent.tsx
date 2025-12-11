@@ -4,6 +4,7 @@ import axios from 'axios';
 
 export default function PsychiatristBookedSessions() 
 {
+	const psychId = localStorage.getItem('psychId');
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [filterDate, setFilterDate] = useState('all');
@@ -14,7 +15,7 @@ export default function PsychiatristBookedSessions()
 	const getBookedSessions = async ()=>{
 		try
 		{
-			const response = await axios.get('https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked/692bbcb9946ace680fc7e177');
+			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked/${psychId}`);
 			if (response.data.success)
 			{
 				setPsychBookedSessions(response.data.data);
