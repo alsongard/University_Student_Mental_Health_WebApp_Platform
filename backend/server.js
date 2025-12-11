@@ -62,7 +62,7 @@ const psychiatristSession = require("./routes/pyschiatristsession.router");
 const bookingRoutes = require("./routes/booking.routes");
 const studentRouter = require("./routes/studentdetails.router");
 const feedBackRouter = require("./routes/feedback.router");
-
+const psychiatristDetailsRouter = require("./routes/psychiatristDetails.router")
 app.get("/", (req,res)=>{
     res.sendFile("index.html");
 })
@@ -89,6 +89,7 @@ app.use("/api/psychiatristSession", psychiatristSession);
 app.use("/api/studentDetails", studentRouter);
 app.use("/api/bookSession",bookingRoutes );
 app.use("/api/feedback", feedBackRouter);
+app.use("/api/psychiatristDetails",psychiatristDetailsRouter);
 // swaggerdocs
 
 var options = {

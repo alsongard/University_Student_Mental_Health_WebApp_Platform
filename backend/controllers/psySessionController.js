@@ -125,7 +125,11 @@ module.exports.ViewPsychiatristSession = async (req,res)=>{
     try
     {
         const foundPsychiatricSessions = await PsychiatristSession.find({psychiatristId:psychiatristId});
-        console.log(typeof(foundPsychiatricSessions)); // 
+        // console.log(typeof(foundPsychiatricSessions)); // array :: 
+        if (foundPsychiatricSessions.length === 0)
+        {
+            return res.status(200).json({success:true, msg:"No available session yet"});
+        }
         return res.status(200).json({success:true , data:foundPsychiatricSessions});
     }
     catch(err)
