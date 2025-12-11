@@ -11,6 +11,7 @@ import axios from 'axios';
 
 export default function PsychiatristDashboard()
 {
+	const [refreshFlag, setRefreshFlag] = useState(false);
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 	const [activeView, setActiveView] = useState('overview');
 	const [userDetails, setUserDetials] = useState(null);
@@ -36,9 +37,10 @@ export default function PsychiatristDashboard()
 
 	useEffect(()=>{
 		GetMyPschBookedSessions();
-	}, [])
+	}, [refreshFlag])
 
 	let myTodaySessions = [];
+	let numberFlag:Number = 0;
 	if (myBookedSessions)
 	{
 
@@ -52,8 +54,8 @@ export default function PsychiatristDashboard()
 		});
 		console.log('myTodaySessions');
 		console.log(myTodaySessions);
+		numberFlag = myBookedSessions.length;
 	}
-
 
 	// const userDetails = local
 	const renderOverView = ()=>{
@@ -99,24 +101,24 @@ export default function PsychiatristDashboard()
 					<h2 className="text-2xl font-bold  text-gray-900 dark:text-white mb-6">Today's Schedule</h2>
 					<div className="space-y-4">
 
-						{myTodaySessions.map((session) => (
-						<div key={session._id} className="border-2 border-gray-200  rounded-xl p-4 hover:border-blue-600 dark:hover:border-black transition">
-							<div className="flex items-center justify-between">
-								<div className="flex items-center space-x-4">
-									<div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-										<User className="w-6 h-6 text-blue-600" />
+						{myTodaySessions.length > 0 && myTodaySessions.map((session) => (
+							<div key={session._id} className="border-2 border-gray-200  rounded-xl p-4 hover:border-blue-600 dark:hover:border-black transition">
+								<div className="flex items-center justify-between">
+									<div className="flex items-center space-x-4">
+										<div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+											<User className="w-6 h-6 text-blue-600" />
+										</div>
+										<div>
+											<h3 className="font-bold dark:text-white text-gray-900">{session.studentId.email}</h3>
+											<p className="text-sm dark:text-white text-gray-600">{session.sessionId.sessionType}</p>
+										</div>
 									</div>
-									<div>
-										<h3 className="font-bold dark:text-white text-gray-900">{session.studentId.email}</h3>
-										<p className="text-sm dark:text-white text-gray-600">{session.sessionId.sessionType}</p>
+									<div className="text-right">
+										<p className="font-semibold dark:text-white text-gray-900">10:00 AM</p>
+										<p className="text-sm dark:text-white text-gray-600">{session.sessionId.sessionMode}</p>
 									</div>
-								</div>
-								<div className="text-right">
-									<p className="font-semibold dark:text-white text-gray-900">10:00 AM</p>
-									<p className="text-sm dark:text-white text-gray-600">{session.sessionId.sessionMode}</p>
 								</div>
 							</div>
-						</div>
 						))}
 					</div>
 				</div>
@@ -127,7 +129,7 @@ export default function PsychiatristDashboard()
 
 	return (
 		<div className="flex h-screen dark:bg-gray-800 bg-gray-50">
-			<PsychiatristSidebar activeView={activeView} setActiveView={setActiveView}  setUserDetials={setUserDetials}/>
+			<PsychiatristSidebar activeView={activeView} setActiveView={setActiveView} setRefreshFlag={setRefreshFlag}  myNumber={numberFlag} setUserDetials={setUserDetials}/>
 			{/* Main Content */}
 			<main className="flex-1 overflow-y-auto">
 				{/* Top Bar */}

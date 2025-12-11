@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Home, Calendar, MessageSquare, FileText, LogOut, User, Clock, CheckSquare, ChevronLeft, ChevronRight, Bell } from 'lucide-react';
+import { Heart, Home, Calendar, RefreshCw, MessageSquare, FileText, LogOut, User, Clock, CheckSquare, ChevronLeft, ChevronRight, Bell } from 'lucide-react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 
 function PsychiatristSidebar(props:any) 
 {
 
-	const {activeView, setActiveView, setUserDetials} = props;
+	const {activeView, setActiveView, setUserDetials, setRefreshFlag, myNumber} = props;
 
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 	// const [activeView, setActiveView] = useState('overview');
@@ -16,7 +16,7 @@ function PsychiatristSidebar(props:any)
 		props.LogoutFun()
 	};
 
-
+	
 	let retrievedData;
 	const [psychiatristDetails, setPsychiatristDetails] = useState({
 		name: "",
@@ -78,7 +78,7 @@ function PsychiatristSidebar(props:any)
 			id: 'booked-sessions', 
 			icon: <CheckSquare className="w-5 h-5" />, 
 			label: 'Booked Sessions',
-			badge:8 ,
+			badge:myNumber ,
 			href: "/psychiatristdashboard/viewbookedsessions"
 		},
 		{ 
@@ -191,6 +191,17 @@ function PsychiatristSidebar(props:any)
 					))}
 				</nav>
 
+
+				{/* Refresh */}
+				<div className="p-4 border-t border-blue-500">
+					<button
+						onClick={() => setRefreshFlag((prev:boolean)=>!prev) }
+						className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 hover:bg-blue-400 rounded-lg transition"
+					>
+						{sidebarCollapsed ? <RefreshCw className="w-5 h-5" /> : <RefreshCw className="w-5 h-5" />}
+						{!sidebarCollapsed && <span  title='Refresh' className="font-semibold">Refresh</span>}
+					</button>
+				</div>
 				{/* Collapse Button */}
 				<div className="p-4 border-t border-blue-500">
 					<button
