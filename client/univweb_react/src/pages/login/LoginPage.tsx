@@ -227,12 +227,15 @@ function AuthForms(props:any)
         }
     };
     
+    const [errPsychMessage, setPsychErrorMsg] = useState('');
 
     const handlePsychiatristLoginSubmit = async (e) => {
         e.preventDefault();
         try
         {
-            const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
+            // https://university-student-psychiatrist.onrender.com/
+            // const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
+            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
@@ -251,6 +254,10 @@ function AuthForms(props:any)
         catch(err)
         {
             console.log(`Error: ${err}`);
+            if (err.response.data.msg === "Invalid credentials")
+            {
+                setPsychErrorMsg("Credentials did not match. Please try again.");
+            }
         }
         // console.log('Psychiatrist Login Data:', psychiatristLoginData);
         // alert('Psychiatrist Login Submitted!\nCheck console for data.');
@@ -511,89 +518,101 @@ function AuthForms(props:any)
                             {
                                 displayPsychiatrist === true && 
                                 (
-                                    <form onSubmit={handlePsychiatristLoginSubmit}>
-                                        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                                            Psychiatrist Login
-                                        </h2>
 
-                                        <div className="space-y-4">
-                                            <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                                Email *
-                                            </label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                    <Mail className="w-5 h-5 text-gray-400" />
-                                                </div>
-                                                <input
-                                                    type="email"
-                                                    name="email"
-                                                    value={psychiatristLoginData.email}
-                                                    onChange={handlePsychiatristLoginChange}
-                                                    required
-                                                    className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                                    placeholder="psychiatrist@zetech.ac.ke"
-                                                />
-                                                </div>
-                                            </div>
+                                    <>
+                                        <form onSubmit={handlePsychiatristLoginSubmit}>
+                                            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                                                Psychiatrist Login
+                                            </h2>
 
-                                            <div>
+                                            <div className="space-y-4">
+                                                <div>
                                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                                    Password *
+                                                    Email *
                                                 </label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <Lock className="w-5 h-5 text-gray-400" />
+                                                        <Mail className="w-5 h-5 text-gray-400" />
                                                     </div>
                                                     <input
-                                                        type={showPassword ? 'text' : 'password'}
-                                                        name="password"
-                                                        value={psychiatristLoginData.password}
+                                                        type="email"
+                                                        name="email"
+                                                        value={psychiatristLoginData.email}
                                                         onChange={handlePsychiatristLoginChange}
                                                         required
-                                                        className="w-full text-black pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                                                        placeholder="Enter your password"
+                                                        className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                                        placeholder="psychiatrist@zetech.ac.ke"
                                                     />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setShowPassword(!showPassword)}
-                                                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                                    >
-                                                        {showPassword ? (
-                                                            <EyeOff className="w-5 h-5 text-gray-400 hover:text-gray-600" />
-                                                        ) : (
-                                                            <Eye className="w-5 h-5 text-gray-400 hover:text-gray-600" />
-                                                        )}
-                                                    </button>
+                                                    </div>
                                                 </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        Password *
+                                                    </label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Lock className="w-5 h-5 text-gray-400" />
+                                                        </div>
+                                                        <input
+                                                            type={showPassword ? 'text' : 'password'}
+                                                            name="password"
+                                                            value={psychiatristLoginData.password}
+                                                            onChange={handlePsychiatristLoginChange}
+                                                            required
+                                                            className="w-full text-black pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                                            placeholder="Enter your password"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowPassword(!showPassword)}
+                                                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                                        >
+                                                            {showPassword ? (
+                                                                <EyeOff className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                                                            ) : (
+                                                                <Eye className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center justify-between text-sm">
+                                                    <label className="flex items-center">
+                                                        <input
+                                                        type="checkbox"
+                                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
+                                                        />
+                                                        <span className="ml-2 text-gray-600">Remember me</span>
+                                                    </label>
+                                                <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">
+                                                    Forgot Password?
+                                                </a>
+                                                </div>
+
+                                                <input
+                                                    type="submit"
+                                                    value="Login"
+                                                    className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md cursor-pointer"
+                                                />
                                             </div>
 
-                                            <div className="flex items-center justify-between text-sm">
-                                                <label className="flex items-center">
-                                                    <input
-                                                    type="checkbox"
-                                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
-                                                    />
-                                                    <span className="ml-2 text-gray-600">Remember me</span>
-                                                </label>
-                                            <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">
-                                                Forgot Password?
-                                            </a>
+                                            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                                                <p className="text-sm text-gray-700 text-center">
+                                                <strong>Note:</strong> This portal is for authorized mental health professionals only.
+                                                </p>
                                             </div>
+                                        </form>
+                                        {
+                                            errPsychMessage && (
+                                                <>
+                                                    <br/>
+                                                    <p className="text-red-600 font-semibold">{errPsychMessage}</p>
+                                                </>
+                                            )
+                                        }
 
-                                            <input
-                                                type="submit"
-                                                value="Login"
-                                                className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md cursor-pointer"
-                                            />
-                                        </div>
-
-                                        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                                            <p className="text-sm text-gray-700 text-center">
-                                            <strong>Note:</strong> This portal is for authorized mental health professionals only.
-                                            </p>
-                                        </div>
-                                    </form>
+                                    </>
                                 )
                             }
                             {/* Success Message */}

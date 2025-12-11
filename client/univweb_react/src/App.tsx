@@ -57,6 +57,7 @@ export default function App()
 
 	
 	const ProtectedStudentDashboard = requireAuth(StudentDashboard);
+	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard);
 
 	// how to handle persistence
 	
@@ -73,7 +74,7 @@ export default function App()
 						<Route path="/contact" element={<ContactPage/>}/>
 						<Route path="/login/:id" element={<AuthForms/>}/>
 						<Route path="/studentdashboard" element={<ProtectedStudentDashboard/>}/>
-						<Route path="/psychiatristdashboard" element={<PsychiatristDashboard/>}/>
+						<Route path="/psychiatristdashboard" element={<ProtectedPsychiatristDashboard/>}/>
 						<Route path="/studentdetails" element={<StudentDetailsRegistration/>}/>
 						<Route path="*" element={<ErrorpPage/>}/>
 					</Route>

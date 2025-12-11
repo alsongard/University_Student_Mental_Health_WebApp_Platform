@@ -46,17 +46,8 @@ export default function StudentDashboard()
 
     const email = localStorage.getItem("email");
     
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [activeView, setActiveView] = useState('overview');
-    const [selectedSession, setSelectedSession] = useState(null);
     
-    // Sample student data
-    const studentData = {
-        name: "John Kamau",
-        admissionNumber: "ADM12345",
-        email: "john.kamau@zetech.ac.ke",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"
-    };
     
     const [allSessions, setAllSessions] = useState([]);
 

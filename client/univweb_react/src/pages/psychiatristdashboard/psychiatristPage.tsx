@@ -8,12 +8,10 @@ import PsychiatristProfile from '../../components/psychiatristProfileComponent';
 import axios from 'axios';
 
 
-
 export default function PsychiatristDashboard()
 {
 	const psychId = localStorage.getItem('psychId');
 	const [refreshFlag, setRefreshFlag] = useState(false);
-	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 	const [activeView, setActiveView] = useState('overview');
 	const [userDetails, setUserDetials] = useState(null);
 	// Sample psychiatrist data
