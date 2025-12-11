@@ -114,9 +114,9 @@ const getOTPUser = async (req,res)=>{
 
 const medicLogin = async (req, res)=>{
     const {email, password } = req.body;
-    // console.log(`Login attempt for pschiatrist: `);
-    // console.log(email);
-    // console.log(password);
+    console.log(`Login attempt for pschiatrist: `);
+    console.log(email);
+    console.log(password);
 
     if(!email || !password)
     {
@@ -148,7 +148,7 @@ const medicLogin = async (req, res)=>{
         return res.status(200).json({success:true,  data: {id: foundPsychiatrist._id, token: authToken} ,  msg:"Login Success"})
     }
 
-    if (foundPsychiatrist.password != decodePass)
+    if (!decodePass)
     {
         return res.status(400).json({success:false, msg:'Invalid credentials'});
     }
@@ -173,7 +173,8 @@ const getPsychiatristInfo = async (req,res)=>{
     }
     catch(err)
     {
-
+        console.error(`Error : ${err}`);
+        return res.status(500).json({success:false, message:`Error ${err}`});
     }
 }
 
