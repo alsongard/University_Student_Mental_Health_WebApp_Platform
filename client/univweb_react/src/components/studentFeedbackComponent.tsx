@@ -18,6 +18,7 @@ export default function StudentFeedBack()
             if (response.data.success)
             {
                 setMyFeedbacks(response.data.data);
+                console.log("Fetched Student Feedback:");
             }
         }
         catch(err)
@@ -30,7 +31,9 @@ export default function StudentFeedBack()
         getStudentFeedback();
     }, []);
     // Sample feedbacks : ARRAY
-
+    // setInterval(()=>{
+    //     console.log(myFeedBack)}
+    //     , 9000)
     return (
         <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -58,7 +61,7 @@ export default function StudentFeedBack()
                             <div className="flex items-start justify-between mb-4">
                             <div>
                                 <h3 className="font-bold text-gray-900">{feedback.pyschiatricId.psychiatristName}</h3>
-                                <p className="text-sm text-gray-600">Session Date: {feedback.bookingId.sessionId}</p>
+                                {/* <p className="text-sm text-gray-600">Session Date: {feedback.bookingId.sessionId ?  feedback.bookingId.sessionId : `NONE`}</p> */}
                             </div>
                             <div className="flex items-center space-x-1">
                                 {[...Array(10)].map((_, i) => (

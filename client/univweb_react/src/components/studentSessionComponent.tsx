@@ -34,7 +34,7 @@ export default function StudentSessionComponent()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/bookSession/getStudentBookedSessions/${studentId}`);
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/${studentId}`);
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")
@@ -198,7 +198,7 @@ export default function StudentSessionComponent()
     const newSessions = myUpcomingSessions && myUpcomingSessions.filter((session)=>{
         const theDate = new Date(session.date.split("T")[0]);
         const today = new Date()
-        if (theDate > today)
+        if (theDate >= today)
         {
             return session
         }

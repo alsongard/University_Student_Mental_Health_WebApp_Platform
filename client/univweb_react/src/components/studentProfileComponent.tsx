@@ -24,13 +24,14 @@ export default  function StudentProfile()
 
     const studentId = localStorage.getItem("studentId");
     const [studentDetailsState, setStudentDetailsState] = useState(false);
+    const [errorOnProfileFetch, seterrorOnProfileFetch] = useState(false);
     const getStudentDetails = async ()=>{
         try
         {
             // ON RENDER
             // /api/student
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`)
-            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/${studentId}`)
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`)
+            // const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/${studentId}`)
             console.log('response')
             
             console.log(response);
@@ -55,7 +56,8 @@ export default  function StudentProfile()
         }
         catch(err)
         {
-            console.log(`Error: ${err}`)
+            console.log(`Error: ${err}`);
+            seterrorOnProfileFetch(true);
         }
     }
 
@@ -128,7 +130,7 @@ export default  function StudentProfile()
             <h1 className="text-3xl font-bold dark:text-white text-gray-900">Profile Settings</h1>
 
             {
-                studentDetailsState &&
+                studentDetailsState && !errorOnProfileFetch &&
                 (
                     <>
                         <div className="bg-white dark:bg-slate-600 rounded-2xl shadow-md p-8">
@@ -420,7 +422,13 @@ export default  function StudentProfile()
                 )
             }
             {
-                !studentDetailsState &&
+                !studentDetails && errorOnProfileFetch &&
+                (
+                    <p className="text-red-600 dark:text-white">Error fetching profile details. Please try again later.</p>
+                )
+            }
+            {
+                !studentDetailsState && !errorOnProfileFetch &&
                 (
                     <>
                         <p className="text-gray-600 dark:text-white">Register student details again and come back <br/> ...</p>

@@ -54,8 +54,8 @@ export default function StudentDashboard()
     const getAllSessions = async()=>{
 		try
 		{
-			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
-			const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions");
+            // const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions");
+			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
             console.log(response)
             if (response.data.success)
             {
@@ -72,8 +72,8 @@ export default function StudentDashboard()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/bookSession/getStudentBookedSessions/${studentId}`);
-            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/${studentId}`);
+            // const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/${studentId}`);
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/${studentId}`);
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")
@@ -332,7 +332,7 @@ export default function StudentDashboard()
                                 )
                             }
                             {
-                                calendarEvents.length < 0 && 
+                                calenderSessions.length < 0 && 
                                 (
                                     <div>
                                         <Loader/>
