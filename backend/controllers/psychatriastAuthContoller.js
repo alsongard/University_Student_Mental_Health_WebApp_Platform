@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const transporter = require("../config/nodemailerTransporter");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { log } = require("console");
 
 
 const genSalt = 10;
@@ -124,8 +125,8 @@ const medicLogin = async (req, res)=>{
     }
 
     const foundPsychiatrist = await Psychatriast.findOne({psychatriastEmail: email});
-    // console.log('foundPsychiatrist');
-    // console.log(foundPsychiatrist);
+    console.log('foundPsychiatrist');
+    console.log(foundPsychiatrist);
 
     if (!foundPsychiatrist)
     {
@@ -134,10 +135,11 @@ const medicLogin = async (req, res)=>{
 
 
     const decodePass = await bcrypt.compare(password, foundPsychiatrist.psychiatristPassword);
-    // console.log('decodePass');
-    // console.log(decodePass);
+    console.log('decodePass');
+    console.log(decodePass);
     if (decodePass == true && foundPsychiatrist.isAccountVerified === true) // both are true
     {
+        console.log('Both credentials are valid');
         const authToken = jwt.sign({userId: foundPsychiatrist._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
         // res.cookie("authToken", authToken, {
         //     httpOnly:true,
