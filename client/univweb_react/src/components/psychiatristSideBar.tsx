@@ -13,7 +13,7 @@ function PsychiatristSidebar(props:any)
 	// const [activeView, setActiveView] = useState('overview');
 
 	const handleLogout =()=>{
-		console.log('I was clicked!')
+		// console.log('I was clicked!')
 		props.LogoutFun()
 	};
 
@@ -32,21 +32,22 @@ function PsychiatristSidebar(props:any)
 	const GetPsychiatristInfo = async ()=>{
 		try
 		{
+			// https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/
 			// https://university-student-psychiatrist.onrender.com/
 			// const response = await axios.get(`http://localhost:5000/api/psychatriast/getpsychiatrist/${psychId}`);
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychatriast/getpsychiatrist/${psychId}`);
+			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/${psychId}`);
 	
 			if (response.data.success)
 			{
 				retrievedData = response.data.data;
 				setPsychiatristDetails({
-					name: retrievedData.psychiatristName,
+					name: retrievedData.fullName,
 					specialization: retrievedData.specilization,
-					email: retrievedData.psychatriastEmail,
+					email: "",
 					avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop"
 				});
 
-				setUserDetials(retrievedData.psychiatristName);
+				setUserDetials(retrievedData.fullName);
 
 			}
 		}

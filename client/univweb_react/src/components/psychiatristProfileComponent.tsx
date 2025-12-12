@@ -76,7 +76,7 @@ export default function PsychiatristProfile()
             const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/${psychId}`);
             if (response.data.success)
             {
-                console.log('repsonse.data.data');
+                // console.log('repsonse.data.data');
                 const retrievedData = response.data.data;
                 setPersonalInfo({
                     fullName: retrievedData.fullName,
@@ -345,7 +345,7 @@ export default function PsychiatristProfile()
 
     const [notificationsSuccessMessage, setNotificationsSuccessMessage] = useState(false);
     const handleNotificationSave =  async (event) => {
-        console.log('Notification preferences:', notifications);
+        // console.log('Notification preferences:', notifications);
          try
         {
             // https://university-student-psychiatrist.onrender.com/
@@ -389,16 +389,17 @@ export default function PsychiatristProfile()
                                 alt={psychiatristData ? psychiatristData.fullName : "Loading.."}
                                 className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover"
                             />
-                            {isEditing && (
-                            <label className="absolute bottom-0 right-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 transition border-2 border-white">
-                                <Camera className="w-5 h-5 text-white" />
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
-                            </label>
+                            {
+                            isEditing && (
+                                <label className="absolute bottom-0 right-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 transition border-2 border-white">
+                                    <Camera className="w-5 h-5 text-white" />
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                    />
+                                </label>
                             )}
                         </div>
                         <div className="ml-6 mb-2">

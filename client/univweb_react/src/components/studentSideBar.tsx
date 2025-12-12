@@ -21,7 +21,7 @@ function StudentSideBar(props:any)
     ];
 
     const handleLogout =()=>{
-		console.log('I was clicked!')
+		// console.log('I was clicked!')
 		props.LogoutFun()
 	}
     return (
@@ -48,7 +48,7 @@ function StudentSideBar(props:any)
                         key={item.id}
                         onClick={() => 
                             {
-                                console.log(`activeView is: ${item.id}`);
+                                // console.log(`activeView is: ${item.id}`);
                                 setActiveView(item.id);
                             }
                         }

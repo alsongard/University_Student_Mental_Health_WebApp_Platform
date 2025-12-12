@@ -32,9 +32,9 @@ export default  function StudentProfile()
             // /api/student
             const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`)
             // const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/${studentId}`)
-            console.log('response')
+            // console.log('response')
             
-            console.log(response);
+            // console.log(response);
             if (response.data.success)
             {
                 setStudentDetailsState(true);
@@ -109,7 +109,7 @@ export default  function StudentProfile()
         try
         {
             const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/studentDetails/updateStudentPassword/690362a78d4fa3a14a78a9e3", passwordInfo)  
-            console.log(response);
+            // console.log(response);
             if (response.data.success)
             {
                 alert("Password Updated Successfully");

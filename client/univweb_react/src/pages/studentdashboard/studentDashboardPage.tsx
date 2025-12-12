@@ -17,8 +17,8 @@ export default function StudentDashboard()
         try
         {
             const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`);
-            console.log('response');
-            console.log(response);
+            // console.log('response');
+            // console.log(response);
             if (response.data.success)
             {
                 console.log('Student details exist');
@@ -56,7 +56,7 @@ export default function StudentDashboard()
 		{
             // const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions");
 			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
-            console.log(response)
+            // console.log(response)
             if (response.data.success)
             {
                 setAllSessions(response.data.data);     
@@ -101,8 +101,8 @@ export default function StudentDashboard()
             {
                 const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>{
                     const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
-                    console.log('theDate');
-                    console.log(theDate);
+                    // console.log('theDate');
+                    // console.log(theDate);
                     const today = new Date()
                     if (theDate > today)
                     {
@@ -112,8 +112,8 @@ export default function StudentDashboard()
                             return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
                     });
 
-                    console.log("calenderSessions");
-                    console.log(calenderSessions);
+                    // console.log("calenderSessions");
+                    // console.log(calenderSessions);
                 }, 8000)
         }, [8000]
     );
@@ -173,8 +173,8 @@ export default function StudentDashboard()
 
     const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>{
         const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
-        console.log('theDate');
-        console.log(theDate);
+        // console.log('theDate');
+        // console.log(theDate);
         const today = new Date()
         if (theDate > today)
         {
@@ -184,8 +184,8 @@ export default function StudentDashboard()
                 return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
         });
 
-        console.log("calenderSessions");
-        console.log(calenderSessions);
+        // console.log("calenderSessions");
+        // console.log(calenderSessions);
 
     // RENDERPROFILE
     const renderOverview = 

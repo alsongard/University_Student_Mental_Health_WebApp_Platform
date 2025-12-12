@@ -108,7 +108,7 @@ function AuthForms(props:any)
             )
             if (response.data.success) {
                 // Handle successful OTP verification
-                console.log('this is response');
+                // console.log('this is response');
                 setStudentSuccess(true);
                 navigate("/studentdetails");
             }
@@ -134,9 +134,9 @@ function AuthForms(props:any)
         {
             if (formMode === "login" )
             {
-                console.log(`entering loginform submit`)
-                console.log('formDAta submitted');
-                console.log(studentSignupData)
+                // console.log(`entering loginform submit`)
+                // console.log('formDAta submitted');
+                // console.log(studentSignupData)
 
                 // LOGIN
                 // const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
@@ -150,12 +150,12 @@ function AuthForms(props:any)
                 //     admissionNum: studentSignupData.admissionNumber,
                 //     redirect:false
                 // })
-                console.log(Loginresponse);
+                // console.log(Loginresponse);
                 if (Loginresponse.status === 200)
                 {
                     // get student name
                     const {email} = Loginresponse.data.data.studentInfo;
-                    console.log(Loginresponse.data.data)
+                    // console.log(Loginresponse.data.data)
                     const authToken = Loginresponse.data.data.authToken;
                     const studentId = Loginresponse.data.data.studentId;
                     localStorage.setItem("studentId", studentId);
@@ -197,8 +197,8 @@ function AuthForms(props:any)
                         setOtpForm(true);
                     }, 5000);
                     
-                    console.log(response.data.data.token);
-                    console.log(response.data.data.studentId);
+                    // console.log(response.data.data.token); // TESTING
+                    // console.log(response.data.data.studentId); // TESTING
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem("studentId", response.data.data.studentId);
                 }

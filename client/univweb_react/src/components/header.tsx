@@ -116,7 +116,7 @@ function Header(props:any)
 									(<Sun 
 										onClick={()=>{
 
-											console.log(`darkMode: ${darkMode}`)
+											// console.log(`darkMode: ${darkMode}`)
 											return setDarkMode(false)}}
 									/>)
 							}
@@ -124,7 +124,7 @@ function Header(props:any)
 								darkMode === false &&
 								(<Moon 
 										onClick={()=>{
-											console.log(`darkMode: ${darkMode}`)
+											// console.log(`darkMode: ${darkMode}`)
 											return setDarkMode(true)}}
 								/>)
 							}

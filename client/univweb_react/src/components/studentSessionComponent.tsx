@@ -10,7 +10,7 @@ export default function StudentSessionComponent()
 		try
 		{
 			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
-            console.log(response)
+            // console.log(response)
             if (response.data.success)
             {
                 setMyUpcomingSessions(response.data.data);
@@ -59,7 +59,7 @@ export default function StudentSessionComponent()
     const handleBookSubmit = async(singleSession:any)=>{
         try
         {
-            console.log('sucess is success');
+            // console.log('sucess is success'); // Testing
             // const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/${studentId}`, {
             const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking/${studentId}`, {
                 sessionId: singleSession._id,
