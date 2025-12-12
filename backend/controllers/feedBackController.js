@@ -35,7 +35,7 @@ module.exports.getStudentFeedBack = async (req, res)=>{
     {
         return res.status(400).json({success:false, msg:"Missing parameter"});
     }
-    const foundFeedBack = await FeedBack.find({studentId: studentId}).populate([{ path: "pyschiatricId", select:"psychiatristName"}, {path:"bookingId",  select:'sessionId'}]);
+    const foundFeedBack = await FeedBack.find({studentId: studentId}).populate([{path: "pyschiatricId", select:"psychiatristName"}, {path:"bookingId",  select:'sessionId'}]);
     if (!foundFeedBack)
     {
         return res.status(400).json({success:false, msg:"No Feedback at the moment"});
