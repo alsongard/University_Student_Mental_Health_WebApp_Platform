@@ -124,9 +124,16 @@ export default function PsychiatristSessionsManagement()
 		{
 			if (confirmResult) // true
 			{
-				const response = await axios.delete(`http://localhost:5000/api/psychiatristSession/deleteSession/${id}`)
+				// const response = await axios.delete(`http://localhost:5000/api/psychiatristSession/deleteSession/${id}`)
+				const response = await axios.delete(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/deleteSession/${id}`)
 				console.log(`response`);
 				console.log(response);
+				if (response.data.success)
+				{
+					alert("Session Deleted Successfully");
+					// Refresh the sessions list after deletion
+					getPsychiatristSessions();
+				}
 			}
 		}
 		catch(err)
