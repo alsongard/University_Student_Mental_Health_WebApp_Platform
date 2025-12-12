@@ -196,8 +196,8 @@ export default function MessagingComponent()
         if (socket)
         {
             socket.emit("sendMessage", data2Send,  (response)=>{
-                console.log("argument from backend");
-                console.log(response);
+                // console.log("argument from backend");
+                // console.log(response);
     
             })
         }

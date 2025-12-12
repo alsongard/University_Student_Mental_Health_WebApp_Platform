@@ -10,7 +10,7 @@ import axios from 'axios';
 
 export default function PsychiatristDashboard()
 {
-	const psychId = localStorage.getItem('psychId');
+	const psychId = localStorage.getItem('psychId'); 
 	const [refreshFlag, setRefreshFlag] = useState(false);
 	const [activeView, setActiveView] = useState('overview');
 	const [userDetails, setUserDetials] = useState(null);
@@ -27,6 +27,11 @@ export default function PsychiatristDashboard()
 			if (response.data.success)
 			{
 				setmyBookedSessions(response.data.data);
+				setTimeout(() => {
+					// console.log('Booked Sessions for Psychiatrist: ');
+					// console.log(myBookedSessions);
+				}, 1000);
+				// console.log('Booked Sessions for Psychiatrist: ');
 				// console.log(response.data.data);
 			}
 		}
@@ -42,28 +47,36 @@ export default function PsychiatristDashboard()
 
 	let myTodaySessions = [];
 	let numberFlag:Number = 0;
-	if (myBookedSessions)
+	if (myBookedSessions.length > 0)
 	{
 
 		myTodaySessions = myBookedSessions.length > 0 &&  myBookedSessions.filter((sessionBooked)=>{
 			const today = new Date();
+
 			const sessionDate = new Date(sessionBooked.sessionId.date)
 			if (sessionDate == today)
 			{
 				return sessionBooked
 			}
 		});
-		console.log('myTodaySessions');
-		console.log(myTodaySessions);
+		// console.log('myTodaySessions');
+		// console.log(myTodaySessions);
 		numberFlag = myBookedSessions.length;
 	}
+
+
+	// setInterval(() => {
+	// 	console.log('myBookedSessions length: ', myBookedSessions.length);
+	// 	console.log(myBookedSessions)
+	// }, 10000)
+
 
 	// const userDetails = local
 	const renderOverView = ()=>{
 		return (
 			<div className="space-y-6 ">
 				<div className="bg-gradient-to-r from-blue-600 dark:from-slate-600 to-blue-700 dark:to-slate-700 rounded-2xl p-8 text-white">
-					<h1 className="text-3xl font-bold dark:text-white mb-2">Welcome back Doctor {userDetails ? userDetails.split(" ")[0] : "..."}</h1>
+					<h1 className="text-3xl font-bold dark:text-white mb-2">Welcome back  {userDetails ? userDetails : "..."}</h1>
 					<p className="text-blue-100 dark:text-white">Here's your schedule for today</p>
 				</div>
 

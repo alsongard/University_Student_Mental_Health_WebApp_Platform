@@ -18,7 +18,7 @@ export default function StudentFeedBack()
             if (response.data.success)
             {
                 setMyFeedbacks(response.data.data);
-                console.log("Fetched Student Feedback:");
+                // console.log("Fetched Student Feedback:");
             }
         }
         catch(err)
