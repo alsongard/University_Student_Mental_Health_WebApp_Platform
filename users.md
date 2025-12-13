@@ -1052,3 +1052,17 @@ getPsychiatristDetials
 
 Experienced psychiatrist specializing in mood and anxiety disorders with a patient-centered approach.
 12 years of clinical expertise. Dr. Chen employs evidence-based therapeutic techniques including cognitive behavioral therapy and mindfulness-based interventions. Dedicated to providing compassionate, patient-centered care with a focus on depression management, generalized anxiety disorder, panic disorder, and related mood conditions.
+
+
+
+
+
+
+
+```
+Date Fri Dec 12 2025 17:23:37 GMT+0200 (Eastern European Standard Time)
+
+
+Date Tue Dec 16 2025 02:00:00 GMT+0200 (Eastern European Standard Time)
+```
+
