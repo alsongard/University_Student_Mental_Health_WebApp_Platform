@@ -4,15 +4,17 @@ import clsx from 'clsx';
 import axios from "axios";
 import { connect } from 'react-redux';
 import {useNavigate, useParams} from 'react-router-dom'
-
-function AuthForms(props:any) 
+import {  useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { isLoggedIn } from "../../features/auth/authSlicer.jsx"
+export default function AuthForms(props:any) 
 {
 
     const navigate = useNavigate();
     const params = useParams();
     const pageArgument = params.id || 'student';
 
-    
+    const dispatch = useDispatch();
     
     // const pathName =usePathname();
     // const router = useRouter();
@@ -86,6 +88,8 @@ function AuthForms(props:any)
 
     // state for otp value
     const [otpValue, setOtpValue] = useState('');
+
+    // HANDLING OTP VERIFICATION
     const handleOtp = async (event)=>{
         // console.log(`Otp Value: ${otpValue}`);
         event.preventDefault()
@@ -128,6 +132,9 @@ function AuthForms(props:any)
             }
         }
     }
+
+
+    // HANDLING STUDENT SIGNUP & LOGIN SUBMIT
     const handleStudentSignupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try
@@ -139,11 +146,12 @@ function AuthForms(props:any)
                 // console.log(studentSignupData)
 
                 // LOGIN
-                // const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
-                const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", {
+                // const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", {
+                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
                     studentAdmission: studentSignupData.admissionNumber,
                     password:  studentSignupData.password
                 });
+
                 // const response = await signIn('credentials',{
                 //     email: studentSignupData.email,
                 //     password: studentSignupData.password,
@@ -154,15 +162,20 @@ function AuthForms(props:any)
                 if (Loginresponse.status === 200)
                 {
                     // get student name
-                    const {email} = Loginresponse.data.data.studentInfo;
+                    const {email, role} = Loginresponse.data.data.studentInfo;
                     // console.log(Loginresponse.data.data)
                     const authToken = Loginresponse.data.data.authToken;
                     const studentId = Loginresponse.data.data.studentId;
                     localStorage.setItem("studentId", studentId);
                     localStorage.setItem('authToken', authToken);    
                     localStorage.setItem("email", email);
+                    localStorage.setItem("role", role);
+                    const myPayload = {
+                        token: authToken,
+                        role: role
+                    }
+                    dispatch(isLoggedIn(myPayload));
                     setStudentSuccess(true);
-                    props.onLoggedIn()
                     setTimeout(()=>{
                         setStudentSuccess(false);
                         navigate("/studentdashboard")
@@ -215,7 +228,7 @@ function AuthForms(props:any)
                 setErrorMsg("Invalid credentials.");
                 setInterval(()=>{
                     setErrorMsg('');
-                }, 5000);
+                }, 15000);
             }
             if (err.response.data.msg)
             {
@@ -237,8 +250,8 @@ function AuthForms(props:any)
         try
         {
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
+            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
+            const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
@@ -247,10 +260,17 @@ function AuthForms(props:any)
             if (response.data.success)
             {
                 const psychId = response.data.data.id;
-                const authToken = response.data.data.token;
-                localStorage.setItem("psychId", psychId);
-                localStorage.setItem('authToken', authToken);
-                props.onLoggedIn();
+                const role = response.data.data.role;
+                const authToken = response.data.data.authToken;
+                localStorage.setItem('psychId', psychId);    
+                localStorage.setItem("authToken", authToken);
+                localStorage.setItem("role", role);
+                const myPayload = {
+                    token: authToken,
+                    role: role
+                }
+                dispatch(isLoggedIn(myPayload));
+
                 navigate("/psychiatristdashboard");
             }
         }
@@ -661,9 +681,3 @@ function AuthForms(props:any)
         </div>
   );
 }
-const mapDispatchToProps =(dispatch:any)=>{
-    return {
-        onLoggedIn: ()=>dispatch({type:'ON_LOGGED_IN'})
-    }
-}
-export default connect(null,mapDispatchToProps)(AuthForms);
