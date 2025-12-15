@@ -181,13 +181,13 @@ const studentLogin = async (req, res)=>{
             // console.log("token");
             // console.log(authToken);
             
-            // res.cookie("authToken", token, {
-            //     httpOnly:true,
-            //     secure: process.env.NODE_ENV === 'production' ? true : false, 
-            //     sameSite: "lax", 
-            //     maxAge: 120 * 60 *1000 //15 minutes
-            // });
-            const studentInfo = {email: foundStudent.email}
+            res.cookie("authToken", authToken, {
+                httpOnly:false,
+                secure: process.env.NODE_ENV === 'production' ? true : false, 
+                sameSite: "lax", 
+                maxAge: 120 * 60 *1000 //2 hours minutes
+            });
+            const studentInfo = {email: foundStudent.email, role:foundStudent.role};
             return res.status(200).json({success:true, data:{ studentInfo, authToken: authToken, studentId: foundStudent._id },  msg:"Login Success"})
         }
     }

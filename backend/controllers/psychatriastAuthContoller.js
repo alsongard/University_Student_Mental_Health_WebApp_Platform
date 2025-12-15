@@ -141,13 +141,13 @@ const medicLogin = async (req, res)=>{
     {
         console.log('Both credentials are valid');
         const authToken = jwt.sign({userId: foundPsychiatrist._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
-        // res.cookie("authToken", authToken, {
-        //     httpOnly:true,
-        //     secure: process.env.NODE_ENV === 'production', 
-        //     sameSite: "strict", 
-        //     maxAge: 120 * 60 *1000 //15 minutes
-        // });
-        return res.status(200).json({success:true,  data: {id: foundPsychiatrist._id, token: authToken} ,  msg:"Login Success"})
+        res.cookie("authToken", authToken, {
+            httpOnly:true,
+            secure: process.env.NODE_ENV === 'production' ? true : false, 
+            sameSite: "lax", 
+            maxAge: 120 * 60 *1000 //15 minutes
+        });
+        return res.status(200).json({success:true,  data: {id: foundPsychiatrist._id,  role: foundPsychiatrist.role, token: authToken} ,  msg:"Login Success"})
     }
 
     if (!decodePass)
