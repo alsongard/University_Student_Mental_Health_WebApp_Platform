@@ -16,19 +16,22 @@ import PsychiatristDashboard from "./pages/psychiatristdashboard/psychiatristPag
 import axios from "axios";
 import ErrorpPage from "./pages/error/page";
 import StudentDetailsRegistration from "./pages/studentdetails/studentDetails";
+import {isLoggedIn} from "./features/auth/authSlicer";
+
 export default function App()
 {
 	
 	const dispatch = useDispatch();
 
 	// we use localstorage
-	const emailExist = localStorage.getItem("email")
+	const userRole = localStorage.getItem("role")
 
 
-	console.log(`this is emailExist: ${emailExist}`);
+	console.log(`this is userRole: ${userRole}`);
 	// the below is a ADANCED SOLUTION TO REDUX PERSISTENCE
 	const [darkMode, setDarkMode] = useState(false);
 
+	// NOT IN USE FOR THE MOMENT
 	async function CheckSession()
 	{
 		console.log('Running getVerifiedSession')
@@ -45,19 +48,27 @@ export default function App()
 		{
 			console.log(`Error: ${err}`)
 		}
-	}
+	};
+
+	
 	useEffect(()=>{
 		const result = window.matchMedia('(prefers-color-scheme: dark)')
 		setDarkMode(result.matches);
-		if (emailExist)
+		if (userRole)
 		{
-			dispatch({type: 'ON_LOGGED_IN'});
+			const authToken = localStorage.getItem('authToken');    
+			const role = localStorage.getItem("role");
+			const myPayload = {
+				token: authToken,
+				role: role
+			}
+			dispatch(isLoggedIn(myPayload));
 		}
 	}, [dispatch]);
 
 	
-	const ProtectedStudentDashboard = requireAuth(StudentDashboard);
-	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard);
+	const ProtectedStudentDashboard = requireAuth(StudentDashboard, ['student']);
+	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard, ['psychiatrist', 'Counselor']);
 
 	// how to handle persistence
 	
