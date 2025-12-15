@@ -146,8 +146,8 @@ export default function AuthForms(props:any)
                 // console.log(studentSignupData)
 
                 // LOGIN
-                // const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", {
-                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
+                // const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
+                const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", {
                     studentAdmission: studentSignupData.admissionNumber,
                     password:  studentSignupData.password
                 });
@@ -250,8 +250,8 @@ export default function AuthForms(props:any)
         try
         {
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
-            const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
+            // const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
+            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
