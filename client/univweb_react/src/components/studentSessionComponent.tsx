@@ -60,8 +60,8 @@ export default function StudentSessionComponent()
         try
         {
             // console.log('sucess is success'); // Testing
-            // const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/${studentId}`, {
-            const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking/${studentId}`, {
+            // const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking/${studentId}`, {
+            const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/${studentId}`, {
                 sessionId: singleSession._id,
                 psychiatristId: singleSession.psychiatristId._id,
                 status: "scheduled",
