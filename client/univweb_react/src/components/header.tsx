@@ -1,12 +1,22 @@
 import { Heart, Sun, Moon , ChevronDown, ChevronUp } from "lucide-react"
-import { useState } from "react"
+import { use, useState } from "react"
 import clsx from "clsx";
 import { NavLink , useNavigate} from "react-router-dom";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { isLoggedOut } from "../features/auth/authSlicer"
 
-
-function Header(props:any)
+export default function Header(props:any)
 {
+	const dispatch = useDispatch();
+	const isAuthenticated = useSelector((state)=>{
+		console.log(`state.authSlicer.isAuthenticated: ${state.myAuthSlicer.isAuthenticated}`);
+		return state.myAuthSlicer.isAuthenticated;
+	})
+	const authRole = useSelector((state)=>{
+		console.log(`state.myAuthSlicer.role: ${state.myAuthSlicer.role}`);
+		return state.myAuthSlicer.role
+	});
+	
 	const {darkMode, setDarkMode} = props;
 
 	const navigate = useNavigate()
@@ -35,6 +45,10 @@ function Header(props:any)
 		}
 	}
 
+	const handleLogout = ()=>{
+		localStorage.clear();
+		dispatch(isLoggedOut())
+	}
     return (
 	// {/* Header */}
 		<div>
@@ -72,19 +86,27 @@ function Header(props:any)
 								Contact
 						</NavLink>
 						{
-							props.checkLoggedInsState === true && 
+							isAuthenticated === true && authRole === 'student' &&
 							(
 									<NavLink 
 										to="/studentdashboard"  
 										className={({isActive}) => clsx(isActive ? "text-blue-600":"text-gray-600", " hover:text-blue-600 dark:text-white font-medium")}>
-											Dashboard
+											Student Dashboard
 									</NavLink>					
 							)
+						}
+						{
+							isAuthenticated === true && authRole === 'psychiatrist' &&
+							<NavLink 
+								to="/psychiatristdashboard"  
+								className={({isActive}) => clsx(isActive ? "text-blue-600":"text-gray-600", " hover:text-blue-600 dark:text-white font-medium")}>
+									Psychiatrist Dashboard
+							</NavLink>		
 						}
 
 						{/* Login Dropdown */}
 						{
-							props.checkLoggedInsState === false &&
+							isAuthenticated === false &&
 							(
 
 								<div className="flex flex-row relative ">
@@ -101,11 +123,12 @@ function Header(props:any)
 						}
 						
 						{
-							props.checkLoggedInsState === true && 
+							isAuthenticated === true && 
 							(
 								<button
 									className="text-gray-600  dark:text-white font-medium  py-[5px] px-[5px]  rounded-md bg-slate-300 hover:bg-slate-500 hover:text-white dark:hover:text-black "
-									onClick={props.onLoggedOut}>
+									onClick={handleLogout}
+								>
 									Logout
 								</button>
 							)
@@ -135,16 +158,3 @@ function Header(props:any)
 		</div>
     )
 }
-
-const mapInitializeStateToProps = (state)=>{
-	return {
-		checkLoggedInsState: state.isLoggedIn
-	}
-}
-
-const mapDispatchToProps = (dispatch)=>{
-	return {
-		onLoggedOut: ()=>dispatch({'type': 'ON_LOGGED_OUT'})
-	}
-}
-export default connect(mapInitializeStateToProps, mapDispatchToProps)(Header)
