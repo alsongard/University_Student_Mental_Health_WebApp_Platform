@@ -9,21 +9,20 @@ function requireAuth(ComposedComponent, allowedRoles?:string[])
         const navigate = useNavigate();
 
         const isAuthenticated = useSelector((state)=>{
-            console.log(`state.authSlicer.isAuthenticated: ${state.myAuthSlicer.isAuthenticated}`);
+            // console.log(`state.authSlicer.isAuthenticated: ${state.myAuthSlicer.isAuthenticated}`);
             return state.myAuthSlicer.isAuthenticated;
         });
         
         const isRole = useSelector((state)=>{
-            console.log(`state.authSlicer.isAuthenticated: ${state.myAuthSlicer.isAuthenticated}`);
+            // console.log(`state.authSlicer.isAuthenticated: ${state.myAuthSlicer.isAuthenticated}`);
             return state.myAuthSlicer.role;
         });
 
-        console.log(`isAuthenticated ${isAuthenticated}`)
+        // console.log(`isAuthenticated ${isAuthenticated}`)
 
         useEffect(()=>{
             if(isAuthenticated != true)
             {
-                console.log('why run this if authenticated is True')
                 navigate("/login/student")
             }
             if (!allowedRoles.includes(isRole)) // if the allowed roles does not include the one passed to the requireAuth(componentName, ['role'])
