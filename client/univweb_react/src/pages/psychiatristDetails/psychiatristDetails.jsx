@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, Phone, MapPin, FileText, Briefcase, GraduationCap, Calendar, Clock, Bell } from 'lucide-react';
 
-export default function PsychiatristDetailsForm() 
+export default function PsychiatristDetails() 
 {
     const [formData, setFormData] = useState({
         fullName: '',
