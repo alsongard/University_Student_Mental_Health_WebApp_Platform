@@ -11,7 +11,7 @@ export const authenticationSlicer = createSlice({
     reducers: {
         isLoggedIn: (state, action) =>{
             console.log(`Entering isLoggedIn`);
-            console.log(action); // this is going to be an object
+            // console.log(action); // this is going to be an object
 
             state.token = action.payload.token;
             state.role = action.payload.role;
@@ -19,7 +19,7 @@ export const authenticationSlicer = createSlice({
         },
         isLoggedOut: (state)=>{
             console.log(`Entering isLoggedOut`);
-            console.log(state);
+            // console.log(state);
             state.token = null;
             state.role = null;
             state.isAuthenticated = true;
