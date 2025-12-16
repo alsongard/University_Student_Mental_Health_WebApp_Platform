@@ -1,19 +1,18 @@
 import { Heart, Sun, Moon , ChevronDown, ChevronUp } from "lucide-react"
-import { use, useState } from "react"
+import { useState } from "react"
 import clsx from "clsx";
-import { NavLink , useNavigate} from "react-router-dom";
+import { NavLink , replace, useNavigate} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { isLoggedOut } from "../features/auth/authSlicer"
 
 export default function Header(props:any)
 {
 	const dispatch = useDispatch();
 	const isAuthenticated = useSelector((state)=>{
-		console.log(`state.authSlicer.isAuthenticated: ${state.myAuthSlicer.isAuthenticated}`);
+		// console.log(`state.authSlicer.isAuthenticated: ${state.myAuthSlicer.isAuthenticated}`);
 		return state.myAuthSlicer.isAuthenticated;
 	})
 	const authRole = useSelector((state)=>{
-		console.log(`state.myAuthSlicer.role: ${state.myAuthSlicer.role}`);
+		// console.log(`state.myAuthSlicer.role: ${state.myAuthSlicer.role}`);
 		return state.myAuthSlicer.role
 	});
 	
@@ -45,10 +44,7 @@ export default function Header(props:any)
 		}
 	}
 
-	const handleLogout = ()=>{
-		localStorage.clear();
-		dispatch(isLoggedOut())
-	}
+
     return (
 	// {/* Header */}
 		<div>
@@ -122,17 +118,6 @@ export default function Header(props:any)
 							)
 						}
 						
-						{
-							isAuthenticated === true && 
-							(
-								<button
-									className="text-gray-600  dark:text-white font-medium  py-[5px] px-[5px]  rounded-md bg-slate-300 hover:bg-slate-500 hover:text-white dark:hover:text-black "
-									onClick={handleLogout}
-								>
-									Logout
-								</button>
-							)
-						}
 						<div>
 							{
 								darkMode === true &&
