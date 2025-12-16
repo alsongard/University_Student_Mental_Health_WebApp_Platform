@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Search, MoreVertical, Paperclip, Smile, Send, Phone, Video, Check, CheckCheck, Heart } from 'lucide-react';
-import {io} from "socket.io-client";
+import {io, Socket} from "socket.io-client";
 
 export default function MessagingComponent()
 {
-    let socket:any = null;
+    let socketRef = useRef(null);
     
     useEffect(()=>{
-        socket = io("http://localhost:5000", 
+        socketRef.current = io("http://localhost:5000", 
             {
                 transports: ['websocket', 'polling'],
                 autoConnect: true,
@@ -17,9 +17,9 @@ export default function MessagingComponent()
             }
         );
         return ()=>{
-            socket.disconnect()
+            socketRef.current?.disconnect()
         }
-    })
+    }, []);
     const [selectedChat, setSelectedChat] = useState(null);
     const [messageInput, setMessageInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -178,31 +178,49 @@ export default function MessagingComponent()
         chat.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // using local Storage but will be changed to cookies soon
+    const studentId = localStorage.getItem("studentId");
     const handleSendMessage = () => {
-        if (messageInput.trim() && selectedChat) {
-        const newMessage = {
-            id: selectedChat.messages.length + 1,
-            sender: "me",
-            text: messageInput,
-            timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
-            status: "sent"
-        };
-        
-        const updatedChat = {
-            ...selectedChat,
-            messages: [...selectedChat.messages, newMessage]
-        };
-        const data2Send = "this is my data"
-        if (socket)
+        console.log('sending message');
+        if (messageInput.trim() && selectedChat) 
         {
-            socket.emit("sendMessage", data2Send,  (response)=>{
-                // console.log("argument from backend");
-                // console.log(response);
-    
-            })
-        }
-        setSelectedChat(updatedChat);
-        setMessageInput('');
+            // the above will always evaluate to true since string.trim() on any string that has space at the
+            // beginning or end will be returned and even with no space 
+            const newMessage = {
+                id: Date.now(), // This should be replaced with a unique ID from the backend
+                senderId: studentId,
+                receiverId: "692bbcb9946ace680fc7e177", // setting a random number from my database but will change
+                senderRole: "student",
+                text: messageInput,
+                timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+                status: "sent"
+            };
+            
+            const updatedChat = {
+                ...selectedChat,
+                messages: [...selectedChat.messages, newMessage]
+            };
+            
+            if (socketRef)
+            {
+                console.log('=== CLIENT: Before emit ===');
+                console.log('Socket exists:', !!socketRef);
+                console.log('socketRef connected:', socketRef.current.connected);
+                console.log('socketRef ID:', socketRef.current.id);
+                socketRef.current.emit("sendMessage", newMessage,  (response)=>{
+                    console.log("argument from backend");
+                    if(response.status = "ok")
+                    {
+                        console.log('Message sent successfully');
+                    }
+                })
+            }
+            else 
+            {
+                console.log('Socket is not initialized');
+            }
+            setSelectedChat(updatedChat);
+            setMessageInput('');
         }
     };
 
@@ -214,204 +232,208 @@ export default function MessagingComponent()
     };
 
     return (
-        <div className="flex h-screen bg-gray-100">
-        {/* Sidebar - Chat List */}
-        <div className="w-96 bg-white border-r border-gray-200 flex flex-col">
-            {/* Sidebar Header */}
-            <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                        <Heart className="w-6 h-6 text-blue-600" />
-                        <h1 className="text-xl font-bold text-gray-900">Messages</h1>
+        <div className="flex h-screen   ">
+            {/* Sidebar - Chat List */}
+            <div className="w-96 bg-white dark:bg-slate-800 border-r border-gray-200 flex flex-col">
+                {/* Sidebar Header */}
+                <div className="bg-gray-50 dark:bg-slate-800 px-4 py-3 border-b border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-2">
+                            <Heart className="w-6 h-6 dark:text-white text-blue-600" />
+                            <h1 className="text-xl font-bold dark:text-white text-gray-900">Messages</h1>
+                        </div>
+                        <button className="p-2 hover:bg-gray-200 rounded-full transition">
+                            <MoreVertical className="w-5 h-5 dark:text-white text-gray-600" />
+                        </button>
                     </div>
-                    <button className="p-2 hover:bg-gray-200 rounded-full transition">
-                        <MoreVertical className="w-5 h-5 text-gray-600" />
-                    </button>
+                
+                    {/* Search Bar */}
+                    <div className="relative">
+                        <Search className="w-5 dark:text-white  h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search conversations..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full dark:text-white dark:bg-slate-500  dark:placeholder-white pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                        />
+                    </div>
+
                 </div>
-            
-                {/* Search Bar */}
-                <div className="relative">
-                    <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Search conversations..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    />
+
+                {/* Chat List */}
+                <div className="flex-1 overflow-y-auto">
+                    {filteredChats.map((chat) => (
+                        <div // used div which is good i thought buttons would be in use
+                            key={chat.id}
+                            onClick={() => setSelectedChat(chat)}
+                            className={`px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 transition ${
+                                selectedChat?.id === chat.id ? 'bg-blue-50 dark:bg-slate-600' : ''
+                            }`}
+                        >
+                            <div className="flex items-start space-x-3">
+                                <div className="relative">
+                                    <img
+                                        src={chat.avatar}
+                                        alt={chat.name}
+                                        className="w-12 h-12 rounded-full object-cover"
+                                    />
+                                    {chat.online && (
+                                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                    )}
+                                </div>
+                                
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.name}</h3>
+                                        <span className="text-xs dark:text-white text-gray-500 flex-shrink-0 ml-2">{chat.timestamp}</span>
+                                    </div>
+                                    <p className="text-sm text-gray-500 dark:text-white truncate mb-1">{chat.role}</p>
+                                    <div className="flex items-center justify-between">
+                                        <p className={`text-sm truncate dark:text-white ${chat.unread > 0 ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
+                                            {chat.lastMessage}
+                                        </p>
+                                        {
+                                            chat.unread > 0 && (
+                                            <span className="ml-2 dark:text-white flex-shrink-0 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+                                                {chat.unread}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
-            {/* Chat List */}
-            <div className="flex-1 overflow-y-auto">
-                {filteredChats.map((chat) => (
-                    <div // used div which is good i thought buttons would be in use
-                        key={chat.id}
-                        onClick={() => setSelectedChat(chat)}
-                        className={`px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition ${
-                            selectedChat?.id === chat.id ? 'bg-blue-50' : ''
-                        }`}
-                    >
-                        <div className="flex items-start space-x-3">
+            {/* Main Chat Area */}
+            {selectedChat ? (
+                <div className="flex-1 flex dark:bg-slate-900 flex-col  bg-gray-50">
+                    {/* Chat Header */}
+                    <div className="bg-white dark:bg-slate-900  px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
                             <div className="relative">
                                 <img
-                                    src={chat.avatar}
-                                    alt={chat.name}
-                                    className="w-12 h-12 rounded-full object-cover"
+                                    src={selectedChat.avatar}
+                                    alt={selectedChat.name}
+                                    className="w-10 h-10 rounded-full object-cover"
                                 />
-                                {chat.online && (
+                                    {selectedChat.online && (
                                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                                )}
-                            </div>
-                            
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between mb-1">
-                                    <h3 className="font-semibold text-gray-900 truncate">{chat.name}</h3>
-                                    <span className="text-xs text-gray-500 flex-shrink-0 ml-2">{chat.timestamp}</span>
-                                </div>
-                                <p className="text-sm text-gray-500 truncate mb-1">{chat.role}</p>
-                                <div className="flex items-center justify-between">
-                                    <p className={`text-sm truncate ${chat.unread > 0 ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
-                                        {chat.lastMessage}
-                                    </p>
-                                    {
-                                        chat.unread > 0 && (
-                                        <span className="ml-2 flex-shrink-0 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
-                                            {chat.unread}
-                                        </span>
                                     )}
-                                </div>
                             </div>
+                            <div>
+                                <h2 className="font-bold dark:text-white text-gray-900">{selectedChat.name}</h2>
+                                <p className="text-xs dark:text-white text-gray-500">{selectedChat.online ? 'Online' : 'Offline'}</p>
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                            <button className="p-2 hover:bg-gray-100  dark:hover:bg-slate-500 rounded-full transition">
+                                <Video className="w-5  dark:text-white h-5 text-gray-600" />
+                            </button>
+                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-500 rounded-full transition">
+                                <Phone className="w-5 h-5 dark:text-white text-gray-600" />
+                            </button>
+                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-500 rounded-full transition">
+                                <MoreVertical className="w-5 h-5 dark:text-white text-gray-600" />
+                            </button>
                         </div>
                     </div>
-                ))}
-            </div>
-        </div>
 
-        {/* Main Chat Area */}
-        {selectedChat ? (
-            <div className="flex-1 flex flex-col bg-gray-50">
-                {/* Chat Header */}
-                <div className="bg-white px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                        <div className="relative">
-                            <img
-                                src={selectedChat.avatar}
-                                alt={selectedChat.name}
-                                className="w-10 h-10 rounded-full object-cover"
-                            />
-                                {selectedChat.online && (
-                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                                )}
-                        </div>
-                        <div>
-                            <h2 className="font-bold text-gray-900">{selectedChat.name}</h2>
-                            <p className="text-xs text-gray-500">{selectedChat.online ? 'Online' : 'Offline'}</p>
-                        </div>
+                {/* Messages Area */}
+                <div className="flex-1 dark:bg-slate-900 overflow-y-auto p-6 space-y-4">
+                    {
+
+                        selectedChat.messages.map((message) => (
+                            <div
+                                key={message.id}
+                                className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'}`}
+                            >
+                                <div className={`max-w-md ${message.sender === 'me' ? 'order-2' : 'order-1'}`}>
+                                    <div
+                                        className={`rounded-lg px-4 py-2 ${
+                                        message.sender === 'me'
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-white dark:bg-slate-400 text-gray-900'
+                                        } shadow-sm`}
+                                    >
+                                        <p className="text-sm">{message.text}</p>
+                                    </div>
+                                    <div className={`flex items-center space-x-1 mt-1 ${
+                                        message.sender === 'me' ? 'justify-end' : 'justify-start'
+                                    }`}>
+                                        <span className={`text-xs dark:text-white text-gray-500 `}>{message.timestamp}</span>
+                                        {message.sender === 'me' && (
+                                        <span>
+                                            {message.status === 'sent' && <Check className="w-3 h-3 text-gray-500" />}
+                                            {message.status === 'delivered' && <CheckCheck className="w-3 h-3 text-gray-500" />}
+                                            {message.status === 'read' && <CheckCheck className="w-3 h-3 text-blue-600" />}
+                                        </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+
+                {/* Message Input */}
+                <div className="bg-white dark:bg-slate-900 px-6 py-4 border-t border-gray-200">
+                    <div className="flex items-end space-x-3">
+                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-500  rounded-full transition">
+                        <Smile className="w-6 h-6 dark:text-gray-400 dark:hover:text-white text-gray-600" />
+                    </button>
+                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-500 rounded-full transition">
+                        <Paperclip className="w-6 h-6 dark:text-gray-400 dark:hover:text-white text-gray-600" />
+                    </button>
+                    
+                    <div className="flex-1">
+                        <textarea
+                            value={messageInput}
+                            onChange={(e) => setMessageInput(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                            placeholder="Type a message..."
+                            rows="1"
+                            className="w-full px-4 py-3 dark:bg-slate-500 dark:placeholder-white dark:text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
+                            style={{ minHeight: '48px', maxHeight: '120px' }}
+                        />
                     </div>
                     
-                    <div className="flex items-center space-x-2">
-                        <button className="p-2 hover:bg-gray-100 rounded-full transition">
-                            <Video className="w-5 h-5 text-gray-600" />
-                        </button>
-                        <button className="p-2 hover:bg-gray-100 rounded-full transition">
-                            <Phone className="w-5 h-5 text-gray-600" />
-                        </button>
-                        <button className="p-2 hover:bg-gray-100 rounded-full transition">
-                            <MoreVertical className="w-5 h-5 text-gray-600" />
-                        </button>
+                    <button
+                        onClick={handleSendMessage}
+                        disabled={!messageInput.trim()}
+                        className={`p-3 rounded-full transition ${
+                        messageInput.trim()
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        }`}
+                    >
+                        <Send className="w-5 h-5" />
+                    </button>
                     </div>
                 </div>
-
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {
-
-                    selectedChat.messages.map((message) => (
-                        <div
-                            key={message.id}
-                            className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'}`}
-                        >
-                            <div className={`max-w-md ${message.sender === 'me' ? 'order-2' : 'order-1'}`}>
-                                <div
-                                    className={`rounded-lg px-4 py-2 ${
-                                    message.sender === 'me'
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-white text-gray-900'
-                                    } shadow-sm`}
-                                >
-                                    <p className="text-sm">{message.text}</p>
-                                </div>
-                                <div className={`flex items-center space-x-1 mt-1 ${
-                                    message.sender === 'me' ? 'justify-end' : 'justify-start'
-                                }`}>
-                                    <span className="text-xs text-gray-500">{message.timestamp}</span>
-                                    {message.sender === 'me' && (
-                                    <span>
-                                        {message.status === 'sent' && <Check className="w-3 h-3 text-gray-500" />}
-                                        {message.status === 'delivered' && <CheckCheck className="w-3 h-3 text-gray-500" />}
-                                        {message.status === 'read' && <CheckCheck className="w-3 h-3 text-blue-600" />}
-                                    </span>
-                                    )}
-                                </div>
-                            </div>
+                </div>
+            ) : (
+                // Empty State
+                <div className="flex-1 dark:bg-slate-800 flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <div className="mb-4 flex justify-center">
+                        <div className="w-32 h-32 bg-blue-100 dark:bg-sky-600 rounded-full flex items-center justify-center">
+                            <Heart className="w-16 h-16 dark:text-white text-blue-600" />
                         </div>
-                    ))
-                }
-            </div>
-
-            {/* Message Input */}
-            <div className="bg-white px-6 py-4 border-t border-gray-200">
-                <div className="flex items-end space-x-3">
-                <button className="p-2 hover:bg-gray-100 rounded-full transition">
-                    <Smile className="w-6 h-6 text-gray-600" />
-                </button>
-                <button className="p-2 hover:bg-gray-100 rounded-full transition">
-                    <Paperclip className="w-6 h-6 text-gray-600" />
-                </button>
-                
-                <div className="flex-1">
-                    <textarea
-                        value={messageInput}
-                        onChange={(e) => setMessageInput(e.target.value)}
-                        onKeyDown={handleKeyPress}
-                        placeholder="Type a message..."
-                        rows="1"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
-                        style={{ minHeight: '48px', maxHeight: '120px' }}
-                    />
-                </div>
-                
-                <button
-                    onClick={handleSendMessage}
-                    disabled={!messageInput.trim()}
-                    className={`p-3 rounded-full transition ${
-                    messageInput.trim()
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    }`}
-                >
-                    <Send className="w-5 h-5" />
-                </button>
-                </div>
-            </div>
-            </div>
-        ) : (
-            // Empty State
-            <div className="flex-1 flex items-center justify-center bg-gray-50">
-            <div className="text-center">
-                <div className="mb-4 flex justify-center">
-                <div className="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Heart className="w-16 h-16 text-blue-600" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                        MindBridge Messaging
+                    </h2>
+                    <p className="text-gray-600 dark:text-white max-w-sm">
+                        Select a conversation to start messaging with your psychiatrist or support team
+                    </p>
                 </div>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">MindBridge Messaging</h2>
-                <p className="text-gray-600 max-w-sm">
-                Select a conversation to start messaging with your psychiatrist or support team
-                </p>
-            </div>
-            </div>
-        )}
+            )}
         </div>
   );
 }
