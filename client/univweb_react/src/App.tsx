@@ -17,7 +17,7 @@ import axios from "axios";
 import ErrorpPage from "./pages/error/page";
 import StudentDetailsRegistration from "./pages/studentdetails/studentDetails";
 import {isLoggedIn} from "./features/auth/authSlicer";
-
+import PsychiatristDetails from "./pages/psychiatristDetails/psychiatristDetails";
 export default function App()
 {
 	
@@ -27,7 +27,7 @@ export default function App()
 	const userRole = localStorage.getItem("role")
 
 
-	console.log(`this is userRole: ${userRole}`);
+	// console.log(`this is userRole: ${userRole}`);
 	// the below is a ADANCED SOLUTION TO REDUX PERSISTENCE
 	const [darkMode, setDarkMode] = useState(false);
 
@@ -50,10 +50,12 @@ export default function App()
 		}
 	};
 
-	
 	useEffect(()=>{
 		const result = window.matchMedia('(prefers-color-scheme: dark)')
 		setDarkMode(result.matches);
+	}, []);
+	
+	useEffect(()=>{
 		if (userRole)
 		{
 			const authToken = localStorage.getItem('authToken');    
@@ -69,7 +71,7 @@ export default function App()
 	
 	const ProtectedStudentDashboard = requireAuth(StudentDashboard, ['student']);
 	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard, ['psychiatrist', 'Counselor']);
-
+	const ProtectedPsychiatristDetails = requireAuth(PsychiatristDetails, ['psychiatrist', 'Counselor']);
 	// how to handle persistence
 	
 
@@ -80,13 +82,14 @@ export default function App()
 				<Routes>
 					<Route path="/" element={<div><Header darkMode={darkMode} setDarkMode={setDarkMode}/><Outlet/><Footer/></div>}>
 						<Route index element={<Home/>}/>
-						<Route path="/about" element={<AboutPage/>}/>
-						<Route path='/services' element={<ServicesPage/>}/>
-						<Route path="/contact" element={<ContactPage/>}/>
-						<Route path="/login/:id" element={<AuthForms/>}/>
-						<Route path="/studentdashboard" element={<ProtectedStudentDashboard/>}/>
-						<Route path="/psychiatristdashboard" element={<ProtectedPsychiatristDashboard/>}/>
-						<Route path="/studentdetails" element={<StudentDetailsRegistration/>}/>
+						<Route path="about" element={<AboutPage/>}/>
+						<Route path='services' element={<ServicesPage/>}/>
+						<Route path="contact" element={<ContactPage/>}/>
+						<Route path="login/:id" element={<AuthForms/>}/>
+						<Route path="studentdashboard" element={<ProtectedStudentDashboard/>}/>
+						<Route path="psychiatristdashboard" element={<ProtectedPsychiatristDashboard/>}/>
+						<Route path="studentdetails" element={<StudentDetailsRegistration/>}/>
+						<Route path="psychiatristdetails" element={<ProtectedPsychiatristDetails/>}/>
 						<Route path="*" element={<ErrorpPage/>}/>
 					</Route>
 				</Routes>
