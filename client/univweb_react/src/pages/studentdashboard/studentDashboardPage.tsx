@@ -21,7 +21,7 @@ export default function StudentDashboard()
             // console.log(response);
             if (response.data.success)
             {
-                console.log('Student details exist');
+                // console.log('Student details exist');
             }
         }
         catch(err)
@@ -90,6 +90,7 @@ export default function StudentDashboard()
         }
     }
     useEffect(()=>{
+
         checkStudentDetailsExist();
         GetStudentBookedSessions();
         setTimeout(()=>{
@@ -99,7 +100,8 @@ export default function StudentDashboard()
 
         setTimeout(()=>
             {
-                const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>{
+                const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>
+                {
                     const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
                     // console.log('theDate');
                     // console.log(theDate);
@@ -114,7 +116,8 @@ export default function StudentDashboard()
 
                     // console.log("calenderSessions");
                     // console.log(calenderSessions);
-                }, 8000)
+            }, 8000);
+        
         }, [8000]
     );
 
@@ -378,7 +381,7 @@ export default function StudentDashboard()
             <main className="flex-1 overflow-y-auto">
            
             {/* Content Area */}
-                <div className="p-8">
+                <div className={`${activeView != "messages" && 'p-8'}`}>
                     {activeView === "overview" && renderOverview}
                     {activeView === "sessions" && <StudentSessionComponent/>}
                     {activeView === "messages" && <MessagingComponent/>}
