@@ -18,13 +18,15 @@ import ErrorpPage from "./pages/error/page";
 import StudentDetailsRegistration from "./pages/studentdetails/studentDetails";
 import {isLoggedIn} from "./features/auth/authSlicer";
 import PsychiatristDetails from "./pages/psychiatristDetails/psychiatristDetails";
+import TrialStudentSessions from "./pages/trials/TrialPage";
+
+
 export default function App()
 {
 	
 	const dispatch = useDispatch();
 
 	// we use localstorage
-	const userRole = localStorage.getItem("role")
 
 
 	// console.log(`this is userRole: ${userRole}`);
@@ -37,10 +39,14 @@ export default function App()
 		console.log('Running getVerifiedSession')
 		try
 		{
-			const response = await axios.get("http://localhost:5000/api/student/getMe", {withCredentials:true})
+			const response = await axios.get("http://localhost:5000/api/auth/me", {withCredentials:true})
 			if (response.status === 200)
 			{
-				dispatch({type: 'ON_LOGGED_IN'});
+				// console.log('User is authenticated');
+				// console.log(response.data.data);
+				const {id, role} = response.data.data;
+				const myPayload  = {id, role};
+				dispatch(isLoggedIn(myPayload));
 			}
 
 		}
@@ -56,22 +62,14 @@ export default function App()
 	}, []);
 	
 	useEffect(()=>{
-		if (userRole)
-		{
-			const authToken = localStorage.getItem('authToken');    
-			const role = localStorage.getItem("role");
-			const myPayload = {
-				token: authToken,
-				role: role
-			}
-			dispatch(isLoggedIn(myPayload));
-		}
+		CheckSession();
 	}, [dispatch]);
 
 	
 	const ProtectedStudentDashboard = requireAuth(StudentDashboard, ['student']);
 	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard, ['psychiatrist', 'Counselor']);
 	const ProtectedPsychiatristDetails = requireAuth(PsychiatristDetails, ['psychiatrist', 'Counselor']);
+	const ProtectedStudentDetails = requireAuth(StudentDetailsRegistration, ['student']);
 	// how to handle persistence
 	
 
@@ -88,7 +86,7 @@ export default function App()
 						<Route path="login/:id" element={<AuthForms/>}/>
 						<Route path="studentdashboard" element={<ProtectedStudentDashboard/>}/>
 						<Route path="psychiatristdashboard" element={<ProtectedPsychiatristDashboard/>}/>
-						<Route path="studentdetails" element={<StudentDetailsRegistration/>}/>
+						<Route path="studentdetails" element={<ProtectedStudentDetails/>}/>
 						<Route path="psychiatristdetails" element={<ProtectedPsychiatristDetails/>}/>
 						<Route path="*" element={<ErrorpPage/>}/>
 					</Route>
