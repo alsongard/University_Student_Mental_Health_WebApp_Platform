@@ -4,23 +4,30 @@ const  { createUploadthing } = require("uploadthing/express");
 
 
 const createStudentDetails = async (req, res) => {
- ;
     
+    // const {id} = req.params;
     try 
     {
+        // const id = decodedToken.userId;
+        // req.userId = id;
+        // req.role = decodedToken.role;
+        
         const { studentName, studentAge, gender, phoneNumber, course, yearOfStudy, address, emergencyContact, token } = req.body;
         if (!studentName || !studentAge || !gender || !phoneNumber || !course || !yearOfStudy || !address || !emergencyContact || !token) 
         {
             return res.status(400).json({success:false, msg:"Please fill in all fields"});
         }
+        const id = req.userId;
+        const role = req.role;
+
+        if (role !== 'student')
+        {
+            return res.status(403).json({success:false, msg:"Unauthorized: Only students can create student details"});
+        }
         // const tempToken = req.cookies.theToken;
         // console.log('tempToken');
         // console.log(tempToken);
-        const verifiedToken = jwt.verify(token, process.env.JWT_SECRET);
-        if (!verifiedToken)
-        {
-            return res.status(401).json({success:false, msg:"Invalid token"});
-        }
+
 
         
         // const {userObject} = tempToken;
@@ -38,7 +45,7 @@ const createStudentDetails = async (req, res) => {
 
 
         const new_studentDetails = await StudentDetails.create({
-            studentId: verifiedToken.userId,
+            studentId: id,
             studentName,
             studentAge,
             gender,
@@ -65,14 +72,21 @@ const createStudentDetails = async (req, res) => {
 }
 
 const getStudentDetails = async (req, res)=>{
+    // const {id} = req.params;
     try 
     {
-        const {id} = req.params;
+        // const id = decodedToken.userId;
+        // req.userId = id;
+        // req.role = decodedToken.role;
+
+        const id = req.userId;
+
+        const role = req.role;
 
         const studentDetails = await StudentDetails.findOne({studentId: id}).populate({path: 'studentId', select: 'studentAdmissionNum email'});
-        console.log('this is studentDetails');
-        console.log(studentDetails);
-        console.log(typeof(studentDetails));
+        // console.log('this is studentDetails');
+        // console.log(studentDetails);
+        // console.log(typeof(studentDetails));
         if (!studentDetails) {
             return res.status(404).json({success:false, msg:"Student details not found"});
         }
