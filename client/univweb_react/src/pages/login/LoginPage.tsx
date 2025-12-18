@@ -81,7 +81,7 @@ export default function AuthForms(props:any)
 
     const [errorMsg, setErrorMsg] = useState('');
     // state for success
-    const [studentSuccess, setStudentSuccess] = useState(false);
+    const [studentSuccess, setStudentSuccess] = useState("");
 
     // state for otp verification
     const [ otpForm, setOtpForm] = useState(false);
@@ -113,7 +113,7 @@ export default function AuthForms(props:any)
             if (response.data.success) {
                 // Handle successful OTP verification
                 // console.log('this is response');
-                setStudentSuccess(true);
+                setStudentSuccess("true");
                 navigate("/studentdetails");
             }
         } catch (err) {
@@ -147,37 +147,28 @@ export default function AuthForms(props:any)
 
                 // LOGIN
                 // const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", {
-                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
-                    studentAdmission: studentSignupData.admissionNumber,
-                    password:  studentSignupData.password
-                });
+                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", 
+                    {
+                        studentAdmission: studentSignupData.admissionNumber,
+                        password:  studentSignupData.password
+                    },
+                    {withCredentials:true}
+                );
 
-                // const response = await signIn('credentials',{
-                //     email: studentSignupData.email,
-                //     password: studentSignupData.password,
-                //     admissionNum: studentSignupData.admissionNumber,
-                //     redirect:false
-                // })
-                // console.log(Loginresponse);
                 if (Loginresponse.status === 200)
                 {
                     // get student name
                     const {email, role} = Loginresponse.data.data.studentInfo;
                     // console.log(Loginresponse.data.data)
-                    const authToken = Loginresponse.data.data.authToken;
-                    const studentId = Loginresponse.data.data.studentId;
-                    localStorage.setItem("studentId", studentId);
-                    localStorage.setItem('authToken', authToken);    
                     localStorage.setItem("email", email);
-                    localStorage.setItem("role", role);
                     const myPayload = {
-                        token: authToken,
+                        email: email,
                         role: role
                     }
                     dispatch(isLoggedIn(myPayload));
-                    setStudentSuccess(true);
+                    setStudentSuccess("Signup success. Enter OTP");
                     setTimeout(()=>{
-                        setStudentSuccess(false);
+                        setStudentSuccess("");
                         navigate("/studentdashboard")
                     }, 5000);
                 }
@@ -194,19 +185,23 @@ export default function AuthForms(props:any)
                     alert('Passwords do not match!');
                     return;
                 }
+                setStudentSuccess("An email has been sent with your OTP for acccount creation are being otp prompted...");
                 // https://university-student-psychiatrist.onrender.com
                 // const response = await axios.post("http://localhost:5000/api/student/studentCreate", {
-                const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", {
-                    studentAdmissionNum:studentSignupData.admissionNumber,
-                    email:studentSignupData.email,
-                    password:studentSignupData.password,
-                });
+                const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", 
+                    {
+                        studentAdmissionNum:studentSignupData.admissionNumber,
+                        email:studentSignupData.email,
+                        password:studentSignupData.password,
+                    },
+                    {withCredentials:true}
+                );
                 if (response.data.success)
                 {
 
-                    setStudentSuccess(true);
+                    setStudentSuccess("true");
                     setTimeout(()=>{
-                        setStudentSuccess((prevValue)=>{return !prevValue});
+                        setStudentSuccess("");
                         setOtpForm(true);
                     }, 5000);
                     
@@ -255,7 +250,8 @@ export default function AuthForms(props:any)
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
-                }
+                },
+                {withCredentials:true}
             );
             if (response.data.success)
             {
@@ -650,7 +646,7 @@ export default function AuthForms(props:any)
                                             )
                                             :
                                             (
-                                                <p className="text-green-800  font-semibold">Signup success. Enter OTP</p>
+                                                <p className="text-green-800  font-semibold">{studentSuccess}</p>
                                             )
         
                                         }
