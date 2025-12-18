@@ -16,12 +16,18 @@ export default function StudentDashboard()
     const checkStudentDetailsExist = async()=>{
         try
         {
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`);
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`);
+            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, 
+                {withCredentials:true}
+            );
+            // console.log('checkStudentDetailsExist response.data');
+            // console.log(response.data);
             // console.log('response');
             // console.log(response);
-            if (response.data.success)
+            if (!response.data.success)
             {
-                // console.log('Student details exist');
+                // Means no student details found
+                navigate("/studentdetails");
             }
         }
         catch(err)
@@ -54,8 +60,10 @@ export default function StudentDashboard()
     const getAllSessions = async()=>{
 		try
 		{
-            // const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions");
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
+			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions",
+            const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions",
+                {withCredentials:true}
+            );
             // console.log(response)
             if (response.data.success)
             {
@@ -72,8 +80,8 @@ export default function StudentDashboard()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            // const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/${studentId}`);
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/${studentId}`);
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")
