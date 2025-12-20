@@ -5,13 +5,25 @@ const mongoose = require("mongoose");
 
 const messagesSchema = new mongoose.Schema(
     {
-        senderId:{type:String, required:true},
-        receiverId: {type:String, required:true},
-        receiverName: {type:String, required:true},
-        recieverRole: {type:String, required:true},
-        recieverAvatar: {type:String, default: ""},
+        senderId: { type: String, required: true },
+        senderName: { type: String, required: true },
+        senderRole: { type: String, required: true },
+        senderAvatar: { type: String, default: "" },
+
+        receiverId: { type: String, required: true },
+        receiverName: { type: String, required: true },
+        receiverRole: { type: String, required: true },
+        receiverAvatar: { type: String, default: "" },
+        // Message Contenct
         message:{type:String, required:true},
-        image: {type:String, default: ""}
+        image: {type:String, default: ""},
+
+        // Metadata
+        isRead: { type: Boolean, default: false },
+        tempId: { type: String, default: "" },
+        readAt: { type: Date },
+        status:{type:String, enum:['sending', 'sent', 'delivered', 'read', 'failed'], default:'sent'},
+        conversationId: { type: String, required: true}
     }, 
     {
         timestamps:true
