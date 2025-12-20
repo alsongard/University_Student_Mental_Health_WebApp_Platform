@@ -1,11 +1,92 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Search, MoreVertical, Paperclip, Smile, Send, Phone, Video, Check, CheckCheck, Heart } from 'lucide-react';
 import {io, Socket} from "socket.io-client";
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 export default function MessagingComponent()
 {
+    const myRole =  useSelector((state)=>state.myAuthSlicer.role);
+    const [chatUsersList , setChatUsersList] = useState([]);
+    const [chatContacts, setChatContacts] = useState([]);
+    const [chatMessages, setChatMessages] = useState([]);
+    const [chatHeaderMain, setChatHeader] = useState("");
+    const [theRecieverId, setTheRecieverId] = useState<String>("");
+    const getPsychiatristsContacts = async () =>
+    {
+        try
+        {
+            const response = await axios.get('http://localhost:5000/api/messages/getAllPsychiatrist', {withCredentials:true});
+            console.log("Response from getPsychiatrists:");
+            console.log(response.data);
+
+            if (response.data.success)
+            {
+                setChatContacts(response.data.data);
+            }
+
+        }
+        catch(error){
+            console.error("Error fetching psychiatrists:", error);
+        }
+    };
+
+    const getUserChatPartnersSideBar = async () =>
+    {
+        try
+        {
+            const response = await axios.get('http://localhost:5000/api/messages/retrieveUserChatPartners', {withCredentials:true});
+            console.log("Response from getUsers:");
+            console.log(response.data.data.length );
+
+            if (response.data.success)
+            {
+                if (response.data.data.length === 0)
+                {
+                    console.log("No Chats At the moment");
+                    setChatUsersList([]);
+                    return;
+                };
+                // if (response.data.data === "No Chats At the moment")
+                const data = response.data.data;
+                setChatUsersList(data);
+
+            }
+
+        }
+        catch(error){
+            console.error("Error fetching chat users:", error);
+        }
+    };
+
+    const getMessagesBetweenUsers = async (partnerId:String) =>
+    {
+        setTheRecieverId(partnerId);
+        console.log(`theRecieverId set to : ${theRecieverId}`);
+        try
+        {
+            const response = await axios.get(`http://localhost:5000/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
+            // console.log("Response from getMessagesBetweenUsers:");
+            // console.log(response.data);
+
+            if (response.data.success)
+            {
+                if (response.data.data.length === 0)
+                {
+                    console.log("No Messages Between Users");
+                }
+                // console.log(response.data.data);
+                setChatMessages(response.data.data);
+
+
+            }
+
+        }
+        catch(error){
+            console.error("Error fetching messages between users:", error);
+        }
+    }
     let socketRef = useRef(null);
-    
     useEffect(()=>{
         socketRef.current = io("http://localhost:5000", 
             {
@@ -13,203 +94,78 @@ export default function MessagingComponent()
                 autoConnect: true,
                 reconnection: true,
                 reconnectionAttempts: 5,
-                reconnectionDelay: 1000
+                reconnectionDelay: 1000,
+                withCredentials: true,
             }
         );
+        getUserChatPartnersSideBar();
+        getPsychiatristsContacts();
         return ()=>{
             socketRef.current?.disconnect()
         }
     }, []);
-    const [selectedChat, setSelectedChat] = useState(null);
+    const [selectedChat, setSelectedChat] = useState(false);
     const [messageInput, setMessageInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Sample chat data
-    const chats = [
-        {
-            id: 1,
-            name: "Dr. Sarah Mwangi",
-            role: "Psychiatrist",
-            avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop",
-            lastMessage: "Hi John, just checking in to see how you're doing with the strategies we discussed.",
-            timestamp: "10:30 AM",
-            unread: 2,
-            online: true,
-            messages: [
-                {
-                    id: 1,
-                    sender: "them",
-                    text: "Good morning John! How are you feeling today?",
-                    timestamp: "9:15 AM",
-                    status: "read"
-                },
-                {
-                    id: 2,
-                    sender: "me",
-                    text: "Good morning Dr. Mwangi! I'm doing much better, thank you.",
-                    timestamp: "9:20 AM",
-                    status: "read"
-                },
-                {
-                    id: 3,
-                    sender: "them",
-                    text: "That's great to hear! Have you been practicing the breathing exercises we talked about?",
-                    timestamp: "9:22 AM",
-                    status: "read"
-                },
-                {
-                    id: 4,
-                    sender: "me",
-                    text: "Yes, I've been doing them every morning and they really help with my anxiety.",
-                    timestamp: "9:25 AM",
-                    status: "read"
-                },
-                {
-                    id: 5,
-                    sender: "them",
-                    text: "Excellent! Keep up the good work. Remember, consistency is key.",
-                    timestamp: "9:30 AM",
-                    status: "read"
-                },
-                {
-                    id: 6,
-                    sender: "them",
-                    text: "Hi John, just checking in to see how you're doing with the strategies we discussed.",
-                    timestamp: "10:30 AM",
-                    status: "delivered"
-                }
-            ]
-        },
-        {
-            id: 2,
-            name: "Dr. James Ochieng",
-            role: "Clinical Psychologist",
-            avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop",
-            lastMessage: "Our next session is scheduled for Thursday at 2 PM.",
-            timestamp: "Yesterday",
-            unread: 0,
-            online: false,
-            messages: [
-                {
-                id: 1,
-                sender: "them",
-                text: "Hello John, I hope you're doing well.",
-                timestamp: "Yesterday, 3:00 PM",
-                status: "read"
-                },
-                {
-                id: 2,
-                sender: "me",
-                text: "Hi Dr. Ochieng, yes I'm doing well. Thank you for asking.",
-                timestamp: "Yesterday, 3:15 PM",
-                status: "read"
-                },
-                {
-                id: 3,
-                sender: "them",
-                text: "Our next session is scheduled for Thursday at 2 PM.",
-                timestamp: "Yesterday, 3:20 PM",
-                status: "read"
-                }
-            ]
-        },
-        {
-            id: 3,
-            name: "Dr. Amina Hassan",
-            role: "Counseling Psychiatrist",
-            avatar: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=150&h=150&fit=crop",
-            lastMessage: "Thank you for sharing that with me. Your courage is admirable.",
-            timestamp: "Monday",
-            unread: 0,
-            online: true,
-            messages: [
-                {
-                id: 1,
-                sender: "me",
-                text: "Dr. Hassan, I wanted to talk about the issues I've been having with my roommate.",
-                timestamp: "Monday, 11:00 AM",
-                status: "read"
-                },
-                {
-                id: 2,
-                sender: "them",
-                text: "Of course, I'm here to listen. Please tell me what's been happening.",
-                timestamp: "Monday, 11:05 AM",
-                status: "read"
-                },
-                {
-                id: 3,
-                sender: "them",
-                text: "Thank you for sharing that with me. Your courage is admirable.",
-                timestamp: "Monday, 11:45 AM",
-                status: "read"
-                }
-            ]
-        },
-        {
-            id: 4,
-            name: "MindBridge Support",
-            role: "Support Team",
-            avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop",
-            lastMessage: "Your appointment for October 28th has been confirmed.",
-            timestamp: "Oct 20",
-            unread: 0,
-            online: true,
-            messages: [
-                {
-                id: 1,
-                sender: "them",
-                text: "Welcome to MindBridge! We're here to support your mental health journey.",
-                timestamp: "Oct 15, 9:00 AM",
-                status: "read"
-                },
-                {
-                id: 2,
-                sender: "them",
-                text: "Your appointment for October 28th has been confirmed.",
-                timestamp: "Oct 20, 2:30 PM",
-                status: "read"
-                }
-            ]
-        }
-    ];
 
-    const filteredChats = chats.filter(chat =>
-        chat.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredChats = chatMessages.filter(chat =>
+        {
+            if (chat.receiverName)
+            {
+                return chat.receiverName.toLowerCase().includes(searchQuery.toLowerCase())
+            }
+        }
     );
 
     // using local Storage but will be changed to cookies soon
     const studentId = localStorage.getItem("studentId");
     const handleSendMessage = () => {
         console.log('sending message');
-        if (messageInput.trim() && selectedChat) 
+        if (messageInput.trim()) 
         {
             // the above will always evaluate to true since string.trim() on any string that has space at the
             // beginning or end will be returned and even with no space 
             const newMessage = {
                 id: Date.now(), // This should be replaced with a unique ID from the backend
-                senderId: studentId,
-                receiverId: "692bbcb9946ace680fc7e177", // setting a random number from my database but will change
-                senderRole: "student",
+                receiverId: theRecieverId, // receiverId is acquired from the chatBetweenUsers
                 text: messageInput,
-                timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+                image: "",
+                timestamp: new Date().toJSON(),
                 status: "sent"
             };
             
-            const updatedChat = {
-                ...selectedChat,
-                messages: [...selectedChat.messages, newMessage]
-            };
-            
-            if (socketRef)
+            // const updatedChat = {
+            //     ...selectedChat,
+            //     messages: [...selectedChat.messages, newMessage]
+            // };
+            console.log('New Message');
+            console.log(newMessage);
+
+            // THIS IS AN UPDATE FOR THE FRONTEND CODE
+            setChatMessages((prevData)=>{
+                return [
+                    ...prevData,
+                    {
+                        senderRole: myRole,
+                        message:newMessage.text,
+                        _id:newMessage.id,
+                        status:newMessage.status,
+                        updatedAt: newMessage.timestamp
+                    }
+                ]
+            })
+
+            if (socketRef.current)
             {
                 console.log('=== CLIENT: Before emit ===');
                 console.log('Socket exists:', !!socketRef);
                 console.log('socketRef connected:', socketRef.current.connected);
                 console.log('socketRef ID:', socketRef.current.id);
-                socketRef.current.emit("sendMessage", newMessage,  (response)=>{
+                socketRef.current.emit("sendMessage", newMessage, (response)=>{
+                    setMessageInput('');
                     console.log("argument from backend");
-                    if(response.status = "ok")
+                    if(response.status == "ok")
                     {
                         console.log('Message sent successfully');
                     }
@@ -219,17 +175,42 @@ export default function MessagingComponent()
             {
                 console.log('Socket is not initialized');
             }
-            setSelectedChat(updatedChat);
-            setMessageInput('');
         }
     };
 
+
+    // Listener on event:
+    if (socketRef.current)
+    {
+        socketRef.current.on("newMessage", (myNewMessage)=>{
+            // append message to chats displayed
+            console.log('newMessage on someData below')
+            console.log(myNewMessage);
+            setChatMessages((prevData)=>
+                prevData.map((message)=>{
+                    return message.tempId == myNewMessage.tempId ? {...myNewMessage} : message
+                })
+            )
+
+
+        })
+    }
     const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === 'Enter') {
             e.preventDefault();
             handleSendMessage();
         }
     };
+
+    const [viewChats, setViewChats] = useState(true); // true for MyChats, false for Contacts
+    const [viewContacts, setViewContacts] = useState(false);
+
+    const userViewsPrac = chatMessages && chatMessages.length > 0 && 
+        (
+            chatMessages.map((chatItem)=>{
+                
+            })
+        )
 
     return (
         <div className="flex h-screen   ">
@@ -263,70 +244,157 @@ export default function MessagingComponent()
 
                 {/* Chat List */}
                 <div className="flex-1 overflow-y-auto">
-                    {filteredChats.map((chat) => (
-                        <div // used div which is good i thought buttons would be in use
-                            key={chat.id}
-                            onClick={() => setSelectedChat(chat)}
-                            className={`px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 transition ${
-                                selectedChat?.id === chat.id ? 'bg-blue-50 dark:bg-slate-600' : ''
-                            }`}
-                        >
-                            <div className="flex items-start space-x-3">
-                                <div className="relative">
-                                    <img
-                                        src={chat.avatar}
-                                        alt={chat.name}
-                                        className="w-12 h-12 rounded-full object-cover"
-                                    />
-                                    {chat.online && (
-                                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                                    )}
-                                </div>
-                                
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between mb-1">
-                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.name}</h3>
-                                        <span className="text-xs dark:text-white text-gray-500 flex-shrink-0 ml-2">{chat.timestamp}</span>
-                                    </div>
-                                    <p className="text-sm text-gray-500 dark:text-white truncate mb-1">{chat.role}</p>
-                                    <div className="flex items-center justify-between">
-                                        <p className={`text-sm truncate dark:text-white ${chat.unread > 0 ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
-                                            {chat.lastMessage}
-                                        </p>
-                                        {
-                                            chat.unread > 0 && (
-                                            <span className="ml-2 dark:text-white flex-shrink-0 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
-                                                {chat.unread}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
+                    <div className='flex border-b-1 border-white flex-row space-x-5 px-2 py-2  '>
+                        <button 
+                            className="bg-slate-400 w-full p-[10px] rounded-md "
+                            onClick={()=>{console.log("set mychats state"); setViewChats(prevValue=> !prevValue); setViewContacts(false);}}>
+                            <h1>MyChats</h1>
+                        </button>
+                        <button
+                            className="bg-slate-600 w-full p-[10px] rounded-md" 
+                            onClick={()=>{console.log("set contacts state"); setViewContacts(prevValue=> !prevValue); setViewChats(false);}}>
+                            <p>Contacts</p>
+                        </button>
+                    </div>
+                    
+                    {/* VIEWCHAT CONTAINER */}
+                    {
+                        // VIEW CHATS IS STATE MANAGED BY BUTTON FOR DISPLAYING THE USER CHATS
+                        viewChats && (
+                            <div className="pt-2 px-2">
+                                {/* DISPLAY THIS IF NO CHATS */}
+                                {
+                                    chatUsersList.length === 0 && (
+                                        <div className="p-4 text-center text-gray-500 dark:text-white">
+                                            No conversations available. Start a new chat to connect with your psychiatrist or support team.
+                                        </div>
+                                    )
+                                }
+                                {/* HOWEVER IF CHATS EXIST DO THE FOLLOWING */}
+                                {
+                                    chatUsersList.length > 0 && 
+                                    chatUsersList.map((chat) => (
+                                        <div // used div which is good i thought buttons would be in use
+                                            key={chat._id}
+                                            onClick={()=>{ 
+                                                console.log(`chat`);
+                                                console.log(chat);
+                                                console.log(`typeof: chat.psychiatristId : ${typeof(chat.psychiatristId)} ${chat.psychiatristId}`); // string 
+                                                setChatHeader(chat);
+                                                getMessagesBetweenUsers(chat.psychiatristId);
+                                                setSelectedChat(true)
+                                                }}
+                                            // className={`px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 transition ${
+                                            className={`px-4 py-3 rounded-md bg-slate-600  cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 transition ${
+                                                chatHeaderMain?._id === chat._id ? 'bg-blue-50 dark:bg-gray-500' : ''
+                                            }`}
+                                        >
+                                            <div className="flex flex-row items-start space-x-5">
+                                                <div className="relative">
+                                                    <img
+                                                        src={chat.avatar ? chat.avatar : "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop"}
+                                                        alt={chat.fullName ? chat.fullName : "User Avatar"}
+                                                        className="w-12 h-12 rounded-full object-cover"
+                                                    />
+                                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
 
+                                                    {/* THIS WILL BE SET BY SOCEKT IO */}
+                                                    {/* {chat.online && ( 
+                                                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                                    )} */}
+                                                </div>
+                                                
+                                                <div className="min-w-0">
+                                                    <div className="flex flex-col items-start justify-between mb-1">
+                                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.fullName}</h3>
+                                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.specilization}</h3>
+                                                        {/* <span className="text-xs dark:text-white text-gray-500 flex-shrink-0 ml-2">{new Date(chat.updatedAt).toISOString().split("T")[0]}</span> */}
+                                                    </div>
+                                                    {/* <p className="text-sm text-gray-500 dark:text-white truncate mb-1">{chat.recieverRole}</p> */}
+                                                    {/* <div className="flex items-center justify-between"> */}
+                                                        {/* <p className={`text-sm truncate dark:text-white ${chat.unread > 0 ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
+                                                            {chat.lastMessage}
+                                                        </p> */}
+                                                        {/* {
+                                                            chat.unread > 0 && (
+                                                            <span className="ml-2 dark:text-white flex-shrink-0 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+                                                                {chat.unread}
+                                                            </span>
+                                                        )} */}
+                                                    {/* </div> */}
+                                                </div>
+                                            </div>
+                                        </div>
+                                ))}
                             </div>
-                        </div>
-                    ))}
+                        )
+                    }
+
+
+
+                    {/* VIEW CONTACT LISTS ON CONTACTS */}
+                    {
+                        viewContacts && (
+                            <div className="p-4 text-center flex flex-col text-gray-500 dark:text-white">
+                                {
+                                    chatContacts.length === 0 ? (
+                                        <div>No contacts available at the moment.</div>
+                                    )
+                                    :
+                                    (
+                                        chatContacts.map((contactItem)=>
+                                            <div className="flex  py-2 bg-linear-to-r  from-white dark:from-slate-700 to-whites  dark:to-slate-600 rounded-md px-2 flex-row items-start space-x-5">
+                                                <div className="relative">
+                                                    <img
+                                                        src={contactItem.avatar ? contactItem.avatar : "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop"}
+                                                        alt={contactItem.fullName ? contactItem.fullName : "User Avatar"}
+                                                        className="w-12 h-12 rounded-full object-cover"
+                                                    />
+                                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                                </div>
+
+                                                <div className="flex-col  items-start min-w-0">
+                                                    {/* <div className="flex items-center justify-between mb-1"> */}
+                                                        <h3 className="font-semibold text-left dark:text-white text-gray-900 truncate">{contactItem.fullName}</h3>
+                                                        <h3 className="font-semibold text-left dark:text-white text-gray-900 truncate">{contactItem.specilization}</h3>
+                                                    {/* </div> */}
+                                                </div>
+                                            </div>
+                                        )
+                                    )
+                                            
+                                }
+                            </div>
+                        )
+                    }
+
                 </div>
             </div>
 
             {/* Main Chat Area */}
-            {selectedChat ? (
+            {selectedChat && (
+                
                 <div className="flex-1 flex dark:bg-slate-900 flex-col  bg-gray-50">
+                    
                     {/* Chat Header */}
                     <div className="bg-white dark:bg-slate-900  px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                             <div className="relative">
                                 <img
-                                    src={selectedChat.avatar}
-                                    alt={selectedChat.name}
+                                    // src={selectedChat.avatar ? selectedChat.avatar : "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop"}
+                                    src={"https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop"}
+                                    // alt={selectedChat.name ? selectedChat.name : "User Avatar"}
+                                    alt={"User Avatar"}
                                     className="w-10 h-10 rounded-full object-cover"
                                 />
-                                    {selectedChat.online && (
+                                    {/* {selectedChat.online && (
                                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                                    )}
+                                    )} */}
                             </div>
                             <div>
-                                <h2 className="font-bold dark:text-white text-gray-900">{selectedChat.name}</h2>
-                                <p className="text-xs dark:text-white text-gray-500">{selectedChat.online ? 'Online' : 'Offline'}</p>
+                                <h2 className="font-bold dark:text-white text-gray-900">{myRole == "student" ? chatHeaderMain.fullName : chatHeaderMain.studentName}</h2>
+                                {/* <p className="text-xs dark:text-white text-gray-500">{selectedChat.online ? 'Online' : 'Offline'}</p> */}
+                                <p className="text-xs dark:text-white text-gray-500">{ 'Offline'}</p>
                             </div>
                         </div>
                         
@@ -346,27 +414,28 @@ export default function MessagingComponent()
                 {/* Messages Area */}
                 <div className="flex-1 dark:bg-slate-900 overflow-y-auto p-6 space-y-4">
                     {
-
-                        selectedChat.messages.map((message) => (
+                        chatMessages.length > 0 ? chatMessages.map((message) => (
                             <div
-                                key={message.id}
-                                className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'}`}
+                                key={message._id}
+                                className={`flex  ${message.senderRole == myRole ? 'justify-end' : 'justify-start'}`}
+                                // className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'}`}
                             >
-                                <div className={`max-w-md ${message.sender === 'me' ? 'order-2' : 'order-1'}`}>
+                                {/* <div className={`max-w-md ${message.recieverRole != 'student' ? 'order-1' : 'order-2'}`}> */}
+                                <div className={`max-w-md `}>
                                     <div
                                         className={`rounded-lg px-4 py-2 ${
-                                        message.sender === 'me'
+                                        message.senderRole == myRole
                                             ? 'bg-blue-600 text-white'
                                             : 'bg-white dark:bg-slate-400 text-gray-900'
                                         } shadow-sm`}
                                     >
-                                        <p className="text-sm">{message.text}</p>
+                                        <p className="text-sm">{message.message}</p>
                                     </div>
                                     <div className={`flex items-center space-x-1 mt-1 ${
-                                        message.sender === 'me' ? 'justify-end' : 'justify-start'
+                                        message.senderRole === myRole ? 'justify-end' : 'justify-start'
                                     }`}>
-                                        <span className={`text-xs dark:text-white text-gray-500 `}>{message.timestamp}</span>
-                                        {message.sender === 'me' && (
+                                        <span className={`text-xs dark:text-white text-gray-500 `}>{new Date(message.updatedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false})}</span>
+                                        {message.senderRole === myRole && (
                                         <span>
                                             {message.status === 'sent' && <Check className="w-3 h-3 text-gray-500" />}
                                             {message.status === 'delivered' && <CheckCheck className="w-3 h-3 text-gray-500" />}
@@ -377,6 +446,25 @@ export default function MessagingComponent()
                                 </div>
                             </div>
                         ))
+                        :
+                        (
+                            // Empty State: THIS WILL BE MODIFIED TO REFLECT : sTART CHATTING
+                            <div className="flex-1 dark:bg-slate-800 flex items-center justify-center bg-gray-50">
+                            <div className="text-center">
+                                <div className="mb-4 flex justify-center">
+                                    <div className="w-32 h-32 bg-blue-100 dark:bg-sky-600 rounded-full flex items-center justify-center">
+                                        <Heart className="w-16 h-16 dark:text-white text-blue-600" />
+                                    </div>
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                    Start Chatting
+                                </h2>
+
+                            </div>
+                            </div>
+                        )
+                        
+
                     }
                 </div>
 
@@ -416,24 +504,30 @@ export default function MessagingComponent()
                     </div>
                 </div>
                 </div>
-            ) : (
+            )
+            }
+            {
+                !selectedChat &&
+                (
                 // Empty State
-                <div className="flex-1 dark:bg-slate-800 flex items-center justify-center bg-gray-50">
-                <div className="text-center">
-                    <div className="mb-4 flex justify-center">
-                        <div className="w-32 h-32 bg-blue-100 dark:bg-sky-600 rounded-full flex items-center justify-center">
-                            <Heart className="w-16 h-16 dark:text-white text-blue-600" />
+                    <div className="flex-1 dark:bg-slate-800 flex items-center justify-center bg-gray-50">
+                    <div className="text-center">
+                        <div className="mb-4 flex justify-center">
+                            <div className="w-32 h-32 bg-blue-100 dark:bg-sky-600 rounded-full flex items-center justify-center">
+                                <Heart className="w-16 h-16 dark:text-white text-blue-600" />
+                            </div>
                         </div>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            MindBridge Messaging
+                        </h2>
+                        <p className="text-gray-600 dark:text-white max-w-sm">
+                            Select a conversation to start messaging with your psychiatrist or support team
+                        </p>
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                        MindBridge Messaging
-                    </h2>
-                    <p className="text-gray-600 dark:text-white max-w-sm">
-                        Select a conversation to start messaging with your psychiatrist or support team
-                    </p>
-                </div>
-                </div>
-            )}
+                    </div>
+                )   
+                
+            }
         </div>
   );
 }
