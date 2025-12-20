@@ -5,7 +5,7 @@ const messageRouter = express.Router();
 const {getAuthenticated} = require("../middleware/auth")
 // getAllContacts from psychiatrist
 messageRouter.get("/getAllPsychiatrist", getAllPsychiatrist); //sidebar for all Contacts
-messageRouter.post("/sendmessage/:id", sendMessage);
+// messageRouter.post("/sendmessage/:id", sendMessage);
 messageRouter.get("/retrievemessages/:id",getAuthenticated,  retrieveMessagesBtwn);
 messageRouter.get("/retrieveUserChatPartners", getAuthenticated, retrieveUserChatPartners);
 // messageRouter.get("/retrieveUsers/:id", getUsers);/
