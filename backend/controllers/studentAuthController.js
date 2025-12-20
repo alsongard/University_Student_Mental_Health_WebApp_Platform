@@ -178,7 +178,7 @@ const studentLogin = async (req, res)=>{
 
         if (decodePass && foundStudent.isAccountVerified === true)
         {
-            const authToken =  jwt.sign({userId: foundStudent._id, role:"student"}, process.env.JWT_SECRET, {expiresIn: "120m"});
+            const authToken =  jwt.sign({userId: foundStudent._id, role:"student"}, process.env.JWT_SECRET, {expiresIn: "360m"});
             // console.log("token");
             // console.log(authToken);
             
