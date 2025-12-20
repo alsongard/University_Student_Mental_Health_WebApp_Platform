@@ -15,7 +15,10 @@ const Message  = require("./models/messages.model");
 const PsychiatristDetails =  require("./models/psychiatristdetail.model");
 const StudentDetails =  require("./models/studentDetails.model");
 const { getAuthenticated } = require("./middleware/auth");
+const jwt = require("jsonwebtoken");
+const cookie = require('cookie-parser');
 const app = express();
+const sendMessage = require("./controllers/message.controller").sendMessage;
 const httpServer = createServer(app);
 
 
@@ -65,7 +68,6 @@ const studentRouter = require("./routes/studentdetails.router");
 const feedBackRouter = require("./routes/feedback.router");
 const psychiatristDetailsRouter = require("./routes/psychiatristDetails.router");
 const studentSessionRoutes = require("./routes/studentSessionRoutes");
-// const 
 
 app.get("/", (req,res)=>{
     res.sendFile("index.html");
@@ -207,40 +209,91 @@ const saveMessageToDB = async (messageData)=>
     }
 }
 
+io.use((socket, next)=>{
+    // contains the raw cookie string sent by the client during the WebSocket handshake
+    const cookieHeader = socket.handshake.headers.cookie || '';
+    console.log('in socket middlware');
+    if (!cookieHeader)
+    {
+        return next(); // on initialization
+    }
+    // console.log('cookieHeader');
+    // console.log(cookieHeader)
+    const authToken =cookieHeader.split("=")[1]
+
+    // console.log('authToken');
+    // console.log(authToken);
+    
+    const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+    if (!decoded)
+    {
+        return next(new Error("Authentication error"));
+    }
+    // console.log('decodedToken in socket middleware');
+    // console.log(decoded);
+    /*decodedToken in socket middleware
+    {
+    userId: '6903a4963253494881272acb',
+    role: 'student',
+    iat: 1766240932,
+    exp: 1766248132
+    }
+    */
+    socket.userId = decoded.userId;
+    socket.role = decoded.role;
+    next();
+
+})
+
 
 
 // io.on('eventName:connection') // connectionis an inbuitl event
 io.on("connection", (socket)=>{
-    console.log('server is listening on port 5000');
-    socket.on("sendMessage",  (dataReceived, callback)=>{
-        console.log('=== SERVER: sendMessage event ===');
-        console.log('Socket ID:', socket.id);
-        console.log(`hello this is message from user `);
-        console.log(dataReceived);
+    console.log('server is listening on port 5000: Socket connected');
+    try
+    {
 
-
-        if (typeof(callback) === "function")
+        socket.on("sendMessage", async (dataReceived, callback)=>
         {
-            // Save message to database
-            console.log('Calling callback...');
-            callback({
-                status: "ok", 
-                msg: "Message received at server"
-            });
-            console.log('Callback called successfully');
-            saveMessageToDB(dataReceived);
-        }
-        else 
-        {
-            console.log('WARNING: No callback provided by client!');
-        }
-;
-    })
-    let someData =""
-    // Support Team
-    socket.emit("supportTeam", someData, (response)=>{
+            console.log('=== SERVER: sendMessage event ===');
+            console.log('Socket ID:', socket.id);
+            console.log(`hello this is message from user `);
+            console.log(dataReceived);
 
-    })
+            console.log(`socket userId: ${socket.userId}\nsocket role: ${socket.role} ${typeof(socket.role)}`); 
+            const userId = socket.userId;
+            const role = socket.role;
+
+            await sendMessage(data=dataReceived, socket, callback);
+            if (typeof(callback) === "function")
+            {
+                // Save message to database
+                console.log('Calling callback...');
+                callback({
+                    status: "ok", 
+                    msg: "Message received at server"
+                });
+                // console.log('Callback called successfully');
+                // saveMessageToDB(dataReceived);
+            }
+            else 
+            {
+                console.log('WARNING: No callback provided by client!');
+                // we create new emit event for the user
+                
+            }
+        });
+
+        let someData =""
+        // Support Team
+        socket.emit("supportTeam", someData, (response)=>{
+
+        })
+    }
+    catch(err)
+    {
+        console.log(`Socket Error: ${err}`);
+    }
 });
 
 
