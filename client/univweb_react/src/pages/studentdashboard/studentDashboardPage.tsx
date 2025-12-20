@@ -61,7 +61,7 @@ export default function StudentDashboard()
 		try
 		{
 			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions",
-            const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions",
+            const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions",
                 {withCredentials:true}
             );
             // console.log(response)
