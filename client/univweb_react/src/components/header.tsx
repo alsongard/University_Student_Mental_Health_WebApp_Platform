@@ -35,12 +35,12 @@ export default function Header(props:any)
 		if (data === "student")
 		{
 			navigate("/login/student");
-			window.location.reload();
+			// window.location.reload();
 		}
 		if (data === "psychiatrist")
 		{
 			navigate("/login/psychiatrist");
-			window.location.reload();
+			// window.location.reload();
 		}
 	}
 
