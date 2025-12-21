@@ -8,11 +8,14 @@ const getAuthenticated =  async(req, res, next)=>
 {
     console.log('entering getAuthenticated middleware');
     const authToken = req.cookies.authToken;
+    // console.log('authToken from cookies: ');
+    // console.log(authToken);
 
     if (!authToken)
     {
         return res.status(400).json({success:false, msg:"Failed Authentication"})
     }
+
     const decodedToken  = jwt.verify(authToken, process.env.JWT_SECRET);
     // console.log('decodedToken');
     // console.log(decodedToken);
@@ -23,6 +26,16 @@ const getAuthenticated =  async(req, res, next)=>
         // iat: 1766052178,
         // exp: 1766059378
     // }
+
+    /*
+    decodedToken
+        {
+        userId: '692bbcb9946ace680fc7e177',
+        role: 'psychiatrist',
+        iat: 1766323690,
+        exp: 1766338090
+        }
+    */
     if (!decodedToken)
     {
         return res.status(400).json({success:false, msg:"This is an invalid token"})
@@ -30,9 +43,11 @@ const getAuthenticated =  async(req, res, next)=>
     
     req.userId = decodedToken.userId;
     req.role = decodedToken.role;
+    req.email = decodedToken.email;
     // check if student exist
     const role = decodedToken.role;
     const id = decodedToken.userId;
+
     if (role === "student") // this only runs when user not exist
     {
         const foundStudent = await Student.findById({_id:id});
@@ -49,6 +64,7 @@ const getAuthenticated =  async(req, res, next)=>
         {
             return res.status(400).json({success:false, msg:"Invalid token"})
         }
+
     }
     // this means that the student has been found
     next(); // pass is decodedToken is safe
