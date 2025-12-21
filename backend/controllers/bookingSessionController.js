@@ -3,6 +3,7 @@
 const BookSession = require("../models/bookSession.model");
 const PsychiatristDetails = require("../models/psychiatristdetail.model");
 const Student = require("../models/student.model");
+const StudentDetails = require("../models/studentDetails.model");
 // create BookingSession
 module.exports.CreateBookingSession = async (req, res)=>
 {
@@ -23,7 +24,8 @@ module.exports.CreateBookingSession = async (req, res)=>
     }
     try
     {
-        const new_booking_session = await BookSession.create({sessionId:sessionId, studentId:studentId,  psychiatristId:psychiatristId,  status:status});
+        const studentDetails = await StudentDetails.findOne({studentId: studentId})
+        const new_booking_session = await BookSession.create({sessionId:sessionId, studentId:studentId, studentDetailsInfo:studentDetails._id || "", psychiatristId:psychiatristId,  status:status});
         if (!new_booking_session)
         {
             return res.status(500).json({success:false, msg: 'Internal Server Error: booking Failed '})
@@ -60,15 +62,25 @@ module.exports.DeleteBookingSession = async (req, res)=>{
 
 // get  Booked Session For Psychiatrist
 module.exports.ViewPsychiatristSession  = async (req,res)=>{
-    const {psychiatristId} = req.params;
-    if (!psychiatristId)
+    // req.userId = decodedToken.userId;
+    // req.role = decodedToken.role;
+    
+    const psychiatristId = req.userId;
+    const userRole = req.role;
+
+    if (!psychiatristId && userRole !== "psychiatrist")
     {
         return res.status(400).json({success:false, msg:"No psychiatristId found"});
     }
     try
     {
-        const foundPsychiatristBookedSessions = await BookSession.find({psychiatristId:psychiatristId}).populate([{ path: 'studentId', select: 'studentName studentAdmissionNum  email'}, { path: 'sessionId',  select:'sessionMode date startTime endTime sessionDuration sessionType sessionStatus'}]);
+        const foundPsychiatristBookedSessions = await BookSession.find({psychiatristId:psychiatristId}).populate([{ path: 'studentId', select: 'studentAdmissionNum  email'} , {path:'studentDetailsInfo', select:"phoneNumber gender studentAge studentName"}, { path: 'sessionId',  select:'sessionMode date startTime endTime sessionDuration sessionType sessionStatus'}]);
 
+        console.log('foundPsychiatristBookedSessions');
+        // console.log(foundPsychiatristBookedSessions);
+        // {path:'studentDetailsInfo', select:"phoneNumber gender studentAge studentName"}
+
+        // StudentDetails.find({})
         if (foundPsychiatristBookedSessions.length == 0)
         {
             return res.status(200).json({success:true, msg:"You have no booked sessions"});
