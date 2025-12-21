@@ -28,13 +28,15 @@ export default function AuthForms(props:any)
         if (pageArgument === "student")
         {
             setDisplayStudent(true);
+            setDisplayPsychiatrist(false);
         }
     
         if (pageArgument === "psychiatrist")
         {
             setDisplayPsychiatrist(true);
+            setDisplayStudent(false);
         }
-    },[])
+    },[pageArgument])
 
     const [userType, setUserType] = useState('student');
     const [formMode, setFormMode] = useState('login');
