@@ -44,8 +44,8 @@ export default function App()
 			{
 				// console.log('User is authenticated');
 				// console.log(response.data.data);
-				const {id, role} = response.data.data;
-				const myPayload  = {id, role};
+				const {email, role} = response.data.data;
+				const myPayload  = { role, email} ;
 				dispatch(isLoggedIn(myPayload));
 			}
 
