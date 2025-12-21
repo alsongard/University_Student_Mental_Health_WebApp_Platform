@@ -7,7 +7,7 @@ const {CreateBookingSession,ViewPsychiatristSession,  DeleteBookingSession, View
 
 router.use(getAuthenticated);
 router.post("/createBooking", CreateBookingSession);
-router.get("/psychiatristViewBooked/:psychiatristId",ViewPsychiatristSession);
+router.get("/psychiatristViewBooked", getAuthenticated, ViewPsychiatristSession);
 router.delete("/deleteBooking/:bookingId",DeleteBookingSession )
 router.get("/getStudentBookedSessions", ViewStudentBookedSessions)
 
