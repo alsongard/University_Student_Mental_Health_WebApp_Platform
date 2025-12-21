@@ -345,11 +345,8 @@ const UpdatePassword = async (req, res)=>
     }
 }
 
-const Logout  = (req,res)=>{
-    res.clearCookie("authToken");
-    return res.status(200).json({success:true})
-}
-module.exports = {registerStudent, getOTPUser, studentLogin, getMe, Logout, UpdatePassword};
+
+module.exports = {registerStudent, getOTPUser, studentLogin, getMe, UpdatePassword};
 
 
 /**
