@@ -1513,3 +1513,79 @@ Pros:
 	Handles network issues gracefully.
 Cons:
 	More complex state management (temporary IDs, rollback on failure).
+
+
+
+
+
+**http://localhost:5000/api/bookSession/psychiatristViewBooked**
+```js
+foundPsychiatristBookedSessions
+[
+  {
+    _id: new ObjectId('6936b893ffe855db16b4f72f'),
+    sessionId: {
+      _id: new ObjectId('692db102b44b69bc8646b750'),
+      date: 2025-12-16T00:00:00.000Z,
+      startTime: '14:00',
+      endTime: '16:30',
+      sessionMode: 'In-Person',
+      sessionDuration: '2h 30min',
+      sessionType: 'Group Therapy',
+      sessionStatus: 'Available'
+    },
+    studentId: {
+      _id: new ObjectId('69360cd7001a399b72c0b961'),
+      studentAdmissionNum: 'AAA-00-0000/0032',
+      email: 'alsonre@gmail.com'
+    },
+    psychiatristId: new ObjectId('692bbcb9946ace680fc7e177'),
+    status: 'scheduled',
+    createdAt: 2025-12-08T11:37:55.171Z,
+    updatedAt: 2025-12-08T11:37:55.171Z,
+    __v: 0,
+    'studentDetailsInfo ': '6936157179e13bc81a7f27b0'
+  },
+  
+  {
+    _id: new ObjectId('6943f818e97935145fb46924'),
+    sessionId: {
+      _id: new ObjectId('693c2d7f024e044c1eca3eed'),
+      date: 2025-12-31T00:00:00.000Z,
+      startTime: '08:00',
+      endTime: '12:00',
+      sessionMode: 'Virtual',
+      sessionDuration: '4h',
+      sessionType: 'Group Therapy',
+      sessionStatus: 'Available'
+    },
+    studentId: {
+      _id: new ObjectId('6903a4963253494881272acb'),
+      studentAdmissionNum: 'BBB-11-1111/0005',
+      email: 'alsonsafo@gmail.com'
+    },
+    psychiatristId: new ObjectId('692bbcb9946ace680fc7e177'),
+    status: 'scheduled',
+    createdAt: 2025-12-18T12:48:24.634Z,
+    updatedAt: 2025-12-18T12:48:24.634Z,
+    __v: 0,
+    studentDetailsInfo: {
+      _id: new ObjectId('6930958ab9ea6134b94b7f5d'),
+      studentName: 'Emma Watson',
+      studentAge: 25,
+      gender: 'Female',
+      phoneNumber: '01113223'
+    }
+  }
+]
+```
+
+
+Pychiatrist GEtChatParters:
+```json
+​
+_id: "6930958ab9ea6134b94b7f5d"
+course: "Computer Science"
+​​studentId: "6903a4963253494881272acb"
+​studentName: "Emma Watson"
+​​```
