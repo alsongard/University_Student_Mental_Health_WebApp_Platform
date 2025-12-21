@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Heart, User, Mail, Lock, CreditCard, UserCircle, Stethoscope, Eye, EyeOff } from 'lucide-react';
 import clsx from 'clsx';
 import axios from "axios";
-import { connect } from 'react-redux';
 import {useNavigate, useParams} from 'react-router-dom'
-import {  useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { isLoggedIn } from "../../features/auth/authSlicer.jsx"
+import { isLoggedIn } from "../../features/auth/authSlicer.js"
 export default function AuthForms(props:any) 
 {
 
@@ -241,14 +239,14 @@ export default function AuthForms(props:any)
     };
     
     const [errPsychMessage, setPsychErrorMsg] = useState('');
-
+    const [successPsychLoginMsg, setSuccessPsychLoginMsg] = useState("");
     const handlePsychiatristLoginSubmit = async (e) => {
         e.preventDefault();
         try
         {
             // https://university-student-psychiatrist.onrender.com/
             // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
-            const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
+            const response = await axios.post("http://localhost:5000/api/psychiatrist/psychiatristLogin",
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
@@ -257,19 +255,20 @@ export default function AuthForms(props:any)
             );
             if (response.data.success)
             {
-                const psychId = response.data.data.id;
+                setSuccessPsychLoginMsg("Login successfull.. You are being redirected to Psychiatrist Dashboard");
+                // console.log
                 const role = response.data.data.role;
-                const authToken = response.data.data.authToken;
-                localStorage.setItem('psychId', psychId);    
-                localStorage.setItem("authToken", authToken);
-                localStorage.setItem("role", role);
+                const email = response.data.data.email;
+
                 const myPayload = {
-                    token: authToken,
+                    email: email,
                     role: role
                 }
                 dispatch(isLoggedIn(myPayload));
-
-                navigate("/psychiatristdashboard");
+                setTimeout(()=>{
+                    setSuccessPsychLoginMsg("");
+                    navigate("/psychiatristdashboard");
+                }, 5000)
             }
         }
         catch(err)
@@ -278,6 +277,10 @@ export default function AuthForms(props:any)
             if (err.response.data.msg === "Invalid credentials")
             {
                 setPsychErrorMsg("Credentials did not match. Please try again.");
+            }
+            if (err.response.data.msg.startsWith("No psychiatrist"))
+            {
+                setPsychErrorMsg(err.response.data.msg);
             }
         }
         // console.log('Psychiatrist Login Data:', psychiatristLoginData);
@@ -659,6 +662,14 @@ export default function AuthForms(props:any)
                                         }
                                         
                                     </>
+                                )
+                            }
+                            {
+                                // this is for psychiatrist login on success
+                                successPsychLoginMsg &&
+                                (
+                                    <p className="text-green-800  font-semibold">{successPsychLoginMsg}</p>
+
                                 )
                             }
                             {
