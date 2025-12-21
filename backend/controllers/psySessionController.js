@@ -122,7 +122,12 @@ module.exports.DeleteSession = async (req, res)=>{
 
 // ViewSessions for a specific Psychiatrist
 module.exports.ViewPsychiatristSession = async (req,res)=>{
-    const {psychiatristId} = req.params;
+    const psychiatristId = req.userId;
+    const role = req.role;
+    if (!psychiatristId || !role )
+    {
+        return res.status(400).json({success:false, msg:"Invalid credentials"})
+    }
     try
     {
         const foundPsychiatricSessions = await PsychiatristSession.find({psychiatristId:psychiatristId});
