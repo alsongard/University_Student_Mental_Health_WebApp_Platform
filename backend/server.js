@@ -94,6 +94,9 @@ app.use(
     config: { token: process.env.UPLOADTHING_TOKEN , dev: process.env.UPLOADTHING_IS_DEV, callbackUrl: "http://localhost:5000/api/uploadthing"},
   }),
 );
+
+
+
 // app.post("/api/trial/studentCreate",  registerStudent );
 app.use("/api/student", authStudentRouter);
 app.use("/api/psychatriast", authPsychatriastRouter);
@@ -143,7 +146,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options))
 //     }
 // });
 
-
+app.post("/api/logout", (req,res)=>{
+    res.clearCookie("authToken");
+    return res.status(200).json({success:true})
+});
 
 const io  = new Server(httpServer, {
     cors: ["http://localhost:5173", "https://university-student-psychiatrist-web.vercel.app"],
