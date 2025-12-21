@@ -12,13 +12,14 @@ export default function MessagingComponent()
     const [chatMessages, setChatMessages] = useState([]);
     const [chatHeaderMain, setChatHeader] = useState("");
     const [theRecieverId, setTheRecieverId] = useState<String>("");
+
     const getPsychiatristsContacts = async () =>
     {
         try
         {
             const response = await axios.get('http://localhost:5000/api/messages/getAllPsychiatrist', {withCredentials:true});
             console.log("Response from getPsychiatrists:");
-            console.log(response.data);
+            console.log(response.data.data);
 
             if (response.data.success)
             {
@@ -31,13 +32,16 @@ export default function MessagingComponent()
         }
     };
 
+    const getAllStudentsContacts = async () =>{}
+
     const getUserChatPartnersSideBar = async () =>
     {
         try
         {
             const response = await axios.get('http://localhost:5000/api/messages/retrieveUserChatPartners', {withCredentials:true});
-            console.log("Response from getUsers:");
-            console.log(response.data.data.length );
+            console.log("Response from getChatPartners:");
+            // console.log(response.data.data.length );
+            // console.log(response.data.data );
 
             if (response.data.success)
             {
@@ -61,13 +65,13 @@ export default function MessagingComponent()
 
     const getMessagesBetweenUsers = async (partnerId:String) =>
     {
+        console.log(`Getting messages between users with partnerId: ${partnerId}`);
         setTheRecieverId(partnerId);
-        console.log(`theRecieverId set to : ${theRecieverId}`);
         try
         {
             const response = await axios.get(`http://localhost:5000/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
-            // console.log("Response from getMessagesBetweenUsers:");
-            // console.log(response.data);
+            console.log("Response from getMessagesBetweenUsers:");
+            // console.log(response.data.data);
 
             if (response.data.success)
             {
@@ -139,8 +143,8 @@ export default function MessagingComponent()
             //     ...selectedChat,
             //     messages: [...selectedChat.messages, newMessage]
             // };
-            console.log('New Message');
-            console.log(newMessage);
+            console.log('New Message on handleMessage before emit');
+            // console.log(newMessage);
 
             // THIS IS AN UPDATE FOR THE FRONTEND CODE
             setChatMessages((prevData)=>{
@@ -180,21 +184,29 @@ export default function MessagingComponent()
 
 
     // Listener on event:
-    if (socketRef.current)
-    {
-        socketRef.current.on("newMessage", (myNewMessage)=>{
-            // append message to chats displayed
-            console.log('newMessage on someData below')
-            console.log(myNewMessage);
-            setChatMessages((prevData)=>
-                prevData.map((message)=>{
-                    return message.tempId == myNewMessage.tempId ? {...myNewMessage} : message
-                })
-            )
+    useEffect(()=>{
+        if (!socketRef.current) return;
 
+        if (socketRef.current)
+        {
+            socketRef.current.on("newMessage", (myNewMessage)=>{
+                // append message to chats displayed
+                console.log('newMessage on someData below')
+                // console.log(myNewMessage);
+                setChatMessages((prevData)=>
+                    prevData.map((message)=>{
+                        return message.tempId == myNewMessage.tempId ? {...myNewMessage} : message
+                    })
+                )
+    
+    
+            })
+        }
+        return ()=>{
+            socketRef.current.off("newMessage")
+        }
 
-        })
-    }
+    },[])
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -278,12 +290,13 @@ export default function MessagingComponent()
                                             key={chat._id}
                                             onClick={()=>{ 
                                                 console.log(`chat`);
-                                                console.log(chat);
-                                                console.log(`typeof: chat.psychiatristId : ${typeof(chat.psychiatristId)} ${chat.psychiatristId}`); // string 
+                                                // console.log(chat);
+                                                // console.log(`typeof: chat.psychiatristId : ${typeof(chat.psychiatristId)} ${chat.psychiatristId}`); // string 
+                                                console.log(`typeof: chat.​​studentId : ${typeof(chat.​​studentId)} ${chat.​​studentId}`); // string 
                                                 setChatHeader(chat);
-                                                getMessagesBetweenUsers(chat.psychiatristId);
+                                                getMessagesBetweenUsers(chat.psychiatristId || chat.studentId);
                                                 setSelectedChat(true)
-                                                }}
+                                            }}
                                             // className={`px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 transition ${
                                             className={`px-4 py-3 rounded-md bg-slate-600  cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 transition ${
                                                 chatHeaderMain?._id === chat._id ? 'bg-blue-50 dark:bg-gray-500' : ''
@@ -306,8 +319,8 @@ export default function MessagingComponent()
                                                 
                                                 <div className="min-w-0">
                                                     <div className="flex flex-col items-start justify-between mb-1">
-                                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.fullName}</h3>
-                                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.specilization}</h3>
+                                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.fullName || chat.studentName}</h3>
+                                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.specilization || chat.course}</h3>
                                                         {/* <span className="text-xs dark:text-white text-gray-500 flex-shrink-0 ml-2">{new Date(chat.updatedAt).toISOString().split("T")[0]}</span> */}
                                                     </div>
                                                     {/* <p className="text-sm text-gray-500 dark:text-white truncate mb-1">{chat.recieverRole}</p> */}
@@ -392,7 +405,7 @@ export default function MessagingComponent()
                                     )} */}
                             </div>
                             <div>
-                                <h2 className="font-bold dark:text-white text-gray-900">{myRole == "student" ? chatHeaderMain.fullName : chatHeaderMain.studentName}</h2>
+                                <h2 className="font-bold dark:text-white text-gray-900">{myRole == "student" ? chatHeaderMain?.fullName : chatHeaderMain?.studentName}</h2>
                                 {/* <p className="text-xs dark:text-white text-gray-500">{selectedChat.online ? 'Online' : 'Offline'}</p> */}
                                 <p className="text-xs dark:text-white text-gray-500">{ 'Offline'}</p>
                             </div>
