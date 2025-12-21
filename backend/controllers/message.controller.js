@@ -131,13 +131,14 @@ const sendMessage = async (data, socket,  callback)=>{
 const retrieveMessagesBtwn = async(req, res)=>{
     console.log("entering retrieveMessagesBtwn ");
     const receiverId = req.params.id
+    const senderId = req.userId;
     // retrieve Messages based on myId and sendersId: that is in both cases we have: senderId and receiverId for both reciever and senderId
-    
+    // console.log(`receiverId: ${receiverId}`);
+    // console.log(`senderId: ${senderId}`);
     try
     {   
         // having the decodedToken i can get the userId
-        const senderId = req.userId;
-        const messages = await Message.find({$or: [{senderId:senderId, receiverId:receiverId}, {receiverId:receiverId, senderId:senderId}]});
+        const messages = await Message.find({$or: [{senderId:senderId, receiverId:receiverId}, {receiverId:senderId, senderId:receiverId}]});
         // the above string retrieves the messages between the User and the Receiver
         // console.log("messages");
         // console.log(messages);
