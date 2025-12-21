@@ -4,14 +4,14 @@ import axios from 'axios';
 
 export default function PsychiatristSessionsManagement() 
 {
-	const psychId = localStorage.getItem('psychId');
 	const [view, setView] = useState('list'); // 'list', 'create', 'edit', 'view'
 	const [sessions, setSessions] = useState([]);
   
 	const getPsychiatristSessions = async ()=>{
 		try
 		{
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/viewSession/${psychId}`)
+			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/viewSession`, {withCredentials:true})
+			const response = await axios.get(`http://localhost:5000/api/psychiatristSession/viewSession`, {withCredentials:true})
 			if (response.data.success)
 			{
 				setSessions(response.data.data);
@@ -64,8 +64,8 @@ export default function PsychiatristSessionsManagement()
 		e.preventDefault();
 		try
 		{
+			// const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/createSession", {
 			const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/createSession", {
-				psychiatristId: psychId,
 				date:formData.date,
 				startTime: formData.startTime,
 				endTime:formData.endTime,
@@ -74,7 +74,7 @@ export default function PsychiatristSessionsManagement()
 				sessionDuration: formData.duration,
 				sesionStatus: formData.status,
 				maxBookings: formData.maxBookings
-			})
+			}, {withCredentials:true})
 			if (response.data.success)
 			{
 				setSuccessMessage(true);
