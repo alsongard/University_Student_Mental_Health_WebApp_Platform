@@ -186,7 +186,7 @@ const studentLogin = async (req, res)=>{
                 httpOnly:true,
                 secure: process.env.NODE_ENV === "production", // set to true in production
                 sameSite: "lax", // localhost frontend: port 5173 backend: port 5000
-                maxAge: 6 * 60 * 60 * 1000 // 6 hours day
+                maxAge: 360 * 60 * 1000 // 6 hours day
             });
             const studentInfo = {email: foundStudent.email, role:foundStudent.role};
             return res.status(200).json({success:true, data:{ studentInfo : studentInfo,  },  msg:"Login Success"})
