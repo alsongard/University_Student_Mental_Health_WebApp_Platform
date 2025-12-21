@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link , useNavigate} from 'react-router-dom';
 import {  useDispatch } from 'react-redux';
 import { isLoggedOut } from '../features/auth/authSlicer';
+import axios from 'axios';
 function StudentSideBar(props:any)
 {
     const {activeView, setActiveView} = props;
@@ -24,10 +25,13 @@ function StudentSideBar(props:any)
 
 
 
-    const handleLogout = ()=>{
+    const handleLogout = async ()=>{
             localStorage.clear();
+            console.log('Running logout')
+            const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
             dispatch(isLoggedOut());
             navigate("/",{replace:true});
+            window.location.reload();
         }
     return (
         // {/* Sidebar */}
