@@ -79,12 +79,13 @@ const { createRouteHandler } =  require("uploadthing/express");
 app.get("/api/auth/me", getAuthenticated,  (req, res)=>{
     // req.userId = decodedToken.userId;
     // req.role = decodedToken.role;
-    const userId = req.userId;
+    const userId = req.userId; // this is only used for cookies on autehentication aids in get  or post request
     const userRole = req.role;
+    const email = req.email;
     console.log('Running /api/auth/me route');
-    console.log(`userId: ${userId}, userRole: ${userRole}`);
+    console.log(`userId: ${userId}, userRole: ${userRole}, userEmail: ${email}`);
 
-    res.status(200).json({success:true, data:{id:userId, role:userRole}}); // this is for requireAuth:ProtectedRoutes:Redux
+    res.status(200).json({success:true, data:{email:email, role:userRole}}); // this is for requireAuth:ProtectedRoutes:Redux
 });
 
 app.use(
@@ -99,7 +100,7 @@ app.use(
 
 // app.post("/api/trial/studentCreate",  registerStudent );
 app.use("/api/student", authStudentRouter);
-app.use("/api/psychatriast", authPsychatriastRouter);
+app.use("/api/psychiatrist", authPsychatriastRouter);
 app.use("/api/psychiatristSession", psychiatristSession);
 app.use("/api/studentDetails", studentRouter);
 app.use("/api/bookSession",bookingRoutes );
