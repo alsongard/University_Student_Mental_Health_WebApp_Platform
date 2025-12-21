@@ -21,7 +21,7 @@ export const authenticationSlicer = createSlice({
             // console.log(state);
             state.role = null;
             state.email = null;
-            state.isAuthenticated = true;
+            state.isAuthenticated = false;
         },
         getCurrentState: (state)=>{
             console.log('Get Current State');
