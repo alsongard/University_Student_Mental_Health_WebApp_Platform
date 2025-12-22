@@ -1,12 +1,15 @@
 import { Heart, Home, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search } from 'lucide-react';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-
+import { Link , useNavigate} from 'react-router-dom';
+import {  useDispatch } from 'react-redux';
+import { isLoggedOut } from '../features/auth/authSlicer';
+import axios from 'axios';
 function StudentSideBar(props:any)
 {
     const {activeView, setActiveView} = props;
-
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    //
     const pathName = "usePathname";
 
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -20,10 +23,16 @@ function StudentSideBar(props:any)
         { id: 'profile', icon: <User className="w-5 h-5" />, label: 'Profile', href:"/studentdashboard/profile" }
     ];
 
-    const handleLogout =()=>{
-		// console.log('I was clicked!')
-		props.LogoutFun()
-	}
+
+
+    const handleLogout = async ()=>{
+            localStorage.clear();
+            console.log('Running logout')
+            const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
+            dispatch(isLoggedOut());
+            navigate("/",{replace:true});
+            window.location.reload();
+        }
     return (
         // {/* Sidebar */}
         <aside className={`bg-gradient-to-b from-blue-600 to-blue-700 text-white transition-all duration-300 ${
@@ -89,9 +98,4 @@ function StudentSideBar(props:any)
     )
 }
 
-const mapDispatchToProps = (dispatch)=>{
-	return {
-		LogoutFun: ()=>dispatch({type: "ON_LOGGED_OUT"})
-	}
-}
-export default connect(null, mapDispatchToProps)(StudentSideBar)
+export default StudentSideBar;

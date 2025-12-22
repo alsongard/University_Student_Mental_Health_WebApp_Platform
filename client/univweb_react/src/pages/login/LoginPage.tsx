@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Heart, User, Mail, Lock, CreditCard, UserCircle, Stethoscope, Eye, EyeOff } from 'lucide-react';
 import clsx from 'clsx';
 import axios from "axios";
-import { connect } from 'react-redux';
 import {useNavigate, useParams} from 'react-router-dom'
-import {  useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { isLoggedIn } from "../../features/auth/authSlicer.jsx"
+import { isLoggedIn } from "../../features/auth/authSlicer.js"
 export default function AuthForms(props:any) 
 {
 
@@ -28,13 +26,15 @@ export default function AuthForms(props:any)
         if (pageArgument === "student")
         {
             setDisplayStudent(true);
+            setDisplayPsychiatrist(false);
         }
     
         if (pageArgument === "psychiatrist")
         {
             setDisplayPsychiatrist(true);
+            setDisplayStudent(false);
         }
-    },[])
+    },[pageArgument])
 
     const [userType, setUserType] = useState('student');
     const [formMode, setFormMode] = useState('login');
@@ -81,7 +81,7 @@ export default function AuthForms(props:any)
 
     const [errorMsg, setErrorMsg] = useState('');
     // state for success
-    const [studentSuccess, setStudentSuccess] = useState(false);
+    const [studentSuccess, setStudentSuccess] = useState("");
 
     // state for otp verification
     const [ otpForm, setOtpForm] = useState(false);
@@ -113,7 +113,7 @@ export default function AuthForms(props:any)
             if (response.data.success) {
                 // Handle successful OTP verification
                 // console.log('this is response');
-                setStudentSuccess(true);
+                setStudentSuccess("true");
                 navigate("/studentdetails");
             }
         } catch (err) {
@@ -146,38 +146,31 @@ export default function AuthForms(props:any)
                 // console.log(studentSignupData)
 
                 // LOGIN
-                // const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", {
-                const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", {
-                    studentAdmission: studentSignupData.admissionNumber,
-                    password:  studentSignupData.password
-                });
 
-                // const response = await signIn('credentials',{
-                //     email: studentSignupData.email,
-                //     password: studentSignupData.password,
-                //     admissionNum: studentSignupData.admissionNumber,
-                //     redirect:false
-                // })
-                // console.log(Loginresponse);
+                // const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", {
+                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", 
+                    {
+                        studentAdmission: studentSignupData.admissionNumber,
+                        password:  studentSignupData.password
+                    },
+                    {withCredentials:true}
+                );
+
+
                 if (Loginresponse.status === 200)
                 {
                     // get student name
                     const {email, role} = Loginresponse.data.data.studentInfo;
                     // console.log(Loginresponse.data.data)
-                    const authToken = Loginresponse.data.data.authToken;
-                    const studentId = Loginresponse.data.data.studentId;
-                    localStorage.setItem("studentId", studentId);
-                    localStorage.setItem('authToken', authToken);    
                     localStorage.setItem("email", email);
-                    localStorage.setItem("role", role);
                     const myPayload = {
-                        token: authToken,
+                        email: email,
                         role: role
                     }
                     dispatch(isLoggedIn(myPayload));
-                    setStudentSuccess(true);
+                    setStudentSuccess("Signup success. Enter OTP");
                     setTimeout(()=>{
-                        setStudentSuccess(false);
+                        setStudentSuccess("");
                         navigate("/studentdashboard")
                     }, 5000);
                 }
@@ -194,19 +187,23 @@ export default function AuthForms(props:any)
                     alert('Passwords do not match!');
                     return;
                 }
+                setStudentSuccess("An email has been sent with your OTP for acccount creation are being otp prompted...");
                 // https://university-student-psychiatrist.onrender.com
                 // const response = await axios.post("http://localhost:5000/api/student/studentCreate", {
-                const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", {
-                    studentAdmissionNum:studentSignupData.admissionNumber,
-                    email:studentSignupData.email,
-                    password:studentSignupData.password,
-                });
+                const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", 
+                    {
+                        studentAdmissionNum:studentSignupData.admissionNumber,
+                        email:studentSignupData.email,
+                        password:studentSignupData.password,
+                    },
+                    {withCredentials:true}
+                );
                 if (response.data.success)
                 {
 
-                    setStudentSuccess(true);
+                    setStudentSuccess("true");
                     setTimeout(()=>{
-                        setStudentSuccess((prevValue)=>{return !prevValue});
+                        setStudentSuccess("");
                         setOtpForm(true);
                     }, 5000);
                     
@@ -244,34 +241,41 @@ export default function AuthForms(props:any)
     };
     
     const [errPsychMessage, setPsychErrorMsg] = useState('');
-
+    const [successPsychLoginMsg, setSuccessPsychLoginMsg] = useState("");
     const handlePsychiatristLoginSubmit = async (e) => {
         e.preventDefault();
         try
         {
             // https://university-student-psychiatrist.onrender.com/
+<<<<<<< HEAD
             // const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
             const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
+=======
+            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
+            const response = await axios.post("http://localhost:5000/api/psychiatrist/psychiatristLogin",
+>>>>>>> locally
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
-                }
+                },
+                {withCredentials:true}
             );
             if (response.data.success)
             {
-                const psychId = response.data.data.id;
+                setSuccessPsychLoginMsg("Login successfull.. You are being redirected to Psychiatrist Dashboard");
+                // console.log
                 const role = response.data.data.role;
-                const authToken = response.data.data.authToken;
-                localStorage.setItem('psychId', psychId);    
-                localStorage.setItem("authToken", authToken);
-                localStorage.setItem("role", role);
+                const email = response.data.data.email;
+
                 const myPayload = {
-                    token: authToken,
+                    email: email,
                     role: role
                 }
                 dispatch(isLoggedIn(myPayload));
-
-                navigate("/psychiatristdashboard");
+                setTimeout(()=>{
+                    setSuccessPsychLoginMsg("");
+                    navigate("/psychiatristdashboard");
+                }, 5000)
             }
         }
         catch(err)
@@ -280,6 +284,10 @@ export default function AuthForms(props:any)
             if (err.response.data.msg === "Invalid credentials")
             {
                 setPsychErrorMsg("Credentials did not match. Please try again.");
+            }
+            if (err.response.data.msg.startsWith("No psychiatrist"))
+            {
+                setPsychErrorMsg(err.response.data.msg);
             }
         }
         // console.log('Psychiatrist Login Data:', psychiatristLoginData);
@@ -650,7 +658,7 @@ export default function AuthForms(props:any)
                                             )
                                             :
                                             (
-                                                <p className="text-green-800  font-semibold">Signup success. Enter OTP</p>
+                                                <p className="text-green-800  font-semibold">{studentSuccess}</p>
                                             )
         
                                         }
@@ -661,6 +669,14 @@ export default function AuthForms(props:any)
                                         }
                                         
                                     </>
+                                )
+                            }
+                            {
+                                // this is for psychiatrist login on success
+                                successPsychLoginMsg &&
+                                (
+                                    <p className="text-green-800  font-semibold">{successPsychLoginMsg}</p>
+
                                 )
                             }
                             {

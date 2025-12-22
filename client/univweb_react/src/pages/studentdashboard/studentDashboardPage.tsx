@@ -16,12 +16,18 @@ export default function StudentDashboard()
     const checkStudentDetailsExist = async()=>{
         try
         {
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`);
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/${studentId}`);
+            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, 
+                {withCredentials:true}
+            );
+            // console.log('checkStudentDetailsExist response.data');
+            // console.log(response.data);
             // console.log('response');
             // console.log(response);
-            if (response.data.success)
+            if (!response.data.success)
             {
-                console.log('Student details exist');
+                // Means no student details found
+                navigate("/studentdetails");
             }
         }
         catch(err)
@@ -54,8 +60,10 @@ export default function StudentDashboard()
     const getAllSessions = async()=>{
 		try
 		{
-            // const response = await axios.get("http://localhost:5000/api/psychiatristSession/getAllSessions");
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
+			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions",
+            const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions",
+                {withCredentials:true}
+            );
             // console.log(response)
             if (response.data.success)
             {
@@ -72,8 +80,8 @@ export default function StudentDashboard()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            // const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/${studentId}`);
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/${studentId}`);
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")
@@ -90,6 +98,7 @@ export default function StudentDashboard()
         }
     }
     useEffect(()=>{
+
         checkStudentDetailsExist();
         GetStudentBookedSessions();
         setTimeout(()=>{
@@ -99,7 +108,8 @@ export default function StudentDashboard()
 
         setTimeout(()=>
             {
-                const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>{
+                const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>
+                {
                     const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
                     // console.log('theDate');
                     // console.log(theDate);
@@ -114,7 +124,8 @@ export default function StudentDashboard()
 
                     // console.log("calenderSessions");
                     // console.log(calenderSessions);
-                }, 8000)
+            }, 8000);
+        
         }, [8000]
     );
 
@@ -378,7 +389,7 @@ export default function StudentDashboard()
             <main className="flex-1 overflow-y-auto">
            
             {/* Content Area */}
-                <div className="p-8">
+                <div className={`${activeView != "messages" && 'p-8'}`}>
                     {activeView === "overview" && renderOverview}
                     {activeView === "sessions" && <StudentSessionComponent/>}
                     {activeView === "messages" && <MessagingComponent/>}

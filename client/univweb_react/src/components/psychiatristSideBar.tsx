@@ -2,19 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Heart, Home, Calendar, RefreshCw, MessageSquare, FileText, LogOut, User, Clock, CheckSquare, ChevronLeft, ChevronRight, Bell } from 'lucide-react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import {isLoggedOut} from "../features/auth/authSlicer"
+import { useNavigate } from 'react-router-dom';
 function PsychiatristSidebar(props:any) 
 {
-	const psychId = localStorage.getItem('psychId');
-
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const {activeView, setActiveView, setUserDetials, setRefreshFlag, myNumber} = props;
 
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 	// const [activeView, setActiveView] = useState('overview');
 
-	const handleLogout =()=>{
+	const handleLogout = async ()=>{
 		// console.log('I was clicked!')
-		props.LogoutFun()
+		// const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
+		const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
+		dispatch(isLoggedOut());
+		navigate("/");
+		window.location.reload();
 	};
 
 	
@@ -34,8 +40,8 @@ function PsychiatristSidebar(props:any)
 		{
 			// https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/
 			// https://university-student-psychiatrist.onrender.com/
-			// const response = await axios.get(`http://localhost:5000/api/psychatriast/getpsychiatrist/${psychId}`);
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/${psychId}`);
+			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
+			const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
 	
 			if (response.data.success)
 			{
@@ -230,9 +236,5 @@ function PsychiatristSidebar(props:any)
 		</div>
   );
 }
-const mapDispatchToProps = (dispatch)=>{
-	return {
-		LogoutFun: ()=>dispatch({type: "ON_LOGGED_OUT"})
-	}
-}
-export default connect(null, mapDispatchToProps)(PsychiatristSidebar)
+
+export default PsychiatristSidebar

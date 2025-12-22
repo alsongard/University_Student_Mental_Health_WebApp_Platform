@@ -6,11 +6,18 @@ import PsychiatristSessionsManagement from '../../components/pyschiatristSession
 import PsychiatristFeedback from '../../components/psychiatristFeedbackComponent';
 import PsychiatristProfile from '../../components/psychiatristProfileComponent';
 import axios from 'axios';
+import MessagingComponent from '../../components/studentMessageComponent';
+import { useSelector } from 'react-redux';
 
 
 export default function PsychiatristDashboard()
 {
-	const psychId = localStorage.getItem('psychId'); 
+	const email = useSelector((state)=>{return state.myAuthSlicer.email});
+	const role = useSelector((state)=>{return state.myAuthSlicer.role});
+	// console.log('PsychiatristDashboard Email from Redux Store: ', email);
+	// console.log('PsychiatristDashboard Role from Redux Store: ', role);
+
+
 	const [refreshFlag, setRefreshFlag] = useState(false);
 	const [activeView, setActiveView] = useState('overview');
 	const [userDetails, setUserDetials] = useState(null);
@@ -22,8 +29,8 @@ export default function PsychiatristDashboard()
 		try
 		{
 			// https://university-student-psychiatrist.onrender.com/
-			// const response = await axios.get(`http://localhost:5000/api/bookSession/psychiatristViewBooked/${psychId}`);
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked/${psychId}`);
+			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
+			const response = await axios.get(`http://localhost:5000/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
 			if (response.data.success)
 			{
 				setmyBookedSessions(response.data.data);
@@ -76,7 +83,7 @@ export default function PsychiatristDashboard()
 		return (
 			<div className="space-y-6 ">
 				<div className="bg-gradient-to-r from-blue-600 dark:from-slate-600 to-blue-700 dark:to-slate-700 rounded-2xl p-8 text-white">
-					<h1 className="text-3xl font-bold dark:text-white mb-2">Welcome back  {userDetails ? userDetails : "..."}</h1>
+					<h1 className="text-3xl font-bold dark:text-white mb-2">Welcome back {userDetails ? userDetails : "..."}</h1>
 					<p className="text-blue-100 dark:text-white">Here's your schedule for today</p>
 				</div>
 
@@ -149,12 +156,13 @@ export default function PsychiatristDashboard()
 				{/* Top Bar */}
 
 				{/* Content Area */}
-				<div className="p-8">
+				{/* <div className="p-8"> */}
+                <div className={`${activeView != "messages" && 'p-8'}`}>
 					{activeView === "overview" && renderOverView()}
 					{activeView === "sessions" && <PsychiatristSessionsManagement/>}
 					{activeView === "booked-sessions" && <PsychiatristBookedSessions/>}
 					{activeView === "feedback" && <PsychiatristFeedback/>}
-					{activeView === "messages" && <div><h1>Messages Component Coming Soon...</h1></div>}
+					{activeView === "messages" && <MessagingComponent/>}
 					{activeView === "profile" && <PsychiatristProfile/>}
 				</div>
 			</main>

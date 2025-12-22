@@ -15,7 +15,8 @@ export default function PsychiatristBookedSessions()
 	const getBookedSessions = async ()=>{
 		try
 		{
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked/${psychId}`);
+			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
+			const response = await axios.get(`http://localhost:5000/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
 			if (response.data.success)
 			{
 				setPsychBookedSessions(response.data.data);
@@ -405,9 +406,9 @@ export default function PsychiatristBookedSessions()
 									className="w-16 h-16 rounded-full object-cover"
 								/>
 								<div>
-									<p className="text-lg font-bold text-gray-900">'SET NAME'</p>
+									<p className="text-lg font-bold text-gray-900">{selectedSession?.studentDetailsInfo?.studentName || ""}</p>
 									<p className="text-gray-600">Admission: {selectedSession.studentId.studentAdmissionNum}</p>
-									<p className="text-gray-600">Age: {selectedSession.studentAge} years</p>
+									<p className="text-gray-600">Age: {selectedSession?.studentDetailsInfo?.studentAge || ""} years</p>
 								</div>
 								</div>
 							</div>
@@ -420,7 +421,7 @@ export default function PsychiatristBookedSessions()
 									<Phone className="w-5 h-5 text-blue-600" />
 									<div>
 									<p className="text-xs text-gray-600">Phone</p>
-									<p className="font-semibold text-gray-900">'SET CONTACT'</p>
+									<p className="font-semibold text-gray-900">{selectedSession?.studentDetailsInfo?.phoneNumber}</p>
 									</div>
 								</div>
 								<div className="flex items-center space-x-3">
@@ -511,7 +512,7 @@ export default function PsychiatristBookedSessions()
 							{/* Action Buttons */}
 							<div className="flex space-x-4 pt-6 border-t border-gray-200">
 								<button className="flex-1 px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
-								Send Message
+									Send Message
 								</button>
 								{selectedSession.status === 'confirmed' && isSessionUpcoming(selectedSession.date) && (
 								<button className="flex-1 px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
@@ -519,10 +520,10 @@ export default function PsychiatristBookedSessions()
 								</button>
 								)}
 								<button
-								onClick={() => setShowSessionDetails(false)}
-								className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition"
+									onClick={() => setShowSessionDetails(false)}
+									className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition"
 								>
-								Close
+									Close
 								</button>
 							</div>
 							</div>

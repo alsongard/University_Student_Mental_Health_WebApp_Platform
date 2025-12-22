@@ -159,7 +159,8 @@ const studentLogin = async (req, res)=>{
         }
 
         const foundStudent = await Student.findOne({studentAdmissionNum: studentAdmission});
-
+        // console.log("foundStudent");
+        // console.log(foundStudent._id);
         if (!foundStudent)
         {
             return res.status(404).json({success:false, msg:`No student with the admission: ${studentAdmission}`});
@@ -177,18 +178,18 @@ const studentLogin = async (req, res)=>{
 
         if (decodePass && foundStudent.isAccountVerified === true)
         {
-            const authToken = jwt.sign({userId: foundStudent._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
+            const authToken =  jwt.sign({userId: foundStudent._id, role:"student"}, process.env.JWT_SECRET, {expiresIn: "360m"});
             // console.log("token");
             // console.log(authToken);
             
             res.cookie("authToken", authToken, {
-                httpOnly:false,
-                secure: process.env.NODE_ENV === 'production' ? true : false, 
-                sameSite: "lax", 
-                maxAge: 120 * 60 *1000 //2 hours minutes
+                httpOnly:true,
+                secure: process.env.NODE_ENV === "production", // set to true in production
+                sameSite: "lax", // localhost frontend: port 5173 backend: port 5000
+                maxAge: 360 * 60 * 1000 // 6 hours day
             });
             const studentInfo = {email: foundStudent.email, role:foundStudent.role};
-            return res.status(200).json({success:true, data:{ studentInfo, authToken: authToken, studentId: foundStudent._id },  msg:"Login Success"})
+            return res.status(200).json({success:true, data:{ studentInfo : studentInfo,  },  msg:"Login Success"})
         }
     }
     catch(err)
@@ -258,8 +259,8 @@ const getPasswordResetOTP = async (req,res)=>{
         }
         const theToken = req.cookies["tempToken"];
         const decodedToken = jwt.verify(theToken, process.env.JWT_SECRET);
-        console.log('this is decoded token');
-        console.log(decodedToken);
+        // console.log('this is decoded token');
+        // console.log(decodedToken);
         const userId = decodedToken.userId;
         const foundStudent = await Student.findOne({_id:userId});
         if (!foundStudent)
@@ -289,9 +290,9 @@ const getPasswordResetOTP = async (req,res)=>{
 }
 
 const getMe =  (req, res)=>{ // using these to get the request object: header token
-    const authToken = req.cookies["authToken"];
-    console.log('theToken on getMe');
-    console.log(authToken);
+    const authToken = req.cookies.authToken;
+    // console.log('theToken on getMe');
+    // console.log(authToken);
     try
     {
 
@@ -344,11 +345,8 @@ const UpdatePassword = async (req, res)=>
     }
 }
 
-const Logout  = (req,res)=>{
-    res.clearCookie("authToken");
-    return res.status(200).json({success:true})
-}
-module.exports = {registerStudent, getOTPUser, studentLogin, getMe, Logout, UpdatePassword};
+
+module.exports = {registerStudent, getOTPUser, studentLogin, getMe, UpdatePassword};
 
 
 /**

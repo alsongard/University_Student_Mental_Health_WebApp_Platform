@@ -1,3 +1,4 @@
+const PsychiatristDetails = require("../models/psychiatristdetail.model");
 const PsychiatristSession = require("../models/psychiatristSession.model")
 
 // createSession Controller
@@ -45,7 +46,7 @@ module.exports.createSession = async (req, res)=>{
 module.exports.UpdateSession = async (req, res)=>{
     const {sessionId} = req.params;
     const {psychiatristId, date,  startTime, endTime, sessionType, sessionMode, sessionDuration, maxBookings, sessionStatus} = req.body;
-    console.log(`${psychiatristId}\n ${date}\  ${startTime}\n ${endTime}\n ${sessionType}\n ${sessionMode}\n ${sessionDuration}`)
+    // console.log(`${psychiatristId}\n ${date}\  ${startTime}\n ${endTime}\n ${sessionType}\n ${sessionMode}\n ${sessionDuration}`)
     if (!psychiatristId || !date || !startTime || !endTime || !sessionDuration || !sessionType || !sessionMode || !sessionDuration ) {
         return res.status(400).json({error: "Invalid Input for creating session"});
 
@@ -121,7 +122,12 @@ module.exports.DeleteSession = async (req, res)=>{
 
 // ViewSessions for a specific Psychiatrist
 module.exports.ViewPsychiatristSession = async (req,res)=>{
-    const {psychiatristId} = req.params;
+    const psychiatristId = req.userId;
+    const role = req.role;
+    if (!psychiatristId || !role )
+    {
+        return res.status(400).json({success:false, msg:"Invalid credentials"})
+    }
     try
     {
         const foundPsychiatricSessions = await PsychiatristSession.find({psychiatristId:psychiatristId});
@@ -139,6 +145,7 @@ module.exports.ViewPsychiatristSession = async (req,res)=>{
     }
 }
 
+// ADMIN FUNCTIONALITY : WILL BE MOVED TO ADMIN CONTROLLER LATER
 module.exports.GetAllSessions = async(req, res)=>{
     try
     {
@@ -161,13 +168,77 @@ module.exports.GetAllSessions = async(req, res)=>{
 module.exports.ViewSessions = async (req, res)=>{
     try
     {
-        const allSessions = await PsychiatristSession.find().select("-psychiatristId"); // retrieve allSessions
+        const allSessions = await PsychiatristSession.find(); // retrieve allSessions
         // check the length
         if (allSessions.length === 0)
         {
             return res.status(200).json({success:true, msg:"No available session yet"});
         }
-        return res.status(200).json({success:true, data:allSessions});
+        // console.log("allSessions");
+        // console.log(typeof(allSessions)); // array ::
+        // console.log(allSessions);
+        // PROCEEEDING TO USE COMBINED APPROACH
+        const psychIds = [...new Set(allSessions.map((sessionItem)=>{
+            return sessionItem.psychiatristId
+        }))];
+        
+        const psychDetails = await PsychiatristDetails.find({psychiatristId:{$in:psychIds}}).select('fullName specilization psychiatristId ')
+        
+        console.log("psychDetails");
+        // console.log(typeof(psychDetails));
+        // console.log(psychDetails);
+        // Get details for these psychiatrists
+        /*
+            psychDetails
+            object
+            [
+            {
+                _id: new ObjectId('6939c45d446162c08bb9b3da'),
+                psychiatristId: new ObjectId('692bbcb9946ace680fc7e177'),
+                fullName: 'Dr. Michael Chen',
+                specilization: 'Depression & Anxiety'
+            }
+            ]
+        */
+
+        // Create a map for quick lookup
+        const detailsMap = {};
+        psychDetails.forEach(detail => 
+            {
+                detailsMap[detail.psychiatristId.toString()] = {
+                    fullName: detail.fullName,
+                    specialization: detail.specilization
+                };
+            }
+        );
+
+        // console.log("detailsMap");
+        // console.log(detailsMap);
+
+
+        /*
+        detailsMap
+        {
+            '692bbcb9946ace680fc7e177': { fullName: 'Dr. Michael Chen', specialization: undefined }
+        }
+        */
+        // Combine sessions with details
+        const sessionsWithDetails = allSessions.map(session => 
+            {
+                const detail = detailsMap[session.psychiatristId.toString()] || {}; // using psychiatristId as key for accessing values in detailsMap if not exist return empty
+                return {
+                    ...session.toObject(),
+                    fullName: detail.fullName,
+                    specialization: detail.specialization
+                };
+            });
+
+        // console.log("sessionsWithDetails");
+        // console.log(sessionsWithDetails);
+
+
+        return res.status(200).json({success:true, data:sessionsWithDetails});
+
     }
     catch(err)
     {
