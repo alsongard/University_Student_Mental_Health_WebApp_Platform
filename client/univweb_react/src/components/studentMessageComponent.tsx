@@ -19,8 +19,8 @@ export default function MessagingComponent()
         {
             // const response = await axios.get('http://localhost:5000/api/messages/getAllPsychiatrist', {withCredentials:true});
             const response = await axios.get('https://university-student-psychiatrist.onrender.com/api/messages/getAllPsychiatrist', {withCredentials:true});
-            console.log("Response from getPsychiatrists:");
-            console.log(response.data.data);
+            // console.log("Response from getPsychiatrists:");
+            // console.log(response.data.data);
 
             if (response.data.success)
             {
@@ -42,7 +42,7 @@ export default function MessagingComponent()
             
             // const response = await axios.get('http://localhost:5000/api/messages/retrieveUserChatPartners', {withCredentials:true});
             const response = await axios.get('https://university-student-psychiatrist.onrender.com/api/messages/retrieveUserChatPartners', {withCredentials:true});
-            console.log("Response from getChatPartners:");
+            // console.log("Response from getChatPartners:");
             // console.log(response.data.data.length );
             // console.log(response.data.data );
 
@@ -50,7 +50,7 @@ export default function MessagingComponent()
             {
                 if (response.data.data.length === 0)
                 {
-                    console.log("No Chats At the moment");
+                    // console.log("No Chats At the moment");
                     setChatUsersList([]);
                     return;
                 };
@@ -68,13 +68,13 @@ export default function MessagingComponent()
 
     const getMessagesBetweenUsers = async (partnerId:String) =>
     {
-        console.log(`Getting messages between users with partnerId: ${partnerId}`);
+        // console.log(`Getting messages between users with partnerId: ${partnerId}`);
         setTheRecieverId(partnerId);
         try
         {
             // const response = await axios.get(`http://localhost:5000/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
             const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
-            console.log("Response from getMessagesBetweenUsers:");
+            // console.log("Response from getMessagesBetweenUsers:");
             // console.log(response.data.data);
 
             if (response.data.success)
@@ -167,13 +167,13 @@ export default function MessagingComponent()
 
             if (socketRef.current)
             {
-                console.log('=== CLIENT: Before emit ===');
-                console.log('Socket exists:', !!socketRef);
-                console.log('socketRef connected:', socketRef.current.connected);
-                console.log('socketRef ID:', socketRef.current.id);
+                // console.log('=== CLIENT: Before emit ===');
+                // console.log('Socket exists:', !!socketRef);
+                // console.log('socketRef connected:', socketRef.current.connected);
+                // console.log('socketRef ID:', socketRef.current.id);
                 socketRef.current.emit("sendMessage", newMessage, (response)=>{
                     setMessageInput('');
-                    console.log("argument from backend");
+                    // console.log("argument from backend");
                     if(response.status == "ok")
                     {
                         console.log('Message sent successfully');
@@ -196,7 +196,7 @@ export default function MessagingComponent()
         {
             socketRef.current.on("newMessage", (myNewMessage)=>{
                 // append message to chats displayed
-                console.log('newMessage on someData below')
+                // console.log('newMessage on someData below')
                 // console.log(myNewMessage);
                 setChatMessages((prevData)=>
                     prevData.map((message)=>{
