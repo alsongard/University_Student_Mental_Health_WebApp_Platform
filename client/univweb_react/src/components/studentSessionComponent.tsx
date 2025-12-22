@@ -10,8 +10,8 @@ export default function StudentSessionComponent()
     const getAllSessions = async()=>{
 		try
 		{
-			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions", );
-			const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions");
+			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions", );
+			// const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions");
             // console.log(response)
             if (response.data.success)
             {
@@ -63,8 +63,8 @@ export default function StudentSessionComponent()
         try
         {
             // console.log('sucess is success'); // Testing
-            // const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/${studentId}`, {
-            const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking/`, {
+            // const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking`, {
+            const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/createBooking`, {
                 sessionId: singleSession._id,
                 psychiatristId: singleSession.psychiatristId,
                 status: "scheduled",

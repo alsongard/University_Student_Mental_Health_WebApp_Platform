@@ -30,8 +30,8 @@ export default  function StudentProfile()
         {
             // ON RENDER
             // /api/student
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails/`, {withCredentials:true})
-            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, {withCredentials:true})
+            // const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails`, {withCredentials:true})
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`, {withCredentials:true})
             // console.log('response')
             
             // console.log(response);
@@ -108,8 +108,8 @@ export default  function StudentProfile()
     const handleUpdatePassword = async ()=>{
         try
         {
-            // const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/studentDetails/updateStudentPassword/", passwordInfo, {withCredentials:true})  
-            const response = await axios.put("http://localhost:5000/api/studentDetails/updateStudentPassword/", passwordInfo,{withCredentials:true})  
+            // const response = await axios.put("http://localhost:5000/api/studentDetails/updateStudentPassword/", passwordInfo,{withCredentials:true})  
+            const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/studentDetails/updateStudentPassword/", passwordInfo, {withCredentials:true})  
             // console.log(response);
             if (response.data.success)
             {

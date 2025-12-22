@@ -12,8 +12,8 @@ export default function StudentFeedBack()
         try
         {
             // http://localhost:5000/
-            // const response = await axios.get(`http://localhost:5000/api/feedback/getStudentFeedback/${studentId}`);
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/feedback/getStudentFeedback/${studentId}`);
+            // const response = await axios.get(`http://localhost:5000/api/feedback/getStudentFeedback`, {withCredentials:true});
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/feedback/getStudentFeedback`, {withCredentials:true});
     
             if (response.data.success)
             {

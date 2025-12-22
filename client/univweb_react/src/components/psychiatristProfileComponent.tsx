@@ -72,8 +72,8 @@ export default function PsychiatristProfile()
         try
         {
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails/${psychId}`);
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/${psychId}`);
+            // const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
             if (response.data.success)
             {
                 // console.log('repsonse.data.data');
@@ -233,7 +233,8 @@ export default function PsychiatristProfile()
                 token: token,
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword
-            })
+            },
+            {withCredentials:true});
             if (response.data.success)
             {
                 setSuccessChangePassword(true);
@@ -267,13 +268,13 @@ export default function PsychiatristProfile()
         try
         {
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails/${psychId}`, {
-            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails/${psychId}`, {
+            // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails`, {
+            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
                 fullName: personalInfo.fullName,
                 phoneNumber: personalInfo.phoneNumber,
                 officeLocation: personalInfo.officeLocation,
                 biography: personalInfo.biography
-            })
+            }, {withCredentials:true});
             if (response.data.sucess)
             {
                 alert('Profile updated successfully!');
@@ -292,13 +293,13 @@ export default function PsychiatristProfile()
         {
             
             // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails/692bbcb9946ace680fc7e177`, {
-            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails/${psychId}`, {
+            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
                 specilization: professionalDetails.specialization,
                 yearsExperience: professionalDetails.yearsOfExperience,
                 consultationDays: professionalDetails.consultationDays,
                 consultationHours: professionalDetails.consulationHours,
                 Education: professionalDetails.education  
-            })
+            }, {withCredentials:true});;
             if (response.data.success)
             {
 
