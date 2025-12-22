@@ -1,5 +1,4 @@
 import { Bell , Home, Calendar, MessageSquare, FileText, User} from "lucide-react";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 export default function StudentDashboardHeader()
 {

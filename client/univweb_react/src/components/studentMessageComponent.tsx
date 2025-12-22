@@ -17,7 +17,8 @@ export default function MessagingComponent()
     {
         try
         {
-            const response = await axios.get('http://localhost:5000/api/messages/getAllPsychiatrist', {withCredentials:true});
+            // const response = await axios.get('http://localhost:5000/api/messages/getAllPsychiatrist', {withCredentials:true});
+            const response = await axios.get('https://university-student-psychiatrist.onrender.com/api/messages/getAllPsychiatrist', {withCredentials:true});
             console.log("Response from getPsychiatrists:");
             console.log(response.data.data);
 
@@ -38,7 +39,9 @@ export default function MessagingComponent()
     {
         try
         {
-            const response = await axios.get('http://localhost:5000/api/messages/retrieveUserChatPartners', {withCredentials:true});
+            
+            // const response = await axios.get('http://localhost:5000/api/messages/retrieveUserChatPartners', {withCredentials:true});
+            const response = await axios.get('https://university-student-psychiatrist.onrender.com/api/messages/retrieveUserChatPartners', {withCredentials:true});
             console.log("Response from getChatPartners:");
             // console.log(response.data.data.length );
             // console.log(response.data.data );
@@ -69,7 +72,8 @@ export default function MessagingComponent()
         setTheRecieverId(partnerId);
         try
         {
-            const response = await axios.get(`http://localhost:5000/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
+            // const response = await axios.get(`http://localhost:5000/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
             console.log("Response from getMessagesBetweenUsers:");
             // console.log(response.data.data);
 
@@ -90,9 +94,10 @@ export default function MessagingComponent()
             console.error("Error fetching messages between users:", error);
         }
     }
+    // https://university-student-psychiatrist.onrender.com
     let socketRef = useRef(null);
     useEffect(()=>{
-        socketRef.current = io("http://localhost:5000", 
+        socketRef.current = io("https://university-student-psychiatrist.onrender.com", 
             {
                 transports: ['websocket', 'polling'],
                 autoConnect: true,
