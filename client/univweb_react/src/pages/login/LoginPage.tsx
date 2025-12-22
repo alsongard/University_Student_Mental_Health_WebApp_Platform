@@ -100,7 +100,6 @@ export default function AuthForms(props:any)
 
             // GETOPT
             // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/getOTP",
-
             // const response = await axios.post("api/student/getOTP",
             const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/getOTP",
                 {
@@ -247,13 +246,9 @@ export default function AuthForms(props:any)
         try
         {
             // https://university-student-psychiatrist.onrender.com/
-<<<<<<< HEAD
-            // const response = await axios.post("http://localhost:5000/api/psychatriast/psychatriastLogin",
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
-=======
+
             // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
             const response = await axios.post("http://localhost:5000/api/psychiatrist/psychiatristLogin",
->>>>>>> locally
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
