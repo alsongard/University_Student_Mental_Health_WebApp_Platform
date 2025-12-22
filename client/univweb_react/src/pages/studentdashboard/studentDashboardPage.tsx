@@ -17,11 +17,9 @@ export default function StudentDashboard()
         try
         {
             // const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, 
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,
-                {withCredentials:true}
-            );
-            // console.log('checkStudentDetailsExist response.data');
-            // console.log(response.data);
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,{withCredentials:true});
+            // console.log('checkStudentDetailsExist response.data.data');
+            // console.log(response.data.data);
             // console.log('response');
             // console.log(response);
             if (!response.data.success)
@@ -32,9 +30,9 @@ export default function StudentDashboard()
         }
         catch(err)
         {
-            console.log(`Error: ${err}`);
-            console.log('response.data.data')
-            console.log(err.response.data.data);
+            // console.log(`Error: ${err}`);
+            // console.log('response.data.data')
+            // console.log(err.response.data.data);
 
             console.log('response.status')
             console.log(err.response.status);
@@ -61,7 +59,7 @@ export default function StudentDashboard()
 		try
 		{
             // const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions",
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions",
+			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions",
                 {withCredentials:true}
             );
             // console.log(response)
