@@ -186,6 +186,7 @@ const studentLogin = async (req, res)=>{
                 httpOnly:true,
                 secure: process.env.NODE_ENV === "production", // set to true in production
                 sameSite: process.env.NODE_ENV === "production" ? "None" :"lax", // localhost frontend: port 5173 backend: port 5000
+                partitioned : process.env.NODE_ENV === "production" ? true : false, 
                 maxAge: 360 * 60 * 1000 // 6 hours day
             });
             const studentInfo = {email: foundStudent.email, role:foundStudent.role};
