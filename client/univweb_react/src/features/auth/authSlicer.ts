@@ -4,25 +4,24 @@ import { current } from '@reduxjs/toolkit';
 export const authenticationSlicer = createSlice({
     name: "authSli",
     initialState: {
-        token: null,
         role: null,
+        email:null,
         isAuthenticated:false
     },
     reducers: {
         isLoggedIn: (state, action) =>{
             console.log(`Entering isLoggedIn`);
-            console.log(action); // this is going to be an object
-
-            state.token = action.payload.token;
+            // console.log(action); // this is going to be an object
             state.role = action.payload.role;
+            state.email = action.payload.email;
             state.isAuthenticated = true;
         },
         isLoggedOut: (state)=>{
             console.log(`Entering isLoggedOut`);
-            console.log(state);
-            state.token = null;
+            // console.log(state);
             state.role = null;
-            state.isAuthenticated = true;
+            state.email = null;
+            state.isAuthenticated = false;
         },
         getCurrentState: (state)=>{
             console.log('Get Current State');

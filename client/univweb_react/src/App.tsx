@@ -17,6 +17,9 @@ import axios from "axios";
 import ErrorpPage from "./pages/error/page";
 import StudentDetailsRegistration from "./pages/studentdetails/studentDetails";
 import {isLoggedIn} from "./features/auth/authSlicer";
+import PsychiatristDetails from "./pages/psychiatristDetails/psychiatristDetails";
+import TrialStudentSessions from "./pages/trials/TrialPage";
+
 
 export default function App()
 {
@@ -24,10 +27,9 @@ export default function App()
 	const dispatch = useDispatch();
 
 	// we use localstorage
-	const userRole = localStorage.getItem("role")
 
 
-	console.log(`this is userRole: ${userRole}`);
+	// console.log(`this is userRole: ${userRole}`);
 	// the below is a ADANCED SOLUTION TO REDUX PERSISTENCE
 	const [darkMode, setDarkMode] = useState(false);
 
@@ -37,10 +39,14 @@ export default function App()
 		console.log('Running getVerifiedSession')
 		try
 		{
-			const response = await axios.get("http://localhost:5000/api/student/getMe", {withCredentials:true})
+			const response = await axios.get("http://localhost:5000/api/auth/me", {withCredentials:true})
 			if (response.status === 200)
 			{
-				dispatch({type: 'ON_LOGGED_IN'});
+				// console.log('User is authenticated');
+				// console.log(response.data.data);
+				const {email, role} = response.data.data;
+				const myPayload  = { role, email} ;
+				dispatch(isLoggedIn(myPayload));
 			}
 
 		}
@@ -50,26 +56,20 @@ export default function App()
 		}
 	};
 
-	
 	useEffect(()=>{
 		const result = window.matchMedia('(prefers-color-scheme: dark)')
 		setDarkMode(result.matches);
-		if (userRole)
-		{
-			const authToken = localStorage.getItem('authToken');    
-			const role = localStorage.getItem("role");
-			const myPayload = {
-				token: authToken,
-				role: role
-			}
-			dispatch(isLoggedIn(myPayload));
-		}
+	}, []);
+	
+	useEffect(()=>{
+		CheckSession();
 	}, [dispatch]);
 
 	
 	const ProtectedStudentDashboard = requireAuth(StudentDashboard, ['student']);
 	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard, ['psychiatrist', 'Counselor']);
-
+	const ProtectedPsychiatristDetails = requireAuth(PsychiatristDetails, ['psychiatrist', 'Counselor']);
+	const ProtectedStudentDetails = requireAuth(StudentDetailsRegistration, ['student']);
 	// how to handle persistence
 	
 
@@ -80,13 +80,14 @@ export default function App()
 				<Routes>
 					<Route path="/" element={<div><Header darkMode={darkMode} setDarkMode={setDarkMode}/><Outlet/><Footer/></div>}>
 						<Route index element={<Home/>}/>
-						<Route path="/about" element={<AboutPage/>}/>
-						<Route path='/services' element={<ServicesPage/>}/>
-						<Route path="/contact" element={<ContactPage/>}/>
-						<Route path="/login/:id" element={<AuthForms/>}/>
-						<Route path="/studentdashboard" element={<ProtectedStudentDashboard/>}/>
-						<Route path="/psychiatristdashboard" element={<ProtectedPsychiatristDashboard/>}/>
-						<Route path="/studentdetails" element={<StudentDetailsRegistration/>}/>
+						<Route path="about" element={<AboutPage/>}/>
+						<Route path='services' element={<ServicesPage/>}/>
+						<Route path="contact" element={<ContactPage/>}/>
+						<Route path="login/:id" element={<AuthForms/>}/>
+						<Route path="studentdashboard" element={<ProtectedStudentDashboard/>}/>
+						<Route path="psychiatristdashboard" element={<ProtectedPsychiatristDashboard/>}/>
+						<Route path="studentdetails" element={<ProtectedStudentDetails/>}/>
+						<Route path="psychiatristdetails" element={<ProtectedPsychiatristDetails/>}/>
 						<Route path="*" element={<ErrorpPage/>}/>
 					</Route>
 				</Routes>

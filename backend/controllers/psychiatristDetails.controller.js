@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 // create PsychiatristDetails
 const createPsychiatristDetails = async (req, res)=>{
     // ill be using authToken
+    const authToken = req.cookies.authToken;
     const { token , fullName, phoneNumber, officeLocation, biography, specilization, yearsExperience, Education, consultationDays, consultationHours,  email, sms, alerts, feedbackNotif } = req.body;
     console.log("psychiatrist details ");
     console.log(`token: ${token}\n fullName: ${fullName}\n phoneNumber: ${phoneNumber}\n officeLocation: ${officeLocation}\n biography: ${biography}\n specilization: ${specilization}\n yearsExperience: ${yearsExperience}\n Education: ${Education}\n consultationDays: ${consultationDays}\n consultationHours: ${consultationHours}\n email: ${email}\n sms: ${sms}\n alerts: ${alerts}\n feedbackNotif: ${feedbackNotif}`);
@@ -59,7 +60,17 @@ const createPsychiatristDetails = async (req, res)=>{
 
 // get PsychiatristDetails
 const getPsychiatristDetails = async (req, res)=>{
-    const {id} = req.params;
+    // req.userId = decodedToken.userId;
+    // req.role = decodedToken.role;
+    const id = req.userId;
+    const role = req.role;
+
+    console.log(`Getting psychiatrist details for id: ${id} with role: ${role}`);
+
+    if (role !== "psychiatrist" || !id)
+    {
+        return res.status(403).json({success:false, message:"Access denied: Only psychiatrists can access their details"});
+    }
     try
     {
         const foundPsychiatrist = await Psychatriast.findById(id);
@@ -69,6 +80,7 @@ const getPsychiatristDetails = async (req, res)=>{
         }
 
         const foundPsychiatristDetails = await PsychiatristDetails.findOne({psychiatristId: id});
+        
         if (!foundPsychiatristDetails)
         {
             return res.status(404).json({success:false, message:"Psychiatrist Details not found"});
@@ -86,7 +98,11 @@ const getPsychiatristDetails = async (req, res)=>{
 
 // update PsychiatristDetails
 const updatePsychiatristDetails = async (req, res)=>{
-    const { id } = req.params;
+    const id = req.userId;
+    if (!id)
+    {
+        return res.status(403).json({success:false, message:"Access denied: Invalid psychiatrist ID"});
+    }
     const { fullName, phoneNumber, officeLocation, biography, specilization, yearsExperience, Education, consultationDays, consultationHours,  email, sms, alerts, feedbackNotif } = req.body;
     try
     {

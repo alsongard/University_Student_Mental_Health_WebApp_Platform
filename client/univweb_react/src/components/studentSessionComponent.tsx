@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Search, MoveRight, Calendar, Loader } from "lucide-react";
+import { Search, Clock, Stethoscope, User, MoveRight, Calendar, Loader, View } from "lucide-react";
 import axios from "axios";
+import ViewStudentBookedInfo from "../components/viewStudentBookedInfo";
 export default function StudentSessionComponent()
 {
     const [selectedSession, setSelectedSession] = useState(null);
@@ -9,7 +10,8 @@ export default function StudentSessionComponent()
     const getAllSessions = async()=>{
 		try
 		{
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions");
+			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/getAllSessions", );
+			const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions");
             // console.log(response)
             if (response.data.success)
             {
@@ -34,7 +36,8 @@ export default function StudentSessionComponent()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/${studentId}`);
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")
@@ -60,18 +63,19 @@ export default function StudentSessionComponent()
         try
         {
             // console.log('sucess is success'); // Testing
-            // const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking/${studentId}`, {
-            const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/${studentId}`, {
+            // const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/${studentId}`, {
+            const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking/`, {
                 sessionId: singleSession._id,
-                psychiatristId: singleSession.psychiatristId._id,
+                psychiatristId: singleSession.psychiatristId,
                 status: "scheduled",
-            })
+            }, {withCredentials:true});
+
             if (response.data.success)
             {
                 setSuccessMessage(true);
                 setTimeout(()=>{
                     setBookSession(false);
-                }, 6000);
+                }, 3000);
             }
         }
         catch(err)
@@ -82,6 +86,8 @@ export default function StudentSessionComponent()
 
     if (bookSession)
     {
+        // console.log('single session');
+        // console.log(singleSession);
         return (
             <>
                 {singleSession &&
@@ -95,7 +101,7 @@ export default function StudentSessionComponent()
                                     <p
                                         className="w-full  dark:text-white px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                                     >
-                                        {singleSession.psychiatristId.psychiatristName}
+                                        {singleSession.fullName}
                                     </p>
                                 </div>
 
@@ -202,8 +208,47 @@ export default function StudentSessionComponent()
         {
             return session
         }
-    })
+    });
+    // console.log('new sessions');
+    // console.log(newSessions);
 
+    const getStatusColor = (status) => {
+        const colors = {
+            scheduled: 'border-blue-400 bg-blue-50',
+            completed: 'border-green-400 bg-green-50',
+            cancelled: 'border-red-400 bg-red-50',
+            pending: 'border-yellow-400 bg-yellow-50'
+        };
+        return colors[status] || 'border-gray-300 bg-white';
+    };
+
+    const getStatusBadge = (status) => {
+        const styles = {
+            scheduled: 'bg-blue-100 text-blue-700',
+            completed: 'bg-green-100 text-green-700',
+            cancelled: 'bg-red-100 text-red-700',
+            pending: 'bg-yellow-100 text-yellow-700'
+        };
+        return styles[status] || 'bg-gray-100 text-gray-700';
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+        });
+    };
+
+    const [studentBookedInfo, setStudentBookedInfo] = useState(false);
+    const [singleBookedInfo , setSingleBookedInfo] = useState();
+    if (studentBookedInfo)
+    {
+        // return the COMPONENT HERE
+        return <ViewStudentBookedInfo setBook={setStudentBookedInfo} bookedSession={singleBookedInfo} />
+    }
+    //grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6
     return (
         <section className='p-8 flex flex-col space-y-[50px] w-full'>
             <div className="space-y-6">
@@ -227,8 +272,8 @@ export default function StudentSessionComponent()
                                 <div key={session._id} className="bg-white rounded-xl shadow-md p-6 dark:hover:shadow-[0px_0px_0px_5px_gray] hover:shadow-xl transition">
                                     <div className="flex items-start justify-between mb-4">
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-900 mb-1">{session.psychiatristId.psychiatristName}</h3>
-                                            <p className="text-blue-600 font-semibold">{session.psychiatristId.specilization}</p>
+                                            <h3 className="text-xl font-bold text-gray-900 mb-1">{session.fullName}</h3>
+                                            <p className="text-blue-600 font-semibold">{session.specialization}</p>
                                         </div>
                                         <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
                                             Available
@@ -236,21 +281,26 @@ export default function StudentSessionComponent()
                                     </div>
     
                                     <div className="mb-4">
-                                        <p className="text-sm font-semibold text-gray-700 mb-2">Available Time Slots:</p>
+                                        <p className="text-sm font-semibold text-gray-700">Session Date</p>
+                                        <p className=' capitalize'>{new Date(session.date).toISOString().split('T')[0]}</p>  
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <p className="text-sm font-semibold text-gray-700 ">Available Time Slots:</p>
                                         <div className="space-y-2">
-                                            <button className='flex flex-row  space-x-[10px]'>
+                                            <p className='flex flex-row  space-x-[10px]'>
                                                 {session.startTime} &#8594; {session.endTime}
-                                            </button>
+                                            </p>
                                             <p>Remaining Bookings: 1</p>
-                                            {/* {session.availableSlots.map((slot, index) => (
+                                            {/* {session.availableSlots.map((slot, index) =>  ( ))}*/}
                                             <button
-                                                key={index}
+                                                // key={index}
                                                 // onClick={() => setSelectedSession({ ...session, selectedSlot: slot })} // WORK ON THESE
                                                 className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition text-sm font-medium text-gray-700"
                                             >
-                                                {slot}
+                                                View Session Details
                                             </button>
-                                            ))} */}
+                                            
                                         </div>
                                     </div>
     
@@ -314,44 +364,82 @@ export default function StudentSessionComponent()
 
 
             {/* STUDENT BOOKED SESSIONS */}
-            <div className="space-y-6">
-                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Booked Sessions</h1>
-                </div>
-                <div className="grid lg:grid-cols-2 gap-6">
-                    {
-                        studentBookedSessions  && studentBookedSessions.length > 0 && 
-                            studentBookedSessions.map((bookedSession) => (
-                                <div key={bookedSession._id} className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition">
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div>
-                                            <h3 className="text-xl font-bold text-gray-900 mb-1">{bookedSession.psychiatristId.psychiatristName}</h3>
-                                            <p className="text-blue-600 font-semibold">{bookedSession.psychiatristId.specialization}</p>
-                                        </div>
-                                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
-                                            Available
-                                        </span>
-                                    </div>
+            <div className="">
 
-                                    <div className="mb-4">
-                                        <p className="text-sm font-semibold text-gray-700 mb-2">Booked Time Slots:</p>
-                                        <div className="space-y-2">
-                                            {/* CHANGE THIS TO SHOW ONLY THE SELECTED SLOT */}
-                                            <p className='text-[15px] capitalize'>{bookedSession.status}</p>
-                                            {/* {bookedSession.availableSlots.map((slot, index) => (
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold dark:text-white text-gray-800">My Sessions</h1>
+                    <p className="text-gray-600 dark:text-white text-sm">Your upcoming therapy appointments</p>
+                </div>
+                {/* <div className=" bg-gradient-to-br from-blue-50 rounded-sm to-indigo-100 p-6"> */}
+                <div className="   rounded-sm  py-6">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="">
+                            {
+                                studentBookedSessions && studentBookedSessions.length > 0 && 
+                                    (studentBookedSessions.map((bookedSession) => (
+                                        <div 
+                                            key={bookedSession._id} 
+                                            // className={`border-2 rounded-xl shadow-md p-5 hover:shadow-xl transition-all duration-300 ${getStatusColor(bookedSession.status)}`}
+                                            className={` rounded-xl shadow-md p-5 hover:shadow-xl transition-all duration-300 hover:shadow-gray-500 bg-white `}
+                                        >
+                                            {/* Status Badge */}
+                                            <div className="flex justify-between items-start mb-4">
+                                                <span className={`text-xs   font-semibold px-3 py-1 rounded-full ${getStatusBadge(bookedSession.status)}`}>
+                                                    {bookedSession.status.toUpperCase()}
+                                                </span>
+                                                <Calendar className="w-5 h-5 text-gray-400" />
+                                            </div>
+
+                                            {/* Session Type */}
+                                            <div className="mb-4">
+                                                <h3 className="text-lg font-bold text-gray-900 capitalize">
+                                                    {bookedSession.sessionId.sessionType}
+                                                </h3>
+                                                <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">
+                                                    <Clock className="w-4 h-4" />
+                                                    <span>
+                                                        {bookedSession.sessionId.startTime} - {bookedSession.sessionId.endTime}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Psychiatrist Info */}
+                                            <div className="mb-4 pb-4 border-b border-gray-200">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <User className="w-4 h-4 text-indigo-600" />
+                                                    <p className="font-semibold text-gray-800">{bookedSession.fullName}</p>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Stethoscope className="w-4 h-4 text-indigo-600" />
+                                                    <p className="text-sm text-gray-600">{bookedSession.specilization}</p>
+                                                </div>
+                                            </div>
+
+                                            {/* Date */}
+                                            <div className="mb-4">
+                                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                                                    Session Date
+                                                </p>
+                                                <p className="text-sm font-semibold text-gray-800">
+                                                    {formatDate(bookedSession.sessionId.date)}
+                                                </p>
+                                            </div>
+
+                                            {/* Action Button */}
                                             <button
-                                                key={index}
-                                                // onClick={() => setSelectedbookedSession({ ...session, selectedSlot: slot })} // WORK ON THESE
-                                                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition text-sm font-medium text-gray-700"
+                                                onClick={()=>{
+                                                    setStudentBookedInfo(true)
+                                                    setSingleBookedInfo(bookedSession);
+                                                }} 
+                                                className="w-full bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-indigo-700 transition text-sm"
                                             >
-                                                {slot}
+                                                View Details
                                             </button>
-                                            ))} */}
                                         </div>
-                                    </div>
-                                </div>
-                            ))
-                    }
+                                    )))
+                            }
+                        </div>
+                    </div>
                 </div>
                 {
                     studentBookedSessions.length === 0 && 

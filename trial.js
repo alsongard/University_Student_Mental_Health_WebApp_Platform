@@ -31,7 +31,7 @@ const calendarSessions =  data.filter((studentSession)=>{
         return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
     })
 
-console.log(calendarSessions)
+// console.log(calendarSessions)
 
 
 psychiatristViewSessions =  [
@@ -67,7 +67,7 @@ const myTodaySessions = psychiatristViewSessions.filter((sessionBooked)=>{
 		return sessionBooked
 	}
 });
-console.log(`myTodaySessions: ${myTodaySessions.length}`)
+// console.log(`myTodaySessions: ${myTodaySessions.length}`)
 
 
 
@@ -127,3 +127,36 @@ getPsychAllSessions.filter((sessionInfo)=>{
 		return sessionInfo;
 	}
 })
+
+// const objectId = new ObjectId("507f1f77bcf86cd799439011");
+
+// console.log(typeof(objectId));
+
+
+
+const sessionDetails = {
+  _id: "693c2d7f024e044c1eca3eed",
+  createdAt: "2025-12-12T14:58:07.899Z",
+  currentBookings: 0,
+  date: "2025-12-31T00:00:00.000Z",
+  endTime: "12:00",
+  maxBookings: 10,
+  psychiatristId: { _id: "692bbcb9946ace680fc7e177" }
+};
+
+const psychiatristDetails =
+{
+  id: {
+    oid: "6939c45d446162c08bb9b3da"
+  },
+  psychiatristId: {
+    oid: "692bbcb9946ace680fc7e177"
+  },
+  fullName: "Dr. Michael Chen",
+  phoneNumber: "+1-555-0147",
+  specilization: "Depression & Anxiety",
+}
+
+
+
+

@@ -126,30 +126,17 @@ const medicLogin = async (req, res)=>{
 
     const foundPsychiatrist = await Psychatriast.findOne({psychatriastEmail: email});
     console.log('foundPsychiatrist');
-    console.log(foundPsychiatrist);
+    // console.log(foundPsychiatrist);
 
     if (!foundPsychiatrist)
     {
-        return res.status(404).json({success:false, msg:`No psychiatrist with the id: ${email}`})
+        return res.status(404).json({success:false, msg:`No psychiatrist with the email: ${email}`})
     }
 
 
     const decodePass = await bcrypt.compare(password, foundPsychiatrist.psychiatristPassword);
     console.log('decodePass');
     console.log(decodePass);
-    if (decodePass == true && foundPsychiatrist.isAccountVerified === true) // both are true
-    {
-        console.log('Both credentials are valid');
-        const authToken = jwt.sign({userId: foundPsychiatrist._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
-        res.cookie("authToken", authToken, {
-            httpOnly:true,
-            secure: process.env.NODE_ENV === 'production' ? true : false, 
-            sameSite: "lax", 
-            maxAge: 120 * 60 *1000 //15 minutes
-        });
-        return res.status(200).json({success:true,  data: {id: foundPsychiatrist._id,  role: foundPsychiatrist.role, token: authToken} ,  msg:"Login Success"})
-    }
-
     if (!decodePass)
     {
         return res.status(400).json({success:false, msg:'Invalid credentials'});
@@ -158,6 +145,24 @@ const medicLogin = async (req, res)=>{
     {
         return res.status(400).json({success:false, msg:'Account not verified'});
     }
+    if (decodePass == true && foundPsychiatrist.isAccountVerified === true) // both are true
+    {
+        console.log('Both credentials are valid'); 
+        console.log('foundPsychiatristDetails')
+        const authToken = jwt.sign({userId: foundPsychiatrist._id, role:foundPsychiatrist.role, email:foundPsychiatrist.psychatriastEmail}, process.env.JWT_SECRET, {expiresIn: "240m"});
+        console.log("authToken");
+        // console.log(authToken);
+
+        res.cookie("authToken", authToken, {
+            httpOnly:true,
+            secure: process.env.NODE_ENV === 'production' ? true : false, 
+            sameSite: "lax", 
+            maxAge: 240 * 60 *1000 //2 hours hours minutes seconds milliseconds
+        });
+        return res.status(200).json({success:true,  data: {role:foundPsychiatrist.role, email:foundPsychiatrist.psychatriastEmail} ,  msg:"Login Success"})
+    }
+
+
 }
 
 const getPsychiatristInfo = async (req,res)=>{

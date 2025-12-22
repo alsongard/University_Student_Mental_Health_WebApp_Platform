@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const PsychiatristDetailSchema = new mongoose.Schema({
     psychiatristId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'PsychiatristSession',
+        ref: 'Psychatriast',
         required: true,
         unique: true
     },
@@ -49,7 +49,7 @@ const PsychiatristDetailSchema = new mongoose.Schema({
         email: {type:Boolean, required:true},
         sms: {type:Boolean, required:true},
         alerts: {type:Boolean, required:true},
-        feedbackNotif: {type:String, required:true}
+        feedbackNotif: {type:Boolean, required:true}
     }
 });
 
