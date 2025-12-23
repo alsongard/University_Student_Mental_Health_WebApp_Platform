@@ -16,7 +16,7 @@ import PsychiatristDashboard from "./pages/psychiatristdashboard/psychiatristPag
 import axios from "axios";
 import ErrorpPage from "./pages/error/page";
 import StudentDetailsRegistration from "./pages/studentdetails/studentDetails";
-import {isLoggedIn} from "./features/auth/authSlicer";
+import {isLoggedIn, isLoggedOut} from "./features/auth/authSlicer";
 import PsychiatristDetails from "./pages/psychiatristDetails/psychiatristDetails";
 import TrialStudentSessions from "./pages/trials/TrialPage";
 
@@ -52,7 +52,8 @@ export default function App()
 		}
 		catch(err)
 		{
-			console.log(`Error: ${err}`)
+			console.log(`Error: ${err}`);
+			dispatch(isLoggedOut());
 		}
 	};
 

@@ -242,13 +242,14 @@ export default function AuthForms(props:any)
     const [errPsychMessage, setPsychErrorMsg] = useState('');
     const [successPsychLoginMsg, setSuccessPsychLoginMsg] = useState("");
     const handlePsychiatristLoginSubmit = async (e) => {
+        setPsychErrorMsg('');
         e.preventDefault();
         try
         {
             // https://university-student-psychiatrist.onrender.com/
 
             // const response = await axios.post("http://localhost:5000/api/psychiatrist/psychiatristLogin",
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychatriast/psychatriastLogin",
+            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatrist/psychiatristLogin",
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
@@ -280,9 +281,14 @@ export default function AuthForms(props:any)
             {
                 setPsychErrorMsg("Credentials did not match. Please try again.");
             }
-            if (err.response.data.msg.startsWith("No psychiatrist"))
+            else if(err.response.data.msg.startsWith("No psychiatrist"))
             {
                 setPsychErrorMsg(err.response.data.msg);
+            }
+            else if(err)
+            {
+                console.log(err.response.data.msg);
+                setPsychErrorMsg("An error occurred during login. Please try again later.");
             }
         }
         // console.log('Psychiatrist Login Data:', psychiatristLoginData);
@@ -665,6 +671,9 @@ export default function AuthForms(props:any)
                                         
                                     </>
                                 )
+                            }
+                            {
+                                // setup loading message
                             }
                             {
                                 // this is for psychiatrist login on success
