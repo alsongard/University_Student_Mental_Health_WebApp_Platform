@@ -19,6 +19,8 @@ import StudentDetailsRegistration from "./pages/studentdetails/studentDetails";
 import {isLoggedIn, isLoggedOut} from "./features/auth/authSlicer";
 import PsychiatristDetails from "./pages/psychiatristDetails/psychiatristDetails";
 import TrialStudentSessions from "./pages/trials/TrialPage";
+import {Analytics} from "@vercel/analytics/react";
+
 
 
 export default function App()
@@ -93,6 +95,7 @@ export default function App()
 					</Route>
 				</Routes>
 			</BrowserRouter>
+			<Analytics/>
 		</div>
 	)	
 }
