@@ -454,12 +454,12 @@ export default function PsychiatristSessionsManagement()
 
   // List View (Default)
 	return (
-		<div className="min-h-screen bg-gray-50 p-8">
+		<div className="min-h-screen dark:bg-slate-900 rounded-md bg-gray-50 p-8">
 			<div className="max-w-7xl mx-auto">
 				<div className="flex items-center justify-between mb-8">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Sessions</h1>
-					<p className="text-gray-600">Create and manage your available session slots</p>
+					<h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Manage Sessions</h1>
+					<p className="text-gray-600 dark:text-white">Create and manage your available session slots</p>
 				</div>
 				<button
 					onClick={() => setView('create')}
@@ -471,23 +471,23 @@ export default function PsychiatristSessionsManagement()
 				</div>
 
 				{/* Filters and Search */}
-				<div className="bg-white rounded-xl shadow-md p-6 mb-6">
+				<div className="bg-white dark:bg-slate-800  rounded-xl shadow-md p-6 mb-6">
 					<div className="grid md:grid-cols-2 gap-4">
 						<div className="relative">
-							<Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+							<Search className="w-5 h-5 dark:text-white absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
 							<input
 								type="text"
 								placeholder="Search by date, time, or type..."
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
-								className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+								className="w-full dark:text-white  dark:placeholder-white pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
 							/>
 						</div>
 						<div>
 							<select
 								value={filterStatus}
 								onChange={(e) => setFilterStatus(e.target.value)}
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+								className="w-full px-4 py-3 border dark:text-white  border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
 							>
 								<option value="all">All Status</option>
 								<option value="available">Available</option>
