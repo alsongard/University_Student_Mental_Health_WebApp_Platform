@@ -1,7 +1,7 @@
 const StudentDetails = require('../models/studentDetails.model');
 const jwt = require("jsonwebtoken");
-const  { createUploadthing } = require("uploadthing/express");
-
+// const  { createUploadthing } = require("uploadthing/express");
+// const PsychiatristDetails =  require('../models/psychiatristdetail.model');
 
 const createStudentDetails = async (req, res) => {
     
@@ -100,30 +100,96 @@ const getStudentDetails = async (req, res)=>{
 
 
 
-const f = createUploadthing();
+// const f = createUploadthing();
 
-const uploadRouter = {
-  // Define as many FileRoutes as you like, each with a unique routeSlug
-    myFileRouter: f({
-        image: {
-        /**
-         * For full list of options and defaults, see the File Route API reference
-         * @see https://docs.uploadthing.com/file-routes#route-config
-         */
-        maxFileSize: "4MB",
-        maxFileCount: 1,
-        },
-    })
-    .middleware(async({input})=>{
-        const studentId = input.studentId;
-        console.log(`studentId: ${studentId}`);
-        return {studentId}
-    })
-    .onUploadComplete(async ({ metadata, file}) => {
-        console.log("Full file data:", file);
-        console.log(`studentId: ${metadata.studentId}`)
-    }),
-} ;
+// const uploadRouter = {
+//   // Define as many FileRoutes as you like, each with a unique routeSlug
+//     profileImage: f({
+//         image: {
+//         /**
+//          * For full list of options and defaults, see the File Route API reference
+//          * @see https://docs.uploadthing.com/file-routes#route-config
+//          */
+//         maxFileSize: "4MB",
+//         maxFileCount: 1,
+//         },
+//     })
+//     .middleware(async({req})=>{ // the middlware function uses a different setup for accessing cookies
+//         console.log("entering uploadthign middleware")
+//         console.log("req.headers");
+//         console.log(req.headers);
+//         try
+//         {
+//             const cookieHeader = req.headers.cookie;
+//             if (!cookieHeader)
+//             {
+//                 throw new Error("NO cookie header");
+//             }
+//             console.log("cookieHeader in uploadthing");
+//             console.log(cookieHeader);
+    
+//             // Parse the cookie string to get the authToken
+//             const myCookies = cookieHeader.split(';').reduce((acc, cookie) => {
+//                 const [key, value] = cookie.trim().split('=');
+//                 acc[key] = value;
+//                 return acc;
+//                 }, {});
+//             console.log("myCookies");
+//             console.log(myCookies);
+//             const authToken = myCookies['authToken'];
+//             if (!authToken) {
+//                 throw new Error('No auth token');
+//             }
+//             const decodedToken = jwt.verify(authToken, process.env.JWT_SECRET);
+//             const { userId, role, email } = decodedToken;
+//             return {id: userId, role:role, email: email}
+//         }
+//         catch(err)
+//         {
+//             console.log(`Uploadthing Error: ${err}`);
+//         }
+
+//     })
+//     .onUploadComplete(async ({ metadata, file}) => {
+//         console.log("Full file data:", file);
+//         console.log(`studentId: ${metadata.id}`)
+
+//         let foundUser = null;
+//         try
+//         {
+//             console.log("running on onUploadComplete function");
+//             if (metadata.role === 'student')
+//             {
+//                 foundUser = StudentDetails.findOne({studentId: metadata.id});
+    
+//             }
+//             else if (metadata.role === 'psychiatrist')
+//             {
+//                 foundUser = PsychiatristDetails.findOne({psychiatristId: metadata.id});
+//             }
+//             if (!foundUser)
+//             {
+//                 throw new UploadThingError("Unauthorized user", "UNAUTHORIZED");
+//             }
+//             console.log(`file.url: ${file.url}`);
+//             foundUser.image = file.url
+//         }
+//         catch(err)
+//         {
+//             throw new UploadThingError("Unauthorized user");
+//         }
+//     }),
+// };
 
 
-module.exports = { createStudentDetails, getStudentDetails, uploadRouter };
+
+
+
+
+
+
+
+
+
+
+module.exports = { createStudentDetails, getStudentDetails };
