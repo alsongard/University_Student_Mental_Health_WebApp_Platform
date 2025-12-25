@@ -3,8 +3,6 @@ import { User, Mail, Lock, Camera, Edit, Save, X, Shield, CheckCircle, Eye, EyeO
 import axios from 'axios';
 export default function PsychiatristProfile() 
 {
-    const psychId = localStorage.getItem('psychId');
-    const token = localStorage.getItem('authToken');
     const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState('personal');
     const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -49,6 +47,7 @@ export default function PsychiatristProfile()
         psychiatristId: "",
         psychiatristName: "",
         psychiatristEmail: "",
+        image: "",
         psychiatristPassword: "********",
         psychiatristImageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop",
         // Additional optional fields
@@ -72,8 +71,8 @@ export default function PsychiatristProfile()
         try
         {
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
+            const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
             if (response.data.success)
             {
                 // console.log('repsonse.data.data');
@@ -104,6 +103,7 @@ export default function PsychiatristProfile()
                 setPsychiatristData({
                     psychiatristId: "",
                     psychiatristName: retrievedData.fullName,
+                    image: retrievedData.image,
                     psychiatristEmail: email || "Stephen West",
                     psychiatristPassword:"******",
                     psychiatristImageUrl: " https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop", 
@@ -223,14 +223,11 @@ export default function PsychiatristProfile()
         return;
         }
 
-        // psychiatrist id will be acquired from token : localStorage
-        localStorage.getItem('token');
         try
         {
             // /api/psychatriast/updatePsychiatristPassword
             // const response = await axios.put("http://localhost:5000/api/psychatriast/updatePsychiatristPassword", {
             const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/psychatriast/updatePsychiatristPassword", {
-                token: token,
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword
             },
@@ -263,10 +260,36 @@ export default function PsychiatristProfile()
     };
 
 
+    // HANDLE FILE UPLOAD
+    const [selectedFile, setSelectedFile] = useState(null);
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+    const handleImageUpload = async(event) => {
+        event.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('files', selectedFile);
+        console.log("formData");
+        console.log(formData)
+        try {
+            const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Set the content type
+                },
+                withCredentials:true
+            })
+            console.log(response);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    };
+
     // SAVING DATA
     const handlePersonalSubmit = async (event)=>{
         try
         {
+            await handleImageUpload(event);
             // https://university-student-psychiatrist.onrender.com/
             // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails`, {
             const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
@@ -321,28 +344,10 @@ export default function PsychiatristProfile()
     const handleNotificationsSubmit = (event)=>{}
 
 
-    const handleSave = () => {
-        setPsychiatristData({ ...editedData });
-        setIsEditing(false);
-        alert('Profile updated successfully!');
-    };
 
 
 
-
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        // if (file) {
-        // const reader = new FileReader();
-        // reader.onloadend = () => {
-        //     setEditedData(prev => ({
-        //     ...prev,
-        //     psychiatristImageUrl: reader.result
-        //     }));
-        // };
-        // reader.readAsDataURL(file);
-        // }
-    };
+   
 
     const [notificationsSuccessMessage, setNotificationsSuccessMessage] = useState(false);
     const handleNotificationSave =  async (event) => {
@@ -350,13 +355,13 @@ export default function PsychiatristProfile()
          try
         {
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails/${psychId}`, {
-            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails/${psychId}`, {
+            // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails`, {
+            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
                 email : notifications.emailNotifications ,
                 sms : notifications.emailNotifications ,
                 alerts : notifications.emailNotifications ,
                 feedbackNotif : notifications.emailNotifications ,
-            })
+            }, {withCredentials:true});
             if (response.data.success)
             {
 
@@ -386,7 +391,7 @@ export default function PsychiatristProfile()
                         <div className="flex items-end -mt-16 mb-6">
                             <div className="relative">
                                 <img
-                                    src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop"
+                                    src={psychiatristData.image ? psychiatristData.image : "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop"}
                                     alt={psychiatristData ? psychiatristData.fullName : "Loading.."}
                                     className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover"
                                 />
@@ -397,8 +402,9 @@ export default function PsychiatristProfile()
                                         <input
                                             type="file"
                                             accept="image/*"
-                                            onChange={handleImageUpload}
+                                            onChange={handleFileChange}
                                             className="hidden"
+                                    
                                         />
                                     </label>
                                 )}
@@ -486,7 +492,7 @@ export default function PsychiatristProfile()
                                         <span>Cancel</span>
                                     </button>
                                     <button
-                                        onClick={handleSave}
+                                        onClick={handlePersonalSubmit}
                                         className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                                     >
                                         <Save className="w-4 h-4" />

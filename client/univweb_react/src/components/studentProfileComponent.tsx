@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Eye } from "lucide-react";
+import { Eye, Camera } from "lucide-react";
 import { current } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
     // RENDERPROFILE
@@ -15,6 +15,7 @@ export default  function StudentProfile()
         avatar : "",
         phoneNumber: "", 
         course: "", 
+        image: "",
         yearOfStudy: "",
         address: "",
         emergencyContactName: "",
@@ -30,8 +31,8 @@ export default  function StudentProfile()
         {
             // ON RENDER
             // /api/student
-            // const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails`, {withCredentials:true})
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`, {withCredentials:true})
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`, {withCredentials:true})
+            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails`, {withCredentials:true})
             // console.log('response')
             
             // console.log(response);
@@ -46,6 +47,7 @@ export default  function StudentProfile()
                     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
                     phoneNumber: retrievedData.phoneNumber,
                     course: retrievedData.course,
+                    image: retrievedData.image,
                     yearOfStudy: retrievedData.yearOfStudy,
                     address: retrievedData.address,
                     emergencyContactName: retrievedData.emergencyContact.name,
@@ -108,8 +110,8 @@ export default  function StudentProfile()
     const handleUpdatePassword = async ()=>{
         try
         {
-            // const response = await axios.put("http://localhost:5000/api/studentDetails/updateStudentPassword/", passwordInfo,{withCredentials:true})  
-            const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/studentDetails/updateStudentPassword/", passwordInfo, {withCredentials:true})  
+            // const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/studentDetails/updateStudentPassword/", passwordInfo, {withCredentials:true})  
+            const response = await axios.put("http://localhost:5000/api/studentDetails/updateStudentPassword/", passwordInfo,{withCredentials:true})  
             // console.log(response);
             if (response.data.success)
             {
@@ -126,6 +128,30 @@ export default  function StudentProfile()
             console.log(`Error: ${err}`);
         }
     }
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('files', selectedFile);
+        console.log("formData");
+        console.log(formData)
+        try {
+            const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Set the content type
+                },
+                withCredentials:true
+            })
+            console.log(response);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    };
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-bold dark:text-white text-gray-900">Profile Settings</h1>
@@ -138,16 +164,25 @@ export default  function StudentProfile()
                             <div className="flex justify-between items-end mb-8">
                                 <div className="flex  flex-row space-x-6">
                                     <img
-                                        src={studentDetails.avatar}
+                                        src={studentDetails.image ? studentDetails.image : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"}
                                         alt={studentDetails.name}
                                         className="w-24 h-24 rounded-full object-cover border-4 border-blue-600"
                                     />
                                     <div>
                                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{studentDetails.name}</h2>
                                         <p className="text-gray-600 dark:text-white">{studentDetails.admissionNumber}</p>
-                                        <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg dark:text-white hover:bg-blue-700 transition font-semibold text-sm">
-                                            Change Photo
-                                        </button>
+                                        
+                                        {
+                                            isEditDetails &&
+                                            (
+                                                <form onSubmit={handleSubmit}>
+                                                    <input type="file" multiple={false} onChange={handleFileChange} />
+                                                    <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg dark:text-white hover:bg-blue-700 transition font-semibold text-sm">
+                                                        Change Photo
+                                                    </button>
+                                                </form>
+                                            )
+                                        }
                                     </div>
                                 </div>
 
