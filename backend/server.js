@@ -74,7 +74,7 @@ app.get("/", (req,res)=>{
     res.sendFile("index.html");
 })
 
-const { createRouteHandler } =  require("uploadthing/express");
+// const { createRouteHandler } =  require("uploadthing/express");
 
 
 app.get("/api/auth/me", getAuthenticated,  (req, res)=>{
@@ -89,13 +89,13 @@ app.get("/api/auth/me", getAuthenticated,  (req, res)=>{
     res.status(200).json({success:true, data:{email:email, role:userRole}}); // this is for requireAuth:ProtectedRoutes:Redux
 });
 
-app.use(
-  "/api/uploadthing",
-  createRouteHandler({
-    router: uploadRouter,
-    config: { token: process.env.UPLOADTHING_TOKEN , dev: process.env.UPLOADTHING_IS_DEV, callbackUrl: "http://localhost:5000/api/uploadthing"},
-  }),
-);
+// app.use(
+//   "/api/uploadthing",
+//   createRouteHandler({
+//     router: uploadRouter,
+//     config: { token: process.env.UPLOADTHING_TOKEN , dev: process.env.UPLOADTHING_IS_DEV, callbackUrl: "http://localhost:5000/api/uploadthing"},
+//   }),
+// );
 
 const Storage = multer.memoryStorage();
 const upload = multer({storage:Storage});
