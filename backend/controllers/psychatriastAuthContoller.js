@@ -157,7 +157,7 @@ const medicLogin = async (req, res)=>{
             httpOnly:true,
             secure: process.env.NODE_ENV === 'production' ? true : false, 
             sameSite: process.env.NODE_ENV === 'production' ? "None"  : "lax", 
-            maxAge: 240 * 60 *1000 //2 hours hours minutes seconds milliseconds
+            maxAge: 240 * 60 *1000 //4 hours hours minutes seconds milliseconds
         });
         return res.status(200).json({success:true,  data: {role:foundPsychiatrist.role, email:foundPsychiatrist.psychatriastEmail} ,  msg:"Login Success"})
     }
