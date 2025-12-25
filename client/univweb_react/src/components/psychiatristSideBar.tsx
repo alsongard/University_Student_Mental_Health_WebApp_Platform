@@ -16,8 +16,8 @@ function PsychiatristSidebar(props:any)
 
 	const handleLogout = async ()=>{
 		// console.log('I was clicked!')
-		const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
-		// const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
+		// const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
+		const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
 		dispatch(isLoggedOut());
 		navigate("/");
 		window.location.reload();
@@ -40,8 +40,8 @@ function PsychiatristSidebar(props:any)
 		{
 			// https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/
 			// https://university-student-psychiatrist.onrender.com/
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
-			// const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
+			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
+			const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
 	
 			if (response.data.success)
 			{
@@ -50,7 +50,7 @@ function PsychiatristSidebar(props:any)
 					name: retrievedData.fullName,
 					specialization: retrievedData.specilization,
 					email: "",
-					avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop"
+					avatar: retrievedData.image,
 				});
 
 				setUserDetials(retrievedData.fullName);
@@ -137,7 +137,7 @@ function PsychiatristSidebar(props:any)
 					<div>
 						<div className="flex items-center space-x-3">
 							<img
-								src={psychiatristDetails.avatar ? psychiatristDetails.avatar: "loading"}
+								src={psychiatristDetails.avatar ? psychiatristDetails.avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop"}
 								alt={psychiatristDetails.name ? psychiatristDetails.name: "loading"}
 								className="w-12 h-12 rounded-full object-cover border-2 border-white"
 							/>
