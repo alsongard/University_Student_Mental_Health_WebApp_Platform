@@ -20,7 +20,8 @@ const cookie = require('cookie-parser');
 const app = express();
 const sendMessage = require("./controllers/message.controller").sendMessage;
 const httpServer = createServer(app);
-
+const multer = require('multer');
+const cloudinary = require("cloudinary").v2;
 
 const corsOption = {
     origin: function (origin, callback){
@@ -96,7 +97,87 @@ app.use(
   }),
 );
 
+const Storage = multer.memoryStorage();
+const upload = multer({storage:Storage});
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true
+});
 
+app.post("/api/uploadFile",getAuthenticated, upload.array("files"), async (req, res)=>{
+    console.log('this is req.files');
+    // we use userId and role 
+    // console.log(req.files);
+    let foundDetails = null;
+    try
+    {
+
+        if (req.role === "student")
+        {
+            console.log('user is student');
+            foundDetails = await StudentDetails.findOne({studentId: req.userId});
+            if (!foundDetails)
+            {
+                return res.status(400).json({success:false, msg:"Student not found"});
+            }
+            // foundDetails.image; 
+        }
+        else if(req.role === "psychiatrist")
+        {
+            console.log('user is student');
+            foundDetails = await PsychiatristDetails.findOne({psychiatristId: req.userId});
+            if (!foundDetails)
+            {
+                return res.status(400).json({success:false, msg:"Psychiatrist not found"});
+            }
+        }
+
+        for (let i = 0; i < 1; i++) // DO THIS TO PREVENT MULTIPLE UPLOADS:ATTACK
+        {
+            const file = req.files[i];
+            const result = await new Promise((resolve, reject)=>{
+
+                const stream = cloudinary.uploader.upload_stream(
+                    { // OPTIONS
+                        resource_type: "auto"
+                    },
+                    (err, result)=>{ // CALLBACK
+                        if (err)
+                        {
+                            console.log(`Error: An Error occures in Cloudinary Uploads`);
+                            console.log(err)
+                            reject(err);
+                        }
+                        if (result)
+                        {
+                            console.log(`Results after uploading`);
+                            console.log(result);
+                            resolve(result);
+                        }
+                    }
+                );
+                stream.end(file.buffer);
+            });
+
+            console.log(`My new result`);
+            // console.log(result);
+            foundDetails.image = result.url;
+            console.log(`foundDetails after upload`);
+            // console.log(foundDetails);
+            await foundDetails.save();
+            return res.status(200).json({success: true, msg:"File saved successfully"});
+        }
+
+    }
+    catch(err)
+    {
+        console.log(`Error: ${err}`);
+        return res.status(500).json({success:false, msg:`Error: ${err}`});
+    }
+
+} )
 
 // app.post("/api/trial/studentCreate",  registerStudent );
 app.use("/api/student", authStudentRouter);
@@ -158,63 +239,7 @@ const io  = new Server(httpServer, {
 });
 
 
-// SAVING MESSAGE TO DATABASE CAN BE DONE HERE
-const saveMessageToDB = async (messageData)=>
-{
-    if (!messageData.senderId || !messageData.receiverId || !messageData.senderRole || !messageData.text)
-    {
-        console.log('Error: Missing required message data fields');
-        return;
-    }
-    if (messageData.senderRole == "student")
-    {
-        console.log('Running on receiverDetails for psychiatrist');
-        const recevierDetails = await  PsychiatristDetails.findOne({'psychiatristId': messageData.receiverId}).populate("psychiatristId", "role"); 
-        // const recevierDetails = await  PsychiatristDetails.findOne({'psychiatristId': messageData.receiverId}); 
-    
-        if (!recevierDetails)
-        {
-            console.log(`Error: No Psychiatrist with id: ${messageData.receiverId}`);
-            return;
-        }
-        // console.log("recevierDetails");
-        // console.log(recevierDetails);
-        // console.log(`Receiver Details Role: ${recevierDetails.psychiatristId.role}` );
 
-        const response = await Message.create({
-            senderId: messageData.senderId,
-            receiverId: messageData.receiverId,
-            receiverName: recevierDetails.fullName,
-            recieverRole: recevierDetails.psychiatristId.role,
-            recieverAvatar: "", // to be implemented later
-            message: messageData.text
-        });
-        const success = "Ok";
-        return success;
-
-    }
-    else if (messageData.senderRole == "psychiatrist")
-    {
-        console.log('Running on receiverDetails for student');
-        const recevierDetails = await  StudentDetails.findOne({'studentId': messageData.receiverId});
-        if (!recevierDetails)
-        {
-            console.log(`Error: No reciever with id: ${messageData.receiverId}`);
-            return;
-        }
-        const response = await Message.create({
-            senderId: messageData.senderId,
-            receiverId: messageData.receiverId,
-            receiverName: recevierDetails.studentName,
-            recieverRole: messageData.senderRole == "student",
-            recieverAvatar: "", // to be implemented later
-            message: messageData.text
-        });
-        console.log((response));
-        const success = "Ok";
-        return success;
-    }
-}
 
 io.use((socket, next)=>{
     // contains the raw cookie string sent by the client during the WebSocket handshake
@@ -259,7 +284,6 @@ io.on("connection", (socket)=>{
     console.log('server is listening on port 5000: Socket connected');
     try
     {
-
         socket.on("sendMessage", async (dataReceived, callback)=>
         {
             console.log('=== SERVER: sendMessage event ===');
