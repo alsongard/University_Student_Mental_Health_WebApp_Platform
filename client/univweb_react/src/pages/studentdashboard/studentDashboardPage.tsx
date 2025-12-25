@@ -7,17 +7,21 @@ import MessagingComponent from '../../components/studentMessageComponent';
 import StudentFeedBack from '../../components/studentFeedbackComponent';
 import StudentProfile from '../../components/studentProfileComponent';
 import {  useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 export default function StudentDashboard()
 {
     const navigate = useNavigate();
     // check if studentDetails Exist in DB:
-    const studentId = localStorage.getItem("studentId");
+    const email = useSelector((state)=>{
+        return state.myAuthSlicer.email
+    });
 
+    // console.log(`this is email from myAuthSlicer: ${email}`);
     const checkStudentDetailsExist = async()=>{
         try
         {
-            // const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, 
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,{withCredentials:true});
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,{withCredentials:true});
+            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, {withCredentials:true});
             // console.log('checkStudentDetailsExist response.data.data');
             // console.log(response.data.data);
             // console.log('response');
@@ -48,7 +52,6 @@ export default function StudentDashboard()
     }
 
 
-    const email = localStorage.getItem("email");
     
     const [activeView, setActiveView] = useState('overview');
     
@@ -58,8 +61,8 @@ export default function StudentDashboard()
     const getAllSessions = async()=>{
 		try
 		{
-            // const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions",
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions",
+			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions",
+            const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions",
                 {withCredentials:true}
             );
             // console.log(response)
@@ -78,8 +81,8 @@ export default function StudentDashboard()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            // const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")

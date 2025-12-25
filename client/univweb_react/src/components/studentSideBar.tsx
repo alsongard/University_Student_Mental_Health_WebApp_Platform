@@ -1,4 +1,4 @@
-import { Heart, Home, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search } from 'lucide-react';
+import { Heart, Home, RefreshCw, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link , useNavigate} from 'react-router-dom';
 import {  useDispatch } from 'react-redux';
@@ -29,8 +29,8 @@ function StudentSideBar(props:any)
             localStorage.clear();
             console.log('Running logout');
             // https://university-student-psychiatrist.onrender.com
-            // const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
+            const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
+            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
             dispatch(isLoggedOut());
             navigate("/",{replace:true});
             window.location.reload();
@@ -75,9 +75,19 @@ function StudentSideBar(props:any)
                     </button>
                 ))}
             </nav>
-
-            {/* Collapse Button */}
+            
+            {/* Refresh */}
             <div className="p-4 border-t border-blue-500">
+                <button
+                    onClick={() => console.log('Refresh clicked')}
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 hover:bg-blue-400 rounded-lg transition"
+                >
+                    {sidebarCollapsed ? <RefreshCw className="w-5 h-5" /> : <RefreshCw className="w-5 h-5" />}
+                    {!sidebarCollapsed && <span  title='Refresh' className="font-semibold">Refresh</span>}
+                </button>
+            </div>
+            {/* Collapse Button */}
+            <div className="p-4 ">
                 <button
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                     className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 hover:bg-blue-400 rounded-lg transition"

@@ -12,10 +12,11 @@ import { useSelector } from 'react-redux';
 
 export default function PsychiatristDashboard()
 {
+	
 	const email = useSelector((state)=>{return state.myAuthSlicer.email});
 	const role = useSelector((state)=>{return state.myAuthSlicer.role});
-	// console.log('PsychiatristDashboard Email from Redux Store: ', email);
-	// console.log('PsychiatristDashboard Role from Redux Store: ', role);
+	// console.log('PsychiatristDashboard Email from Redux Store: ', email); // TESTING:WORKING
+	// console.log('PsychiatristDashboard Role from Redux Store: ', role); // TESTING:WORKING
 
 
 	const [refreshFlag, setRefreshFlag] = useState(false);
@@ -29,8 +30,8 @@ export default function PsychiatristDashboard()
 		try
 		{
 			// https://university-student-psychiatrist.onrender.com/
-			// const response = await axios.get(`http://localhost:5000/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
+			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
+			const response = await axios.get(`http://localhost:5000/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
 			if (response.data.success)
 			{
 				setmyBookedSessions(response.data.data);

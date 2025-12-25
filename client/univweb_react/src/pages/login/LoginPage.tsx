@@ -146,8 +146,8 @@ export default function AuthForms(props:any)
 
                 // LOGIN
 
-                // const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", 
-                const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", 
+                // const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", 
+                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", 
                     {
                         studentAdmission: studentSignupData.admissionNumber,
                         password:  studentSignupData.password
@@ -161,7 +161,7 @@ export default function AuthForms(props:any)
                     // get student name
                     const {email, role} = Loginresponse.data.data.studentInfo;
                     // console.log(Loginresponse.data.data)
-                    localStorage.setItem("email", email);
+                    // localStorage.setItem("email", email);
                     const myPayload = {
                         email: email,
                         role: role
@@ -188,8 +188,8 @@ export default function AuthForms(props:any)
                 }
                 setStudentSuccess("An email has been sent with your OTP for acccount creation are being otp prompted...");
                 // https://university-student-psychiatrist.onrender.com
-                // const response = await axios.post("http://localhost:5000/api/student/studentCreate", {
-                const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", 
+                // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", 
+                const response = await axios.post("http://localhost:5000/api/student/studentCreate", 
                     {
                         studentAdmissionNum:studentSignupData.admissionNumber,
                         email:studentSignupData.email,
@@ -248,8 +248,8 @@ export default function AuthForms(props:any)
         {
             // https://university-student-psychiatrist.onrender.com/
 
-            // const response = await axios.post("http://localhost:5000/api/psychiatrist/psychiatristLogin",
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatrist/psychiatristLogin",
+            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatrist/psychiatristLogin",
+            const response = await axios.post("http://localhost:5000/api/psychiatrist/psychiatristLogin",
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password

@@ -21,6 +21,38 @@ export default function PsychiatristDetails()
         }
     });
 
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };
+    const handleImageSubmit = async (e) => {
+        e.preventDefault();
+        if (!selectedFile) {
+            console.log('No file selected');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        try {
+            const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Set the content type
+                },
+                withCredentials:true
+            })
+            console.log(response);
+            if (response.status === 200) {
+                console.log('File uploaded successfully');
+                setSelectedFile(null); // Clear the selected file
+            } else {
+                console.log('File upload failed');
+            }
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    }
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
     
@@ -54,8 +86,10 @@ export default function PsychiatristDetails()
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async (event) => {
         console.log('Form submitted:', formData);
+        event.preventDefault();
+        await handleImageSubmit();
     };
 
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -252,7 +286,7 @@ export default function PsychiatristDetails()
                             </h2>
 
                             <div className="space-y-4">
-                                <label className="flex items-center dark:text-white gap-3 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                <label className="flex items-center dark:text-white gap-3 p-4 border border-gray-300 rounded-lg  cursor-pointer transition">
                                     <input
                                         type="checkbox"
                                         name="notifications.email"
@@ -266,7 +300,7 @@ export default function PsychiatristDetails()
                                     </div>
                                 </label>
 
-                                <label className="flex items-center dark:text-white gap-3 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                <label className="flex items-center dark:text-white gap-3 p-4 border border-gray-300 rounded-lg  cursor-pointer transition">
                                     <input
                                         type="checkbox"
                                         name="notifications.sms"
@@ -280,7 +314,7 @@ export default function PsychiatristDetails()
                                     </div>
                                 </label>
 
-                                <label className="flex items-center gap-3 dark:text-white p-4 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                <label className="flex items-center gap-3 dark:text-white p-4 border border-gray-300 rounded-lg  cursor-pointer transition">
                                     <input
                                         type="checkbox"
                                         name="notifications.alerts"
@@ -294,7 +328,7 @@ export default function PsychiatristDetails()
                                     </div>
                                 </label>
 
-                                <label className="flex items-center gap-3 dark:text-white p-4 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                                <label className="flex items-center gap-3 dark:text-white p-4 border border-gray-300 rounded-lg  cursor-pointer transition">
                                     <input
                                         type="checkbox"
                                         name="notifications.feedbackNotif"
@@ -307,6 +341,12 @@ export default function PsychiatristDetails()
                                         <div className="text-sm dark:text-white text-gray-600">Receive in-app notifications</div>
                                     </div>
                                 </label>
+
+                                <div className="mb-8 border-gray-300 border-1 p-4 rounded-xl">
+                                    <form onSubmit={handleImageSubmit}>
+                                        <input type="file" className="text-white" multiple={false} onChange={handleFileChange} />
+                                    </form>
+                                </div>
 
                                 {/* <div>
                                     <label className="block text-sm dark:text-white font-medium text-gray-700 mb-2">
@@ -337,7 +377,7 @@ export default function PsychiatristDetails()
                             </button>
                             <button
                                 onClick={() => console.log('Cancelled')}
-                                className="px-6 py-3 border-2 dark:text-white border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition"
+                                className="px-6 py-3 border-2 dark:text-white border-gray-300 rounded-lg font-semibold text-gray-700  transition"
                             >
                                 Cancel
                             </button>
