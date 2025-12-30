@@ -7,7 +7,7 @@ const studentDetailsSchema = new mongoose.Schema(
         studentAge: {type:Number, required:true},
         gender: {type:String, required:true},
         phoneNumber: {type:String, required:true},
-        image: {type:String, required:true,default: ""},
+        image: {type:String, default: ""},
         course: {type:String, required:true},
         yearOfStudy: {type:Number, required:true},
         address: {type:String, required:true},
