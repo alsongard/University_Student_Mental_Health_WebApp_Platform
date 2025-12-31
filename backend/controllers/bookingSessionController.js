@@ -28,7 +28,7 @@ module.exports.CreateBookingSession = async (req, res)=>
         const new_booking_session = await BookSession.create({sessionId:sessionId, studentId:studentId, studentDetailsInfo:studentDetails._id || "", psychiatristId:psychiatristId,  status:status});
         if (!new_booking_session)
         {
-            return res.status(500).json({success:false, msg: 'Internal Server Error: booking Failed '})
+            return res.status(500).json({success:false, msg: 'Internal Server Error: booking Failed'})
         }
         return res.status(201).json({success:true, msg:"Booking session created", data:new_booking_session});
     }
@@ -48,6 +48,11 @@ module.exports.DeleteBookingSession = async (req, res)=>{
         if (!foundBooking)
         {
             return res.status(404).json({success})
+        }
+        if (new Date(foundBooking.createdAt.getTime()) > Date.now() + (36 * 60 * 60 * 1000))
+        {
+            // WILL NOT PERFORM OPERATOIN IF DATE is 36 hours to session
+            return res.status(200).json({success:false, msg:"Cannot delete session: 36 hours to"})
         }
         const deletedBooking = await BookSession.findByIdAndDelete({_id:bookingId});
         return res.status(200).json({success:true, msg:'Deleted SuccessFully'})
