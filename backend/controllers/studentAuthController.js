@@ -38,7 +38,7 @@ const registerStudent = async (req, res)=>{
         const otp = crypto.randomBytes(64).toString('hex').slice(0,11);
         new_student.verifyOtp = otp;
 
-        const otpExpireTimer = Date.now() + (25 * 60 * 1000); // milliseconds minutes * seconds * milliseconds
+        const otpExpireTimer = Date.now() + (30 * 60 * 1000); // milliseconds minutes * seconds * milliseconds
         new_student.verifyOtpExpiresIn = otpExpireTimer;
 
 
@@ -61,20 +61,18 @@ const registerStudent = async (req, res)=>{
         console.log(`infostatus: ${infoStatus}`);
         if (infoStatus == 'OK')
         {
-            const userObject = {userId: new_student._id};
             
-            const tempTKN =  jwt.sign(userObject, process.env.JWT_SECRET, {expiresIn:'15m'});
-            // console.log(`tempTKN:`);
-            // console.log(tempTKN);
-            // res.cookie('tempToken', tempTKN, {
-            //     httpOnly:true,
-            //     secure: process.env.NODE_ENV === 'production' ? true : false, 
-            //     sameSite: "lax", 
-            //     maxAge: 15 * 60 *1000, //15 minutes
-            //     domain: "localhost",
-            //     path: "/"
-            // })
-            return res.status(201).json({success:true, msg:'Student Created and Otp sent', data:{studentId: new_student._id, token: tempTKN}});
+            
+            const tempTKN =  jwt.sign({userId: new_student._id}, process.env.JWT_SECRET, {expiresIn:'25m'});
+            console.log(`tempTKN:`);
+            console.log(tempTKN);
+            res.cookie('tempToken', tempTKN, {
+                httpOnly:true,
+                secure: process.env.NODE_ENV === 'production' ? true : false, 
+                sameSite: process.env.NODE_ENV === 'production' ? "None" : "lax", 
+                maxAge: 25 * 60 *1000, //25 minutes
+            })
+            return res.status(201).json({success:true, msg:'Student Created and Otp sent', data:{studentId: new_student._id}});
         }
         else
         {
@@ -93,28 +91,29 @@ const registerStudent = async (req, res)=>{
 
 // performing verification // button onclick=verifyAccount
 const getOTPUser = async (req,res)=>{
-    const {userOtp, token, studentId} = req.body;
+    const {userOtp} = req.body;
     console.log(`userOtp: ${userOtp}`);
-    console.log(`token: ${token}`);
-    console.log(`studentId: ${studentId}`);
+    // console.log(`token: ${token}`);
+    // console.log(`studentId: ${studentId}`);
 
-    if (!userOtp || !token || !studentId)
+
+
+    if (!userOtp)
     {
         return res.status(400).json({success:false, msg:"Invalid parameters"});
     }
     // const token = req.cookies['tempToken'];
     try
     {
-        console.log(`token`);
-        console.log(token);
-        const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
+        const tempToken = req.cookies.tempToken
+        const verifyToken = jwt.verify(tempToken, process.env.JWT_SECRET);
         console.log("verifyToken");
         console.log(verifyToken);
         const id = verifyToken.userId;
 
         if (!id)
         {
-            return res.status(500).json({success:false, msg:`NO id ${id}`})
+            return res.status(400).json({success:false, msg:`NO id ${id}`})
         }
 
         const foundStudent = await Student.findById({_id:id});
@@ -129,14 +128,22 @@ const getOTPUser = async (req,res)=>{
             foundStudent.isAccountVerified = true;
             foundStudent.verifyOtp = 0;
             foundStudent.verifyOtpExpiresIn = 0;
-            const authToken = jwt.sign({userId: foundStudent._id}, process.env.JWT_SECRET, {expiresIn: "120m"});
             await foundStudent.save();
-            
+            const authToken = jwt.sign({userId: foundStudent._id, role: 'student', email: foundStudent.email}, process.env.JWT_SECRET, {expiresIn: "240"});
+            console.log("authToken");
+            console.log(authToken);
+            res.cookie.clear('tempToken');
+            res.cookie('authToken', authToken, {
+                httpOnly:true,
+                secure: process.env.NODE_ENV === 'production' ? true : false, 
+                sameSite: process.env.NODE_ENV === 'production' ? "None" : "lax", 
+                maxAge: 25 * 60 *1000, //25 minutes
+            });
             return res.status(200).json({success:true, msg:"Account Verified"});
         }
         else
         {
-            return res.status(400).json({success:false, msg:"Invalid OPT", data: {authToken: authToken}});
+            return res.status(400).json({success:false, msg:"Invalid OPT"});
         }
     }
     catch(err)
@@ -145,6 +152,32 @@ const getOTPUser = async (req,res)=>{
         return res.status(500).json({success:false, msg:`Error: ${err}`});   
     }
 }  
+const resendOtp = async (req, res)=>
+{
+    const {emai} = req.body;
+    try
+    {
+        const foundStudent = await Student.findOne({email:email});
+        if (!foundStudent)
+        {
+
+        }
+        if (foundStudent.isAccountVerified == false || foundStudent.otpExpireTimer > Date.now())
+        {
+            foundStudent.otp = crypto.randomBytes(64).toString('hex').slice(0,11);
+            foundStudent.otpExpireTimer  = Date.now() +  (30 * 60 * 1000) // this set's milliseconds
+            foundStudent.save()
+
+            return res.status(200).json({success:true, msg:"Reset Otp Success"})
+        }
+    }
+    catch(err)
+    {
+        console.log(`Error: ${err}`);
+        return res.status(500).json({success:false, msg:`Error ${err}`})
+    }
+}
+
 // AAA-00-0000/0004  JASON@123
 const studentLogin = async (req, res)=>{
     const {studentAdmission, password } = req.body;
@@ -156,6 +189,7 @@ const studentLogin = async (req, res)=>{
         if( !studentAdmission || !password)
         {
             return res.status(400).json({success:false, msg:"Invalid input parameters"});
+            // invalid input || missing parameters
         }
 
         const foundStudent = await Student.findOne({studentAdmissionNum: studentAdmission});
@@ -314,10 +348,13 @@ const getMe =  (req, res)=>{ // using these to get the request object: header to
         return res.status(500).json({success:false, msg:`Error ${err}`})
     }
 }
+
+
+
 const UpdatePassword = async (req, res)=>
 {
     console.log('entering Update Password');
-    const {id}= req.params;  // this will be acquired from token
+    const id= req.userId;  // this will be acquired from token
 
     const { currentPassword, password} = req.body;
     if (!currentPassword || !password)
@@ -330,7 +367,7 @@ const UpdatePassword = async (req, res)=>
         const foundStudent = await Student.findById({_id:id});
         if (!foundStudent)
         {
-            return res.status(500).json({success:false, msg:`No user found with the id: ${id}`});
+            return res.status(404).json({success:false, msg:`No user found with the id: ${id}`});
         }
 
         // now to update password
@@ -347,7 +384,7 @@ const UpdatePassword = async (req, res)=>
 }
 
 
-module.exports = {registerStudent, getOTPUser, studentLogin, getMe, UpdatePassword};
+module.exports = {registerStudent, getOTPUser, studentLogin, getMe, resendOtp, UpdatePassword};
 
 
 /**
