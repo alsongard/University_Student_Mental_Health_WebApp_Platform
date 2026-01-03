@@ -4,7 +4,9 @@ const {getAuthenticated} = require("../middleware/auth")
 const pyschiatristSessionRouter = express.Router();
 const {UpdateSession, DeleteSession, createSession ,ViewPsychiatristSession} = require("../controllers/psySessionController")
 
-pyschiatristSessionRouter.post("/createSession",createSession);
+
+
+pyschiatristSessionRouter.post("/createSession", getAuthenticated, createSession);
 pyschiatristSessionRouter.put("/updateSession/:sessionId", UpdateSession);
 pyschiatristSessionRouter.get("/viewSession", getAuthenticated, ViewPsychiatristSession);
 pyschiatristSessionRouter.delete("/deleteSession/:sessionId", DeleteSession);
