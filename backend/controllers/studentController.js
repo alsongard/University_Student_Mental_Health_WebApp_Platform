@@ -2,7 +2,7 @@ const StudentDetails = require('../models/studentDetails.model');
 const jwt = require("jsonwebtoken");
 // const  { createUploadthing } = require("uploadthing/express");
 // const PsychiatristDetails =  require('../models/psychiatristdetail.model');
-
+const Student = require("../models/student.model")
 const createStudentDetails = async (req, res) => {
     
     // const {id} = req.params;
@@ -12,8 +12,8 @@ const createStudentDetails = async (req, res) => {
         // req.userId = id;
         // req.role = decodedToken.role;
         
-        const { studentName, studentAge, gender, phoneNumber, course, yearOfStudy, address, emergencyContact, token } = req.body;
-        if (!studentName || !studentAge || !gender || !phoneNumber || !course || !yearOfStudy || !address || !emergencyContact || !token) 
+        const { studentName, studentAge, gender, phoneNumber, course, yearOfStudy, address, emergencyContact } = req.body;
+        if (!studentName || !studentAge || !gender || !phoneNumber || !course || !yearOfStudy || !address || !emergencyContact) 
         {
             return res.status(400).json({success:false, msg:"Please fill in all fields"});
         }
@@ -28,6 +28,12 @@ const createStudentDetails = async (req, res) => {
         // console.log('tempToken');
         // console.log(tempToken);
 
+        // CHECK IF ACCOUNT VERIFIED
+        const foundStudent = await Student.findById({_id:id});
+        if (foundStudent.isAccountVerified === false)
+        {
+            return res.status(403).json({success:false, msg:"Account not verified. Please verify your account before creating student details."});
+        }
 
         
         // const {userObject} = tempToken;
@@ -83,12 +89,14 @@ const getStudentDetails = async (req, res)=>{
 
         const role = req.role;
 
+
+        
         const studentDetails = await StudentDetails.findOne({studentId: id}).populate({path: 'studentId', select: 'studentAdmissionNum email'});
         // console.log('this is studentDetails');
         // console.log(studentDetails);
         // console.log(typeof(studentDetails));
         if (!studentDetails) {
-            return res.status(404).json({success:false, msg:"Student details not found"});
+            return res.status(200).json({success:false, msg:"Student details not found"});
         }
         return res.status(200).json({success:true, data:studentDetails});
     } 
