@@ -20,8 +20,8 @@ export default function StudentDashboard()
     const checkStudentDetailsExist = async()=>{
         try
         {
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,{withCredentials:true});
-            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, {withCredentials:true});
+            // const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, {withCredentials:true});
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,{withCredentials:true});
             // console.log('checkStudentDetailsExist response.data.data');
             // console.log(response.data.data);
             // console.log('response');
@@ -64,8 +64,8 @@ export default function StudentDashboard()
     const getAllSessions = async()=>{
 		try
 		{
-			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions",
-            const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions",
+            // const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions",
+			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions",
                 {withCredentials:true}
             );
             // console.log(response)
@@ -84,8 +84,8 @@ export default function StudentDashboard()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
-            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            // const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")

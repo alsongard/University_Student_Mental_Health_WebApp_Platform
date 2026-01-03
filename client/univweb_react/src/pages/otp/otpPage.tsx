@@ -17,8 +17,8 @@ export default function OtpPage()
             // GETOPT
             // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/getOTP",
             // const response = await axios.post("api/student/getOTP",
-            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/getOTP",
-            const response = await axios.post("http://localhost:5000/api/student/getOTP",
+            // const response = await axios.post("http://localhost:5000/api/student/getOTP",
+            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/getOTP",
                 {
                     userOtp: otpValue,
                 },

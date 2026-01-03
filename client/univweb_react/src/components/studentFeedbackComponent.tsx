@@ -13,8 +13,8 @@ export default function StudentFeedBack()
         try
         {
             // http://localhost:5000/
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/feedback/getStudentFeedback`, {withCredentials:true});
-            const response = await axios.get(`http://localhost:5000/api/feedback/getStudentFeedback`, {withCredentials:true});
+            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/feedback/getStudentFeedback`, {withCredentials:true});
+            // const response = await axios.get(`http://localhost:5000/api/feedback/getStudentFeedback`, {withCredentials:true});
     
             if (response.data.success)
             {
@@ -31,7 +31,9 @@ export default function StudentFeedBack()
     {
         try
         {
-            const response = await axios.get("http://localhost:5000/api/bookSession/getStudentBookedSessions", {withCredentials:true});
+            // https://university-student-psychiatrist.onrender.com
+            // const response = await axios.get("http://localhost:5000/api/bookSession/getStudentBookedSessions", {withCredentials:true});
+            const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions", {withCredentials:true});
             // console.log('response.data');
             // console.log(response.data);
             setStudentSessions(response.data.data)
