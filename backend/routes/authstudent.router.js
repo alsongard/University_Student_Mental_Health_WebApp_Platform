@@ -28,7 +28,7 @@ const {getAuthenticated}  = require("../middleware/auth");
  *                 description: The password of the student.
  *     responses:
  *       201:
- *         description: Created
+ *         description: Student Successfully created.
  *         content:
  *           application/json:
  *             schema:
@@ -46,15 +46,40 @@ const {getAuthenticated}  = require("../middleware/auth");
  *                     studentId:
  *                       type: string
  *                       description: Indicates if the student was created successfully.
+ *       409:
+ *         description: Email Already Exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the student was created successfully.
+ *                 msg:
+ *                   type: string
+ *                   description: Message indicating student creation status.
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 msg:
+ *                   type: string
+ *                   description: Error Message.
  */
 authRouter.post("/studentCreate", registerStudent);
 
 /**
  * @swagger
- * /api/student/studentCreate:
+ * /api/student/studentLogin:
  *   post:
- *     summary:  create a new student user
- *     description: Create a new student user in the database.
+ *     summary:  Enable student user to login
+ *     description: Enable student user to login to the application.
  *     requestBody:
  *       required: true
  *       content:
@@ -62,9 +87,9 @@ authRouter.post("/studentCreate", registerStudent);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               studentAdmission:
  *                 type: string
- *                 description: The name of the student.
+ *                 description: The admission number of the student.
  *               email:
  *                 type: string
  *                 description: The email of the student.
@@ -72,8 +97,8 @@ authRouter.post("/studentCreate", registerStudent);
  *                 type: string
  *                 description: The password of the student.
  *     responses:
- *       201:
- *         description: Created
+ *       200:
+ *         description: Success on Student Login.
  *         content:
  *           application/json:
  *             schema:
@@ -85,21 +110,51 @@ authRouter.post("/studentCreate", registerStudent);
  *                 msg:
  *                   type: string
  *                   description: Message indicating student creation status.
- *               data:
- *                 type: object
- *                 properties:
- *                     studentId:
- *                       type: string
- *                       description: Indicates if the student was created successfully.
+ *       400:
+ *         description: Invalid Input(missing parameters).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 msg:
+ *                   type: string
+ *                   description: message containing the error.
+ *       404:
+ *         description: Resource Not Found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 msg:
+ *                   type: string
+ *                   description: Message with the error.
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 msg:
+ *                   type: string
+ *                   description: Message with the error.
  */
 authRouter.post("/studentLogin", studentLogin);
 
 /**
  * @swagger
- * /api/student/studentCreate:
+ * /api/student/getOTP:
  *   post:
- *     summary:  create a new student user
- *     description: Create a new student user in the database.
+ *     summary:  Get OTP for Student Create Account.
+ *     description: Get OTP for Student Create Account.
  *     requestBody:
  *       required: true
  *       content:
@@ -107,18 +162,12 @@ authRouter.post("/studentLogin", studentLogin);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               userOtp:
  *                 type: string
- *                 description: The name of the student.
- *               email:
- *                 type: string
- *                 description: The email of the student.
- *               password:
- *                 type: string
- *                 description: The password of the student.
+ *                 description: The otp sent to student email for verfication.
  *     responses:
- *       201:
- *         description: Created
+ *       200:
+ *         description: OTP Verified Successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -141,7 +190,7 @@ authRouter.post("/getOTP",  getOTPUser);
 
 /**
  * @swagger
- * /api/student/studentCreate:
+ * /api/student/studentChangePassword:
  *   post:
  *     summary:  create a new student user
  *     description: Create a new student user in the database.
@@ -186,7 +235,7 @@ authRouter.put("/studentChangePassword", UpdatePassword);
 
 /**
  * @swagger
- * /api/student/studentCreate:
+ * /api/student/resendOTP:
  *   post:
  *     summary:  create a new student user
  *     description: Create a new student user in the database.
