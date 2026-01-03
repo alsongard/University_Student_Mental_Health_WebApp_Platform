@@ -9,9 +9,7 @@ const connectDB = require("./config/connectDB");
 const cookieParser = require("cookie-parser");
 const {Server} = require("socket.io");
 const {createServer} = require("node:http");
-const swaggerDocument = require("./swagger.json");
-const {uploadRouter} = require("./controllers/studentController")
-const Message  = require("./models/messages.model");
+const swaggerDocument = require("./swagger");
 const PsychiatristDetails =  require("./models/psychiatristdetail.model");
 const StudentDetails =  require("./models/studentDetails.model");
 const { getAuthenticated } = require("./middleware/auth");
@@ -22,6 +20,9 @@ const sendMessage = require("./controllers/message.controller").sendMessage;
 const httpServer = createServer(app);
 const multer = require('multer');
 const cloudinary = require("cloudinary").v2;
+const {specs} = require("./swagger");
+
+
 
 const corsOption = {
     origin: function (origin, callback){
@@ -147,13 +148,13 @@ app.post("/api/uploadFile",getAuthenticated, upload.array("files"), async (req, 
                         if (err)
                         {
                             console.log(`Error: An Error occures in Cloudinary Uploads`);
-                            console.log(err)
+                            // console.log(err)
                             reject(err);
                         }
                         if (result)
                         {
                             console.log(`Results after uploading`);
-                            console.log(result);
+                            // console.log(result);
                             resolve(result);
                         }
                     }
@@ -194,39 +195,9 @@ app.use("/api/studentSession", studentSessionRoutes);
 var options = {
     explorer : true
 }
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, options));
 
-// app.get("/student", async (req,res)=>{
-//     try {
-//         const users = await Student.find();
-//         res.status(200).json({success:true, data:users});
-//     } catch (error) {
-//         console.error("Error fetching users:", error);
-//         res.status(500).json({success:false, msg:"Error fetching users"});
-//     }
-// });
 
-// app.get("/trialSetCookie", (req,res)=>{
-//     res.cookie("trialCookie", "This is a trial cookie value", {
-//         httpOnly:true,
-//         secure: process.env.NODE_ENV === "production", // set to true in production
-//         sameSite: "lax",
-//         maxAge: 24 * 60 * 60 * 1000 // 1 day
-//     });
-//     res.status(200).json({success:true, msg:"Trial cookie set"});
-// });
-
-// app.get("/trialGetCookie", (req,res)=>{
-//     const trialCookie = req.cookies.authToken;
-//     if (trialCookie)
-//     {
-//         res.status(200).json({success:true, trialCookie: trialCookie});
-//     }
-//     else
-//     {
-//         res.status(404).json({success:false, msg:"No trial cookie found"});
-//     }
-// });
 
 app.post("/api/logout", (req,res)=>{
     res.clearCookie("authToken");
