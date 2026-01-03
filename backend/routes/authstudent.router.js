@@ -8,7 +8,7 @@ const {getAuthenticated}  = require("../middleware/auth");
  * @swagger
  * /api/student/studentCreate:
  *   post:
- *     summary: create a new student user
+ *     summary:  create a new student user
  *     description: Create a new student user in the database.
  *     requestBody:
  *       required: true
@@ -19,16 +19,16 @@ const {getAuthenticated}  = require("../middleware/auth");
  *             properties:
  *               name:
  *                 type: string
- *                 description: The admission number of the student.
+ *                 description: The name of the student.
  *               email:
  *                 type: string
- *                 description: The admission number of the student.
+ *                 description: The email of the student.
  *               password:
  *                 type: string
  *                 description: The password of the student.
  *     responses:
  *       201:
- *         description: Student Successfully created.
+ *         description: Created
  *         content:
  *           application/json:
  *             schema:
@@ -40,48 +40,21 @@ const {getAuthenticated}  = require("../middleware/auth");
  *                 msg:
  *                   type: string
  *                   description: Message indicating student creation status.
- *                 data:
- *                   type: object
- *                   properties:
+ *               data:
+ *                 type: object
+ *                 properties:
  *                     studentId:
  *                       type: string
  *                       description: Indicates if the student was created successfully.
- *       409:
- *         description: Email Already Exists.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the student was created successfully.
- *                 msg:
- *                   type: string
- *                   description: Message indicating student creation status.
- *       500:
- *         description: Internal Server Error.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the student was created successfully.
- *                 msg:
- *                   type: string
- *                   description: Message indicating student creation status.
  */
 authRouter.post("/studentCreate", registerStudent);
 
-
 /**
  * @swagger
- * /api/student/studentLogin:
+ * /api/student/studentCreate:
  *   post:
- *     summary: Student Login
- *     description: Student Login.
+ *     summary:  create a new student user
+ *     description: Create a new student user in the database.
  *     requestBody:
  *       required: true
  *       content:
@@ -89,80 +62,44 @@ authRouter.post("/studentCreate", registerStudent);
  *           schema:
  *             type: object
  *             properties:
- *               studentAdmission:
+ *               name:
  *                 type: string
- *                 description: The admission number of the student.
+ *                 description: The name of the student.
  *               email:
  *                 type: string
  *                 description: The email of the student.
+ *               password:
+ *                 type: string
+ *                 description: The password of the student.
  *     responses:
- *       200:
- *         description: Success on Student Login.
+ *       201:
+ *         description: Created
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 success:
- *                   type: Boolean
- *                   description: Boolean value that indicates if the login was successful.
- *                 data:
- *                   type: object
- *                   properties:
+ *                   type: boolean
+ *                   description: Indicates if the student was created successfully.
+ *                 msg:
+ *                   type: string
+ *                   description: Message indicating student creation status.
+ *               data:
+ *                 type: object
+ *                 properties:
  *                     studentId:
  *                       type: string
- *                       description: The id of the student.
- *                 email:
- *                   type: string
- *                   description: The email of the student.
- *       400:
- *         description: Invalid Input(missing parameters).
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the student was created successfully.
- *                 msg:
- *                   type: string
- *                   description: Message indicating student creation status.
- *       404:
- *         description: Resource Not Found.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the student was created successfully.
- *                 msg:
- *                   type: string
- *                   description: Message indicating student creation status.
- *       500:
- *         description: Internal Server Error.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the student was created successfully.
- *                 msg:
- *                   type: string
- *                   description: Message indicating student creation status.
+ *                       description: Indicates if the student was created successfully.
  */
 authRouter.post("/studentLogin", studentLogin);
 
 /**
  * @swagger
- * /api/student/getOTP:
+ * /api/student/studentCreate:
  *   post:
- *     summary: Get OTP for Student Create Account
- *     description: Get OTP for Student Create Account.
+ *     summary:  create a new student user
+ *     description: Create a new student user in the database.
  *     requestBody:
  *       required: true
  *       content:
@@ -170,25 +107,18 @@ authRouter.post("/studentLogin", studentLogin);
  *           schema:
  *             type: object
  *             properties:
- *               userOtp:
+ *               name:
  *                 type: string
- *                 description: The otp sent to student email for verfication.
+ *                 description: The name of the student.
+ *               email:
+ *                 type: string
+ *                 description: The email of the student.
+ *               password:
+ *                 type: string
+ *                 description: The password of the student.
  *     responses:
- *       200:
- *         description: Success on Student Account Creation.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: Boolean
- *                   description: Boolean value that indicates if the login was successful.
- *                 msg:
- *                  type: string
- *                  description: Message indicating account verification status.
- *       400:
- *         description: OTP Value Does Not Match.
+ *       201:
+ *         description: Created
  *         content:
  *           application/json:
  *             schema:
@@ -200,15 +130,21 @@ authRouter.post("/studentLogin", studentLogin);
  *                 msg:
  *                   type: string
  *                   description: Message indicating student creation status.
+ *               data:
+ *                 type: object
+ *                 properties:
+ *                     studentId:
+ *                       type: string
+ *                       description: Indicates if the student was created successfully.
  */
 authRouter.post("/getOTP",  getOTPUser);
 
 /**
  * @swagger
- * /api/student/studentChangePassword:
- *   put:
- *     summary: Update Student Password
- *     description: Update Student Password.
+ * /api/student/studentCreate:
+ *   post:
+ *     summary:  create a new student user
+ *     description: Create a new student user in the database.
  *     requestBody:
  *       required: true
  *       content:
@@ -216,28 +152,18 @@ authRouter.post("/getOTP",  getOTPUser);
  *           schema:
  *             type: object
  *             properties:
- *               currentPassword:
+ *               name:
  *                 type: string
- *                 description: The current password of the student.
+ *                 description: The name of the student.
+ *               email:
+ *                 type: string
+ *                 description: The email of the student.
  *               password:
  *                 type: string
- *                 description: the new password for the Student.
+ *                 description: The password of the student.
  *     responses:
- *       200:
- *         description: Success on Update Password for Student.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: Boolean
- *                   description: Boolean value that indicates if the login was successful.
- *                 msg:
- *                   type: string
- *                   description: Message indicating password update status.
- *       400:
- *         description: Invalid Parameters.
+ *       201:
+ *         description: Created
  *         content:
  *           application/json:
  *             schema:
@@ -249,41 +175,21 @@ authRouter.post("/getOTP",  getOTPUser);
  *                 msg:
  *                   type: string
  *                   description: Message indicating student creation status.
-  *       404:
- *         description: Student Not found.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the student was created successfully.
- *                 msg:
- *                   type: string
- *                   description: Message indicating student creation status.
- *       500:
- *         description: Internal Server Error.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the student was created successfully.
- *                 msg:
- *                   type: string
- *                   description: Message indicating student creation status.
+ *               data:
+ *                 type: object
+ *                 properties:
+ *                     studentId:
+ *                       type: string
+ *                       description: Indicates if the student was created successfully.
  */
 authRouter.put("/studentChangePassword", UpdatePassword);
 
 /**
  * @swagger
- * /api/student/resendOTP:
+ * /api/student/studentCreate:
  *   post:
- *     summary: Resent OTP for Student Create Account
- *     description: Resent OTP for Student Create Account.
+ *     summary:  create a new student user
+ *     description: Create a new student user in the database.
  *     requestBody:
  *       required: true
  *       content:
@@ -291,23 +197,35 @@ authRouter.put("/studentChangePassword", UpdatePassword);
  *           schema:
  *             type: object
  *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the student.
  *               email:
  *                 type: string
- *                 description: The email of the student..
+ *                 description: The email of the student.
+ *               password:
+ *                 type: string
+ *                 description: The password of the student.
  *     responses:
- *       200:
- *         description: Success on Student Login.
+ *       201:
+ *         description: Created
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 success:
- *                   type: Boolean
- *                   description: Boolean value that indicates if the login was successful.
+ *                   type: boolean
+ *                   description: Indicates if the student was created successfully.
  *                 msg:
- *                   type: String
- *                  description: Message indicating OTP resend status.
+ *                   type: string
+ *                   description: Message indicating student creation status.
+ *               data:
+ *                 type: object
+ *                 properties:
+ *                     studentId:
+ *                       type: string
+ *                       description: Indicates if the student was created successfully.
  */
 authRouter.post("/resendOTP", resendOtp);
 
