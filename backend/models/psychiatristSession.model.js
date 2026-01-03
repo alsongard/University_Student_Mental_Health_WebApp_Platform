@@ -11,7 +11,8 @@ const pyschiatristSession = new mongoose.Schema(
         sessionType: {type:String, enum:["Individual Therapy", "Group Therapy", "Medication Management", "Follow-up Session", "Initial Consultation"], default:true},
         sessionStatus: {type:String, default:"Available", enum:["Available", "Booked", "Pending"]},
         currentBookings: {type:Number, default:0},
-        maxBookings: {type:Number, default:1, required:true}
+        maxBookings: {type:Number, default:1, required:true},
+        description: {type:String, required:true}
     }, 
     {
         timestamps: true
