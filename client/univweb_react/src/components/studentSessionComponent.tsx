@@ -16,7 +16,6 @@ export default function StudentSessionComponent()
             if (response.data.success)
             {
                 setMyUpcomingSessions(response.data.data);
-                
             }
 		}
 		catch(err)
