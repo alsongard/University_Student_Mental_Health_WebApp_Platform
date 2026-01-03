@@ -27,7 +27,6 @@ export default function App()
 	
 	const dispatch = useDispatch();
 
-	// we use localstorage
 
 
 	// console.log(`this is userRole: ${userRole}`);
@@ -95,9 +94,8 @@ export default function App()
 						<Route path="*" element={<ErrorpPage/>}/>
 					</Route>
 				</Routes>
+				<Analytics/>
 			</BrowserRouter>
 		</div>
 	)	
 }
-
-			// <Analytics/>
