@@ -234,8 +234,8 @@ authRouter.post("/getOTP",  getOTPUser);
  *                   type: Boolean
  *                   description: Boolean value that indicates if the login was successful.
  *                 msg:
- *                  type: string
- *                 description: Message indicating password update status.
+ *                   type: string
+ *                   description: Message indicating password update status.
  *       400:
  *         description: Invalid Parameters.
  *         content:

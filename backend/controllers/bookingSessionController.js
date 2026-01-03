@@ -88,7 +88,7 @@ module.exports.ViewPsychiatristSession  = async (req,res)=>{
         // StudentDetails.find({})
         if (foundPsychiatristBookedSessions.length == 0)
         {
-            return res.status(200).json({success:true, msg:"You have no booked sessions"});
+            return res.status(200).json({success:true, msg:"You have no booked sessions", data:[]});
         }
         return res.status(200).json({success:true, data:foundPsychiatristBookedSessions});
     }
@@ -104,6 +104,7 @@ module.exports.ViewStudentBookedSessions  = async (req,res)=>{
     // const id = decodedToken.userId;
     // req.userId = id;
     // req.role = decodedToken.role;
+    console.log(`req.userId: ${req.userId}\n req.role: ${req.role}`)
     const id = req.userId;
     const role  = req.role;
     const studentId = id;
@@ -175,7 +176,7 @@ module.exports.ViewStudentBookedSessions  = async (req,res)=>{
             // console.log('session.psychiatristId._id.toString()');
             // console.log(session.psychiatristId._id.toString());
 
-            const detail  = psychDetailsMap[session.psychiatristId._id.toString()] || {}; // this will return the given values:fullName,specilization based on psychId
+            const detail = psychDetailsMap[session.psychiatristId._id.toString()] || {}; // this will return the given values:fullName,specilization based on psychId
             return {
                 ...session.toObject(),
                 fullName: detail.fullName,
