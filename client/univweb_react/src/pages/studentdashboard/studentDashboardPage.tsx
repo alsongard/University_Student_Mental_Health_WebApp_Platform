@@ -31,6 +31,9 @@ export default function StudentDashboard()
                 // Means no student details found
                 navigate("/studentdetails");
             }
+            // success	false
+            // msg	"Student details not found"
+
         }
         catch(err)
         {
@@ -202,7 +205,7 @@ export default function StudentDashboard()
     // RENDERPROFILE
     const renderOverview = 
     (
-        <div className="space-y-6">
+        <div className="space-y-6 p-5">
             {/* Welcome Section */}
             <div className="bg-linear-to-r from-blue-600 to-blue-700 flex flex-row justify-between items-center rounded-2xl p-8 text-white">
                 <div>
@@ -390,7 +393,7 @@ export default function StudentDashboard()
             <main className="flex-1 overflow-y-auto">
            
             {/* Content Area */}
-                <div className={`${activeView != "messages" && 'p-8'}`}>
+                <div className={`${activeView != "messages" && 'p-0'}`}>
                     {activeView === "overview" && renderOverview}
                     {activeView === "sessions" && <StudentSessionComponent/>}
                     {activeView === "messages" && <MessagingComponent/>}

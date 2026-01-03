@@ -21,7 +21,7 @@ function requireAuth(ComposedComponent, allowedRoles?:string[])
         // console.log(`isAuthenticated ${isAuthenticated}`)
 
         useEffect(()=>{
-            if(isAuthenticated != true)
+            if(isAuthenticated === false)
             {
                 navigate("/login/student")
             }

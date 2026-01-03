@@ -20,8 +20,7 @@ import {isLoggedIn, isLoggedOut} from "./features/auth/authSlicer";
 import PsychiatristDetails from "./pages/psychiatristDetails/psychiatristDetails";
 import TrialStudentSessions from "./pages/trials/TrialPage";
 import {Analytics} from "@vercel/analytics/react";
-
-
+import OtpPage from "./pages/otp/otpPage";
 
 export default function App()
 {
@@ -41,13 +40,14 @@ export default function App()
 		console.log('Running getVerifiedSession')
 		try
 		{
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/auth/me", {withCredentials:true})
+			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/auth/me", {withCredentials:true})
+			const response = await axios.get("http://localhost:5000/api/auth/me", {withCredentials:true})
 			if (response.status === 200)
 			{
 				// console.log('User is authenticated');
 				// console.log(response.data.data);
 				const {email, role} = response.data.data;
-				const myPayload  = { role, email} ;
+				const myPayload  = { role, email};
 				dispatch(isLoggedIn(myPayload));
 			}
 
@@ -72,7 +72,7 @@ export default function App()
 	const ProtectedStudentDashboard = requireAuth(StudentDashboard, ['student']);
 	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard, ['psychiatrist', 'Counselor']);
 	const ProtectedPsychiatristDetails = requireAuth(PsychiatristDetails, ['psychiatrist', 'Counselor']);
-	const ProtectedStudentDetails = requireAuth(StudentDetailsRegistration, ['student']);
+	const ProtectedStudentDetails = requireAuth(StudentDetailsRegistration);
 	// how to handle persistence
 	
 
@@ -91,12 +91,13 @@ export default function App()
 						<Route path="psychiatristdashboard" element={<ProtectedPsychiatristDashboard/>}/>
 						<Route path="studentdetails" element={<ProtectedStudentDetails/>}/>
 						<Route path="psychiatristdetails" element={<ProtectedPsychiatristDetails/>}/>
+						<Route path="otp" element={<OtpPage/>}/>
 						<Route path="*" element={<ErrorpPage/>}/>
 					</Route>
 				</Routes>
 			</BrowserRouter>
-			<Analytics/>
 		</div>
 	)	
 }
 
+			// <Analytics/>

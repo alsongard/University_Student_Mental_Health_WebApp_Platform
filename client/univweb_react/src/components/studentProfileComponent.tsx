@@ -153,7 +153,7 @@ export default  function StudentProfile()
         }
     };
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-5">
             <h1 className="text-3xl font-bold dark:text-white text-gray-900">Profile Settings</h1>
 
             {
@@ -321,7 +321,7 @@ export default  function StudentProfile()
 
 
                         <div className="bg-white dark:bg-slate-600 rounded-2xl shadow-md p-8">
-                            <h2 className="text-2xl font-bold dark:text-white text-gray-900 mb-4">Ermegency Contact Details</h2>
+                            <h2 className="text-2xl font-bold dark:text-white text-gray-900 mb-4">Emegency Contact Details</h2>
                             <p className="dark:text-white text-gray-600 mb-6">Manage and view Emergency Contact Details.</p>
                             
                             <div className="space-y-4">
