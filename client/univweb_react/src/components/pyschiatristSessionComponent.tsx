@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Eye, X, Calendar, Clock, Video, MapPin, User, Search } from 'lucide-react';
 import axios from 'axios';
+import TableRowSkeleton from "../components/skeletons/psychiatristSessionSkeleton";
 
 export default function PsychiatristSessionsManagement() 
 {
@@ -40,7 +41,8 @@ export default function PsychiatristSessionsManagement()
 		mode: 'In-Person',
 		duration:'2h 30min',
 		status:"Available",
-		maxBookings: 1
+		maxBookings: 1,
+		sessionDescription: ""
 	});
 
 	const sessionTypes = [
@@ -73,7 +75,8 @@ export default function PsychiatristSessionsManagement()
 				sessionMode:formData.mode,
 				sessionDuration: formData.duration,
 				sesionStatus: formData.status,
-				maxBookings: formData.maxBookings
+				maxBookings: formData.maxBookings,
+				description: formData.sessionDescription
 			}, {withCredentials:true})
 			if (response.data.success)
 			{
@@ -102,7 +105,8 @@ export default function PsychiatristSessionsManagement()
 			mode: session.sessionMode,
 			duration: session.sessionDuration,
 			status: session.sessionStatus,
-			maxBookings: session.maxBookings
+			maxBookings: session.maxBookings,
+			sessionDescription: session.sessionDescription
 		});
 		setView('edit');
 	};
@@ -157,7 +161,8 @@ export default function PsychiatristSessionsManagement()
 			mode: 'In-Person',
 			duration:'2h 30min',
 			status:"Available",
-			maxBookings: 1
+			maxBookings: 1,
+			sessionDescription: ""
 		});
 		setSelectedSession(null);
 	};
@@ -282,7 +287,7 @@ export default function PsychiatristSessionsManagement()
 	if (view === 'create' || view === 'edit') {
 		return (
 			<div className="min-h-screen bg-gray-50 p-8">
-				<div className="max-w-3xl mx-auto">
+				<div className="w-full mx-auto">
 				<div className="bg-white rounded-2xl shadow-lg p-8">
 					<div className="flex items-center justify-between mb-6">
 					<h2 className="text-2xl font-bold text-gray-900">
@@ -418,7 +423,19 @@ export default function PsychiatristSessionsManagement()
 									<option value='Pending'>Pending</option>
 								</select>
 							</div>
-
+						</div>
+						<div>
+							<label>
+							Session Description *
+							</label>
+							<textarea
+								name="sessionDescription"
+								value={formData.sessionDescription}
+								onChange={handleChange}
+								rows="6"
+								placeholder="What went well? What could be improved? How did you feel during the session?"
+								className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
+							/>
 						</div>
 
 						<div className="flex space-x-4 pt-6 border-t border-gray-200">
@@ -543,75 +560,80 @@ export default function PsychiatristSessionsManagement()
 								</tr>
 								</thead>
 								<tbody className="divide-y divide-gray-200">
-								{filteredSessions.map((session) => (
+								{filteredSessions.length > 0 ? filteredSessions.map((session) => (
 									<tr key={session._id} className="hover:bg-gray-50 transition">
-									<td className="px-6 py-4">
-										<div>
-										<p className="font-semibold text-gray-900">{new Date(session.date).toISOString().split("T")[0]} </p>
-										<p className="text-sm text-gray-600">{session.startTime} - {session.endTime}</p>
-										</div>
-									</td>
-									<td className="px-6 py-4">
-										<p className="text-gray-900">{session.sessionType}</p>
-									</td>
-									<td className="px-6 py-4">
-										<div className="flex items-center space-x-2">
-											{session.sessionMode === 'Virtual' && <Video className="w-4 h-4 text-blue-600" />}
-											{session.sessionMode === 'In-Person' && <MapPin className="w-4 h-4 text-green-600" />}
-											{session.sessionMode === 'Phone' && <User className="w-4 h-4 text-purple-600" />}
-											<span className="text-gray-900 text-[15px]">{session.sessionMode}</span>
-										</div>
-									</td>
-									<td className="px-6 py-4">
-										<p className="text-gray-900">{session.sessionDuration}</p>
-									</td>
-									<td className="px-6 py-4">
-										<span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-											session.sesionStatus === 'available' 
-												? 'bg-green-100 text-green-700' 
-												: 'bg-blue-100 text-blue-700'
-											}`
-										}>
-										{session.sessionStatus}
-										</span>
-									</td>
-									<td className="px-6 py-4">
-										<p className="text-gray-900">
-										{0}/{session.maxBookings}
-										</p>
-									</td>
-									<td className="px-6 py-4">
-										<div className="flex items-center justify-end space-x-2">
-										<button
-											onClick={() => 
-											{
-												// console.log('this is the sesion being passed for view details')
-												// console.log(session);
-												handleView(session)}
-											}
-											className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-											title="View"
-										>
-											<Eye className="w-5 h-5" />
-										</button>
-										<button
-											onClick={() => handleEdit(session)}
-											className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
-											title="Edit"
-										>
-											<Edit className="w-5 h-5" />
-										</button>
-										<button
-											onClick={() => handleDelete(session._id)}
-											className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-											title="Delete"
-										>
-											<Trash2 className="w-5 h-5" />
-										</button>
-										</div>
-									</td>
+										<td className="px-6 py-4">
+											<div>
+											<p className="font-semibold text-gray-900">{new Date(session.date).toISOString().split("T")[0]} </p>
+											<p className="text-sm text-gray-600">{session.startTime} - {session.endTime}</p>
+											</div>
+										</td>
+										<td className="px-6 py-4">
+											<p className="text-gray-900">{session.sessionType}</p>
+										</td>
+										<td className="px-6 py-4">
+											<div className="flex items-center space-x-2">
+												{session.sessionMode === 'Virtual' && <Video className="w-4 h-4 text-blue-600" />}
+												{session.sessionMode === 'In-Person' && <MapPin className="w-4 h-4 text-green-600" />}
+												{session.sessionMode === 'Phone' && <User className="w-4 h-4 text-purple-600" />}
+												<span className="text-gray-900 text-[15px]">{session.sessionMode}</span>
+											</div>
+										</td>
+										<td className="px-6 py-4">
+											<p className="text-gray-900">{session.sessionDuration}</p>
+										</td>
+										<td className="px-6 py-4">
+											<span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+												session.sesionStatus === 'available' 
+													? 'bg-green-100 text-green-700' 
+													: 'bg-blue-100 text-blue-700'
+												}`
+											}>
+											{session.sessionStatus}
+											</span>
+										</td>
+										<td className="px-6 py-4">
+											<p className="text-gray-900">
+											{0}/{session.maxBookings}
+											</p>
+										</td>
+										<td className="px-6 py-4">
+											<div className="flex items-center justify-end space-x-2">
+											<button
+												onClick={() => 
+												{
+													// console.log('this is the sesion being passed for view details')
+													// console.log(session);
+													handleView(session)}
+												}
+												className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+												title="View"
+											>
+												<Eye className="w-5 h-5" />
+											</button>
+											<button
+												onClick={() => handleEdit(session)}
+												className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
+												title="Edit"
+											>
+												<Edit className="w-5 h-5" />
+											</button>
+											<button
+												onClick={() => handleDelete(session._id)}
+												className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+												title="Delete"
+											>
+												<Trash2 className="w-5 h-5" />
+											</button>
+											</div>
+										</td>
 									</tr>
-								))}
+								))
+								: 
+								(
+									<TableRowSkeleton/>
+								)
+								}
 								</tbody>
 							</table>
 							</div>

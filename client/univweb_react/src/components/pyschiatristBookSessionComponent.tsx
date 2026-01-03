@@ -202,7 +202,7 @@ export default function PsychiatristBookedSessions()
 	};
 
 	return (
-		<div className="min-h-screen rounded-2xl dark:bg-slate-600 bg-gray-50 p-8">
+		<div className="min-h-screen rounded-2xl dark:bg-slate-900 bg-gray-50 p-8">
 			<div className="max-w-7xl mx-auto">
 				{/* Header */}
 				<div className="mb-8 rounded-md  bg-linear-to-r from-gray-200 dark:from-slate-700 to-gray-200 dark:to-slate-400  py-5  px-5">
