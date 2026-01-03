@@ -2,8 +2,9 @@ const express = require("express");
 
 const feedBackRouter = express.Router();
 const {createFeedBack, getStudentFeedBack} = require("../controllers/feedBackController");
-feedBackRouter.post("/createFeedback", createFeedBack);
-feedBackRouter.get("/getStudentFeedback/:studentId", getStudentFeedBack);
+const { getAuthenticated } = require("../middleware/auth");
+feedBackRouter.post("/createFeedback",getAuthenticated, createFeedBack);
+feedBackRouter.get("/getStudentFeedback",getAuthenticated,  getStudentFeedBack);
 
     
 
