@@ -2,9 +2,11 @@ const PsychiatristDetails = require("../models/psychiatristdetail.model");
 const PsychiatristSession = require("../models/psychiatristSession.model")
 
 // createSession Controller
-module.exports.createSession = async (req, res)=>{
-    const {psychiatristId, date,  startTime, endTime, sessionType, sessionMode, sessionDuration, maxBookings, sessionStatus} = req.body;
-    if (!psychiatristId || !date || !startTime || !endTime || !sessionDuration || !sessionType || !sessionMode || !sessionDuration ) {
+module.exports.createSession = async (req, res)=>
+{
+    const psychiatristId = req.userId;
+    const {date,  startTime, endTime, sessionType, sessionMode, sessionDuration, maxBookings, sessionStatus, description} = req.body;
+    if (!psychiatristId || !date || !startTime || !endTime || !sessionDuration || !sessionType || !sessionMode || !sessionDuration || !description ) {
         return res.status(400).json({error: "Invalid Input for creating session"});
     }
     try
@@ -19,6 +21,7 @@ module.exports.createSession = async (req, res)=>{
             sessionType:sessionType,
             sessionStatus:sessionStatus,
             maxBookings:maxBookings,
+            sessionDescription:description
         });
             
     

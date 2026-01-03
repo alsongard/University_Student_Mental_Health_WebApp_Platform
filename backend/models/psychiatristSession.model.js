@@ -12,10 +12,13 @@ const pyschiatristSession = new mongoose.Schema(
         sessionStatus: {type:String, default:"Available", enum:["Available", "Booked", "Pending"]},
         currentBookings: {type:Number, default:0},
         maxBookings: {type:Number, default:1, required:true},
-        description: {type:String, required:true}
+        sessionDescription: {type:String, required:true}
     }, 
     {
         timestamps: true
+    },
+    {
+        strict:false
     }
 );
 
