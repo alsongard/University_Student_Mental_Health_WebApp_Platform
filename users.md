@@ -1116,12 +1116,15 @@ studentBookedSession
     createdAt: 2025-12-18T12:48:24.634Z,
     updatedAt: 2025-12-18T12:48:24.634Z,
     __v: 0,
+    studentDetailsInfo: new ObjectId('6930958ab9ea6134b94b7f5d'),
+    feedbackExist: false,
     fullName: 'Dr. Michael Chen',
     specilization: 'Depression & Anxiety'
   }
 ]
 
 ```
+**Funny Things: the ``new ObjectId('1234..')`` in the response(browser) will not be seen only the ``_id:'1234..'``
 
 **Payload**
 ```js
@@ -1589,3 +1592,42 @@ course: "Computer Science"
 ​​studentId: "6903a4963253494881272acb"
 ​studentName: "Emma Watson"
 ​​```
+
+
+**http://localhost:5000/api/feedback/getStudentFeedback**
+
+```js
+// foundStudentFeedback
+[
+  {
+    _id: new ObjectId('6932ae40f648d8d17eeaa572'),
+    bookingId: null,
+    studentId: new ObjectId('6903a4963253494881272acb'),
+    rating: 9,
+    feedbackMessage: 'Cool and Awasome session.. I loved the way you  breaked down things and open minded.',
+    anonymity: true,
+    __v: 0,
+    psychiatristId: new ObjectId('692bbcb9946ace680fc7e177'),
+    fullName: 'Dr. Michael Chen',
+    specilization: 'Depression & Anxiety'
+  },
+  {
+    _id: new ObjectId('69585670f8aceeb8342a69f7'),
+    bookingId: {
+      _id: new ObjectId('6943f818e97935145fb46924'),
+      sessionId: new ObjectId('693c2d7f024e044c1eca3eed')
+    },
+    studentId: new ObjectId('6903a4963253494881272acb'),
+    rating: 4,
+    feedbackMessage: 'I resolved my issues on what was pulling me down. I loved the way Dr. Michael braked down things like solving the dragon\n' +
+      'learning how to replace my bad habits was interesting',
+    anonymity: true,
+    createdAt: 2026-01-02T23:36:16.134Z,
+    updatedAt: 2026-01-02T23:36:16.134Z,
+    __v: 0,
+    psychiatristId: new ObjectId('692bbcb9946ace680fc7e177'),
+    fullName: 'Dr. Michael Chen',
+    specilization: 'Depression & Anxiety'
+  }
+]
+```
