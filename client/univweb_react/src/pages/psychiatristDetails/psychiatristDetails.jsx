@@ -34,8 +34,11 @@ export default function PsychiatristDetails()
         }
         const formData = new FormData();
         formData.append('file', selectedFile);
-        try {
-            const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
+        try 
+        {
+            // https://university-student-psychiatrist.onrender.com/
+            // const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
+            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/uploadFile", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Set the content type
                 },

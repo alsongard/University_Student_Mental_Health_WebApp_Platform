@@ -40,8 +40,8 @@ export default function App()
 		console.log('Running getVerifiedSession')
 		try
 		{
-			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/auth/me", {withCredentials:true})
-			const response = await axios.get("http://localhost:5000/api/auth/me", {withCredentials:true})
+			// const response = await axios.get("http://localhost:5000/api/auth/me", {withCredentials:true})
+			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/auth/me", {withCredentials:true})
 			if (response.status === 200)
 			{
 				// console.log('User is authenticated');
