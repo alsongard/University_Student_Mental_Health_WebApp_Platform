@@ -48,7 +48,7 @@ export default function Header(props:any)
     return (
 	// {/* Header */}
 		<div>
-			<header className="bg-white dark:bg-gray-600 shadow-sm sticky top-0 z-50">
+			<header className="bg-white bg-gradient-to-r from-white  dark:from-slate-900 to-white dark:to-slate-900  dark:border-b-1 dark:border-white shadow-sm sticky top-0 z-50">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
 					<div className="flex items-center space-x-2">
 						<Heart className="w-8 h-8 text-blue-600" />

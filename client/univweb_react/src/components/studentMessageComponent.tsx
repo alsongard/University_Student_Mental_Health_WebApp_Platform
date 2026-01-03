@@ -232,9 +232,9 @@ export default function MessagingComponent()
     return (
         <div className="flex h-screen   ">
             {/* Sidebar - Chat List */}
-            <div className="w-96 bg-white dark:bg-slate-800 border-r border-gray-200 flex flex-col">
+            <div className="w-96 bg-white dark:bg-slate-900 border-r border-gray-200 flex flex-col">
                 {/* Sidebar Header */}
-                <div className="bg-gray-50 dark:bg-slate-800 px-4 py-3 border-b border-gray-200">
+                <div className="bg-gray-50 dark:bg-slate-900 px-4 py-3 border-b border-gray-200">
                     <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-2">
                             <Heart className="w-6 h-6 dark:text-white text-blue-600" />
@@ -528,7 +528,7 @@ export default function MessagingComponent()
                 !selectedChat &&
                 (
                 // Empty State
-                    <div className="flex-1 dark:bg-slate-800 flex items-center justify-center bg-gray-50">
+                    <div className="flex-1 dark:bg-slate-900 flex items-center justify-center bg-gray-50">
                     <div className="text-center">
                         <div className="mb-4 flex justify-center">
                             <div className="w-32 h-32 bg-blue-100 dark:bg-sky-600 rounded-full flex items-center justify-center">

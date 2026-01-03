@@ -82,7 +82,7 @@ export default function PsychiatristDashboard()
 	// const userDetails = local
 	const renderOverView = ()=>{
 		return (
-			<div className="space-y-6 ">
+			<div className="space-y-6 p-5 ">
 				<div className="bg-gradient-to-r from-blue-600 dark:from-slate-600 to-blue-700 dark:to-slate-700 rounded-2xl p-8 text-white">
 					<h1 className="text-3xl font-bold dark:text-white mb-2">Welcome back {userDetails ? userDetails : "..."}</h1>
 					<p className="text-blue-100 dark:text-white">Here's your schedule for today</p>
@@ -150,7 +150,7 @@ export default function PsychiatristDashboard()
 
 
 	return (
-		<div className="flex h-screen dark:bg-gray-800 bg-gray-50">
+		<div className="flex h-screen dark:bg-gray-900 bg-gray-50">
 			<PsychiatristSidebar activeView={activeView} setActiveView={setActiveView} setRefreshFlag={setRefreshFlag}  myNumber={numberFlag} setUserDetials={setUserDetials}/>
 			{/* Main Content */}
 			<main className="flex-1 overflow-y-auto">
@@ -158,7 +158,7 @@ export default function PsychiatristDashboard()
 
 				{/* Content Area */}
 				{/* <div className="p-8"> */}
-                <div className={`${activeView != "messages" && 'p-8'}`}>
+                <div className={`${activeView != "messages" && 'p-0'}`}>
 					{activeView === "overview" && renderOverView()}
 					{activeView === "sessions" && <PsychiatristSessionsManagement/>}
 					{activeView === "booked-sessions" && <PsychiatristBookedSessions/>}
