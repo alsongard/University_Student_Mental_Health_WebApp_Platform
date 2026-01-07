@@ -123,7 +123,7 @@ export default function PsychiatristProfile() {
     }
     useEffect(() => {
         getPsychiatristProfile();
-    }, [])
+    }, []);
 
     const accessTabs:Array<string> = ['personal', 'professional', 'security', 'notifications'];
     // Psychiatrist data from database
@@ -326,20 +326,11 @@ export default function PsychiatristProfile() {
         catch (err) {
             console.log(`Error: ${err}`);
         }
-    }
-
-    /// SAVING NOTIFICATION DETAILS
-    const handleNotificationsSubmit = (event) => { }
-
-
-
-
-
+    };
 
 
     const [notificationsSuccessMessage, setNotificationsSuccessMessage] = useState(false);
     const handleNotificationSave = async (event) => {
-        // console.log('Notification preferences:', notifications);
         try {
             // https://university-student-psychiatrist.onrender.com/
             // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails`, {
