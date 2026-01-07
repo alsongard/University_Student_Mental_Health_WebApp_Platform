@@ -71,8 +71,8 @@ export default function StudentFeedbackForm(props)
         {
             // Add your API call here  
             // https://university-student-psychiatrist.onrender.com
-            // const response = await axios.post("http://localhost:5000/api/feedback/createFeedback", 
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/feedback/createFeedback", 
+            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/feedback/createFeedback", 
+            const response = await axios.post("http://localhost:5000/api/feedback/createFeedback", 
                 {
                     sessionId: sessionData.sessionId._id,
                     psychiastricId: sessionData.psychiatristId._id,

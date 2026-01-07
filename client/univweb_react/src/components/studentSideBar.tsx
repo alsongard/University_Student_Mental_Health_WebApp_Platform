@@ -29,8 +29,8 @@ function StudentSideBar(props:any)
             localStorage.clear();
             console.log('Running logout');
             // https://university-student-psychiatrist.onrender.com
-            // const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
+            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
+            const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
             dispatch(isLoggedOut());
             navigate("/",{replace:true});
             window.location.reload();

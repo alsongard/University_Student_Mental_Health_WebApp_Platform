@@ -30,8 +30,8 @@ export default function PsychiatristDashboard()
 		try
 		{
 			// https://university-student-psychiatrist.onrender.com/
-			// const response = await axios.get(`http://localhost:5000/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
+			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
+			const response = await axios.get(`http://localhost:5000/api/bookSession/psychiatristViewBooked`, {withCredentials:true});
 			if (response.data.success)
 			{
 				setmyBookedSessions(response.data.data);

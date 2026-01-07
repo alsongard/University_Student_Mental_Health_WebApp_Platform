@@ -69,8 +69,8 @@ export default function PsychiatristProfile() {
     const getPsychiatristProfile = async () => {
         try {
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, { withCredentials: true });
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, { withCredentials: true });
+            const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
             if (response.data.success) {
                 // console.log('repsonse.data.data');
                 const retrievedData = response.data.data;
@@ -219,8 +219,8 @@ export default function PsychiatristProfile() {
 
         try {
             // /api/psychatriast/updatePsychiatristPassword
-            // const response = await axios.put("http://localhost:5000/api/psychatriast/updatePsychiatristPassword", {
-            const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/psychatriast/updatePsychiatristPassword", {
+            // const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/psychatriast/updatePsychiatristPassword", {
+            const response = await axios.put("http://localhost:5000/api/psychatriast/updatePsychiatristPassword", {
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword
             },
@@ -266,8 +266,8 @@ export default function PsychiatristProfile() {
         try 
         {
             // https://university-student-psychiatrist.onrender.com
-            // const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/uploadFile", formData, {
+            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/uploadFile", formData, {
+            const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Set the content type
                 },
@@ -284,8 +284,8 @@ export default function PsychiatristProfile() {
         try {
             await handleImageUpload(event);
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails`, {
-            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
+            // const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
+            const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails`, {
                 fullName: personalInfo.fullName,
                 phoneNumber: personalInfo.phoneNumber,
                 officeLocation: personalInfo.officeLocation,
@@ -305,8 +305,8 @@ export default function PsychiatristProfile() {
     const handleProfessionalSubmit = async (event) => {
         try {
 
-            // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails/692bbcb9946ace680fc7e177`, {
-            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
+            // const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
+            const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails/692bbcb9946ace680fc7e177`, {
                 specilization: professionalDetails.specialization,
                 yearsExperience: professionalDetails.yearsOfExperience,
                 consultationDays: professionalDetails.consultationDays,
@@ -333,8 +333,8 @@ export default function PsychiatristProfile() {
     const handleNotificationSave = async (event) => {
         try {
             // https://university-student-psychiatrist.onrender.com/
-            // const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails`, {
-            const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
+            // const response = await axios.put(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/updatePsychiatristDetails`, {
+            const response = await axios.put(`http://localhost:5000/api/psychiatristDetails/updatePsychiatristDetails`, {
                 email: notifications.emailNotifications,
                 sms: notifications.emailNotifications,
                 alerts: notifications.emailNotifications,

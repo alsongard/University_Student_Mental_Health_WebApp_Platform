@@ -11,8 +11,8 @@ export default function PsychiatristSessionsManagement()
 	const getPsychiatristSessions = async ()=>{
 		try
 		{
-			// const response = await axios.get(`http://localhost:5000/api/psychiatristSession/viewSession`, {withCredentials:true})
-			const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/viewSession`, {withCredentials:true})
+			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/viewSession`, {withCredentials:true})
+			const response = await axios.get(`http://localhost:5000/api/psychiatristSession/viewSession`, {withCredentials:true})
 			if (response.data.success)
 			{
 				setSessions(response.data.data);
@@ -66,8 +66,8 @@ export default function PsychiatristSessionsManagement()
 		e.preventDefault();
 		try
 		{
-			// const response = await axios.post("http://localhost:5000/api/psychiatristSession/createSession", {
-			const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/createSession", {
+			// const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/createSession", {
+			const response = await axios.post("http://localhost:5000/api/psychiatristSession/createSession", {
 				date:formData.date,
 				startTime: formData.startTime,
 				endTime:formData.endTime,
@@ -128,8 +128,8 @@ export default function PsychiatristSessionsManagement()
 		{
 			if (confirmResult) // true
 			{
-				// const response = await axios.delete(`http://localhost:5000/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
-				const response = await axios.delete(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
+				// const response = await axios.delete(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
+				const response = await axios.delete(`http://localhost:5000/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
 				console.log(`response`);
 				console.log(response);
 				if (response.data.success)
