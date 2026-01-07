@@ -154,13 +154,13 @@ const getOTPUser = async (req,res)=>{
 }  
 const resendOtp = async (req, res)=>
 {
-    const {emai} = req.body;
+    const {email} = req.body;
     try
     {
         const foundStudent = await Student.findOne({email:email});
         if (!foundStudent)
         {
-
+            return res.status(400).json({success:false, msg:`No student with the email: ${email}`});
         }
         if (foundStudent.isAccountVerified == false || foundStudent.otpExpireTimer > Date.now())
         {
