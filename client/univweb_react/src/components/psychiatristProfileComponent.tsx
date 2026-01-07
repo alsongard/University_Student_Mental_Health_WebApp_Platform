@@ -125,7 +125,7 @@ export default function PsychiatristProfile() {
         getPsychiatristProfile();
     }, [])
 
-    const accessTabs = ['personal', 'professional', 'security', 'notifications'];
+    const accessTabs:Array<string> = ['personal', 'professional', 'security', 'notifications'];
     // Psychiatrist data from database
 
 
@@ -377,7 +377,7 @@ export default function PsychiatristProfile() {
                             <div className="relative">
                                 <img
                                     src={psychiatristData.image ? psychiatristData.image : "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop"}
-                                    alt={psychiatristData ? psychiatristData.fullName : "Loading.."}
+                                    alt={psychiatristData ? psychiatristData.psychiatristName : "Loading.."}
                                     className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover"
                                 />
                                 {
