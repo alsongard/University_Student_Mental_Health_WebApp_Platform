@@ -10,8 +10,8 @@ export default function StudentSessionComponent()
     const getAllSessions = async()=>{
 		try
 		{
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions", );
-			// const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions");
+            const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions");
+			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions", );
             // console.log(response)
             if (response.data.success)
             {
@@ -35,8 +35,8 @@ export default function StudentSessionComponent()
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions`, {withCredentials:true});
-            // const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions`, {withCredentials:true});
+            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")
