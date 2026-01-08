@@ -1,4 +1,4 @@
-interface PersonalInfo {
+export interface PersonalInfo {
     fullName:string,
     email: string,
     phoneNumber: string,
@@ -16,13 +16,13 @@ interface ProfessionalDetails {
     consulationHours:string,
 }
 
-interface SecuritySettings {
+export interface SecuritySettings {
     currentPassword: string,
     newPassword: string,
     confirmNewPassword: string,
 }
 
-interface NotificationPreferences {
+export interface NotificationPreferences {
     emailNotification: boolean,
     smsNotification: boolean,
     appointMentReminders: boolean,
@@ -30,7 +30,7 @@ interface NotificationPreferences {
     newFeedBackNotification: boolean
 }
 
-interface PsychiatristData {
+export interface PsychiatristData {
     psychiatristId: string,
     psychiatristName: string,
     psychiatristEmail: string,
@@ -48,4 +48,71 @@ interface PsychiatristData {
     consultationDays: Array<string>,
     consultationHours: string,
     languages: string,
+}
+
+export interface SingleSession {
+    fullName:string, 
+    date:string,
+    startTime:string,
+    endTime:string,
+    sessionDuration:string,
+    sessionType:string,
+    sessionMode:string,
+    maxBookings:number,
+    sessionStatus:string,
+}
+
+
+export interface AllSessionData {
+    currentBookings: number,
+    _id: string,
+    psychiatristId: string,
+    date: string,
+    startTime: string,
+    endTime: string,
+    sessionType: string,
+    sessionStatus: string,
+    sessionMode: string,
+    sessionDuration: string,
+    maxBookings: number,
+    fullName: string,
+    specialization: string,
+}
+
+export interface StudentProfile {
+    name: string,
+    admissionNumber: string,
+    email: string,
+    avatar: string,
+    phoneNumber: string,
+    course: string,
+    image: string,
+    yearOfStudy: string,
+    address: string,
+    emergencyContactName: string,
+    emergencyContactPhoneNumber: string,
+    emergencyContactRelation: string,
+}
+
+export interface PsychiatristBookedSession {
+    _id: string,
+    sessionId : {
+        _id: string,
+        date: string,
+        startTime: string,
+        endTime: string,
+        sessionType: string,
+        sessionStatus: string,
+        sessionMode: string,
+        sessionDuration: string,
+    },
+    studentId: {
+        _id: string,
+        studentAdmissionNum: string,
+        email: string,
+    },
+    psychiatristId: string,
+    status: string,
+    createdAt: string,
+    updatedAt: string
 }
