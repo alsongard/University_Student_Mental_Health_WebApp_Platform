@@ -4,10 +4,13 @@ import clsx from 'clsx';
 import axios from "axios";
 import {useNavigate, useParams} from 'react-router-dom'
 import { useDispatch } from 'react-redux';
-import { isLoggedIn } from "../../features/auth/authSlicer.js"
+import { isLoggedIn } from "../../features/auth/authSlicer.js";
+
 export default function AuthForms(props:any) 
 {
-
+    const apiURL = import.meta.env.VITE_API_URL;
+    // console.log(`this is API URL: ${apiUrl}`);
+    
     const navigate = useNavigate();
     const params = useParams();
     const pageArgument = params.id || 'student';
@@ -98,7 +101,7 @@ export default function AuthForms(props:any)
                 // console.log('formDAta submitted');
                 // console.log(studentSignupData)
                 // const Loginresponse = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentLogin", 
-                const Loginresponse = await axios.post("http://localhost:5000/api/student/studentLogin", 
+                const Loginresponse = await axios.post(`${apiURL}/api/student/studentLogin`, 
                     {
                         studentAdmission: studentSignupData.admissionNumber,
                         password:  studentSignupData.password
@@ -138,7 +141,7 @@ export default function AuthForms(props:any)
                 setStudentSuccess("An email has been sent with your OTP for acccount creation are being otp prompted...");
                 // https://university-student-psychiatrist.onrender.com
                 // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", 
-                const response = await axios.post("http://localhost:5000/api/student/studentCreate", 
+                const response = await axios.post(`${apiURL}/api/student/studentCreate`, 
                     {
                         studentAdmissionNum:studentSignupData.admissionNumber,
                         email:studentSignupData.email,
@@ -198,7 +201,7 @@ export default function AuthForms(props:any)
             // https://university-student-psychiatrist.onrender.com/
 
             // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatrist/psychiatristLogin",
-            const response = await axios.post("http://localhost:5000/api/psychiatrist/psychiatristLogin",
+            const response = await axios.post(`${apiURL}/api/psychiatrist/psychiatristLogin`,
                 {
                     email : psychiatristLoginData.email,
                     password: psychiatristLoginData.password
