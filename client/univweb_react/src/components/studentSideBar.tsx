@@ -1,9 +1,10 @@
 import { Heart, Home, RefreshCw, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search } from 'lucide-react';
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Link , useNavigate} from 'react-router-dom';
 import {  useDispatch } from 'react-redux';
 import { isLoggedOut } from '../features/auth/authSlicer';
 import axios from 'axios';
+
 function StudentSideBar(props:any)
 {
     const {activeView, setActiveView} = props;
@@ -37,7 +38,7 @@ function StudentSideBar(props:any)
         }
     return (
         // {/* Sidebar */}
-        <aside className={`bg-gradient-to-b from-blue-600 to-blue-700 text-white transition-all duration-300 ${
+        <aside className={`bg-gradient-to-b from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-300 ${
             sidebarCollapsed ? 'w-20' : 'w-70'
             } flex flex-col`}
         >
@@ -65,8 +66,8 @@ function StudentSideBar(props:any)
                         }
                         className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition ${
                             item.id === activeView
-                            ? 'bg-white text-blue-600'
-                            : 'text-blue-100 hover:bg-blue-500'
+                            ? 'bg-white dark:bg-gray-700 dark:text-blue-400 text-blue-600'
+                            : 'text-blue-100 dark:text-gray-300 dark:hover:bg-gray-700 hover:bg-blue-500'
                         } ${sidebarCollapsed ? 'justify-center' : ''}`}
                         title={sidebarCollapsed ? item.label : ''}
                     >
@@ -77,20 +78,21 @@ function StudentSideBar(props:any)
             </nav>
             
             {/* Refresh */}
-            <div className="p-4 border-t border-blue-500">
+            <div className="p-4 border-t border-blue-500 dark:border-gray-700">
                 <button
                     onClick={() => console.log('Refresh clicked')}
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 hover:bg-blue-400 rounded-lg transition"
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 dark:bg-gray-700 hover:bg-blue-400 dark:hover:bg-gray-600 rounded-lg transition"
                 >
                     {sidebarCollapsed ? <RefreshCw className="w-5 h-5" /> : <RefreshCw className="w-5 h-5" />}
-                    {!sidebarCollapsed && <span  title='Refresh' className="font-semibold">Refresh</span>}
+                    {!sidebarCollapsed && <span title='Refresh' className="font-semibold">Refresh</span>}
                 </button>
             </div>
+
             {/* Collapse Button */}
-            <div className="p-4 ">
+            <div className="p-4">
                 <button
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 hover:bg-blue-400 rounded-lg transition"
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 dark:bg-gray-700 hover:bg-blue-400 dark:hover:bg-gray-600 rounded-lg transition"
                 >
                     {sidebarCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
                     {!sidebarCollapsed && <span className="font-semibold">Collapse</span>}
@@ -98,8 +100,8 @@ function StudentSideBar(props:any)
             </div>
 
             {/* Logout */}
-            <div  onClick={handleLogout} className="p-4 border-t border-blue-500">
-                <button className={`w-full flex items-center space-x-3 px-4 py-3 bg-red-500 hover:bg-red-600 rounded-lg transition ${
+            <div onClick={handleLogout} className="p-4 border-t border-blue-500 dark:border-gray-700">
+                <button className={`w-full flex items-center space-x-3 px-4 py-3 bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 rounded-lg transition ${
                     sidebarCollapsed ? 'justify-center' : ''
                 }`}>
                     <LogOut className="w-5 h-5" />

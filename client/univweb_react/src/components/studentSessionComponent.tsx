@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { Search, Clock, Stethoscope, User, MoveRight, Calendar, Loader, View } from "lucide-react";
 import axios from "axios";
+import type { SingleSession, AllSessionData } from "./types";
 import ViewStudentBookedInfo from "../components/viewStudentBookedInfo";
 export default function StudentSessionComponent()
 {
-    const [selectedSession, setSelectedSession] = useState(null);
-    const studentId = localStorage.getItem("studentId");    
-    const [myUpcomingSessions, setMyUpcomingSessions] = useState([]);
+    const apiURL = import.meta.env.VITE_API_URL;
+    const [selectedSession, setSelectedSession] = useState(null);    
+    const [myUpcomingSessions, setMyUpcomingSessions] = useState<AllSessionData[]>([]);
     const getAllSessions = async()=>{
 		try
 		{
-            const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions");
+            const response = await axios.get(`${apiURL}/api/studentSession/getAllSessions`);
 			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions", );
             // console.log(response)
             if (response.data.success)
@@ -24,22 +25,21 @@ export default function StudentSessionComponent()
 		}
 	}
     useEffect(()=>{
-        getAllSessions()
-        GetStudentBookedSessions()
+        getAllSessions();
+        GetStudentBookedSessions();
     },[]);
 
 
     
     const [studentBookedSessions, setStudentBookedSessions] = useState([]);
-
     const GetStudentBookedSessions = async ()=>{
         try
         {
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions`, {withCredentials:true});
-            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentSession/getStudentFutureSessions`, {withCredentials:true});
+            const response = await axios.get(`${apiURL}/api/studentSession/getStudentFutureSessions`, {withCredentials:true});
             if (response.data.success)
             {
-                if (response.data.msg === "You have no booked sessions")
+                if (response.data.msg === "You have no future booked sessions")
                 {
                     setStudentBookedSessions([]);
                     return;
@@ -52,18 +52,17 @@ export default function StudentSessionComponent()
             console.log(`Error: ${err}`)
         }
     }
-    const router = "useRouter()"
 
     const [bookSession, setBookSession] = useState(false);
-    const [singleSession, setSingleSession] = useState();
+    const [singleSession, setSingleSession] = useState<SingleSession>();
     const [successMessage, setSuccessMessage] = useState(false);
 
     const handleBookSubmit = async(singleSession:any)=>{
         try
         {
             // console.log('sucess is success'); // Testing
-            // const response = await axios.post(`http://localhost:5000/api/bookSession/createBooking`, {
-            const response = await axios.post(`https://university-student-psychiatrist.onrender.com/api/bookSession/createBooking`, {
+            // const response = await axios.post(`${apiURL}/api/bookSession/createBooking`, {
+            const response = await axios.post(`${apiURL}/api/bookSession/createBooking`, {
                 sessionId: singleSession._id,
                 psychiatristId: singleSession.psychiatristId,
                 status: "scheduled",
@@ -211,7 +210,7 @@ export default function StudentSessionComponent()
     // console.log('new sessions');
     // console.log(newSessions);
 
-    const getStatusColor = (status) => {
+    const getStatusColor = (status:string) => {
         const colors = {
             scheduled: 'border-blue-400 bg-blue-50',
             completed: 'border-green-400 bg-green-50',
@@ -221,7 +220,7 @@ export default function StudentSessionComponent()
         return colors[status] || 'border-gray-300 bg-white';
     };
 
-    const getStatusBadge = (status) => {
+    const getStatusBadge = (status:string) => {
         const styles = {
             scheduled: 'bg-blue-100 text-blue-700',
             completed: 'bg-green-100 text-green-700',
@@ -265,55 +264,88 @@ export default function StudentSessionComponent()
 
                 <div className="grid lg:grid-cols-2 gap-6">
                     {
-                        newSessions.length > 0  && (
-
+                        newSessions.length > 0  ? (
                             newSessions.map((session) => (
-                                <div key={session._id} className="bg-white rounded-xl shadow-md p-6 dark:hover:shadow-[0px_0px_0px_5px_gray] hover:shadow-xl transition">
+                                <div key={session._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6 hover:shadow-xl dark:hover:shadow-[0px_0px_15px_rgba(59,130,246,0.5)] transition">
                                     <div className="flex items-start justify-between mb-4">
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-900 mb-1">{session.fullName}</h3>
-                                            <p className="text-blue-600 font-semibold">{session.specialization}</p>
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{session.fullName}</h3>
+                                            <p className="text-blue-600 dark:text-blue-400 font-semibold">{session.specialization}</p>
                                         </div>
-                                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                                        <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-semibold">
                                             Available
                                         </span>
                                     </div>
-    
+
                                     <div className="mb-4">
-                                        <p className="text-sm font-semibold text-gray-700">Session Date</p>
-                                        <p className=' capitalize'>{new Date(session.date).toISOString().split('T')[0]}</p>  
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Session Date</p>
+                                        <p className="capitalize text-gray-900 dark:text-gray-100">{new Date(session.date).toISOString().split('T')[0]}</p>  
                                     </div>
 
                                     <div className="mb-4">
-                                        <p className="text-sm font-semibold text-gray-700 ">Available Time Slots:</p>
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Available Time Slots:</p>
                                         <div className="space-y-2">
-                                            <p className='flex flex-row  space-x-[10px]'>
+                                            <p className="flex flex-row space-x-[10px] text-gray-900 dark:text-gray-100">
                                                 {session.startTime} &#8594; {session.endTime}
                                             </p>
-                                            <p>Remaining Bookings: 1</p>
-                                            {/* {session.availableSlots.map((slot, index) =>  ( ))}*/}
+                                            <p className="text-gray-900 dark:text-gray-100">Remaining Bookings: 1</p>
                                             <button
-                                                // key={index}
-                                                // onClick={() => setSelectedSession({ ...session, selectedSlot: slot })} // WORK ON THESE
-                                                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition text-sm font-medium text-gray-700"
+                                                className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition text-sm font-medium text-gray-700 dark:text-gray-300"
                                             >
                                                 View Session Details
                                             </button>
-                                            
                                         </div>
                                     </div>
-    
-                                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                                        <span className="text-sm text-gray-600">Mode: {session.sessionMode}</span>
+
+                                    <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                                        <span className="text-sm text-gray-600 dark:text-gray-400">Mode: {session.sessionMode}</span>
                                         <button 
                                             onClick={()=>{
                                                 setSingleSession(session);
                                                 setBookSession(true)
                                             }} 
-                                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                                            className="px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold"
                                         >
                                             Book Now
                                         </button>
+                                    </div>
+                                </div>
+                            ))
+                        )
+                        : 
+                        (
+                            // {/* Show 3-6 skeleton cards while loading */}
+                            [1].map((index) => (
+                                <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6 transition">
+                                    {/* Header Section */}
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="flex-1">
+                                            <div className="h-6 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
+                                            <div className="h-5 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                        </div>
+                                        <div className="h-7 w-20 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                                    </div>
+
+                                    {/* Session Date */}
+                                    <div className="mb-4">
+                                        <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
+                                        <div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                    </div>
+
+                                    {/* Time Slots */}
+                                    <div className="mb-4">
+                                        <div className="h-4 w-36 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-3"></div>
+                                        <div className="space-y-2">
+                                            <div className="h-5 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                            <div className="h-5 w-36 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                            <div className="h-10 w-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mt-3"></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                                        <div className="h-5 w-28 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                        <div className="h-10 w-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
                                     </div>
                                 </div>
                             ))
