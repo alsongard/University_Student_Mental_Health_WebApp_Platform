@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import StudentFeedbackForm from "./studentFeedbackForm";
 export default function StudentFeedBack() 
 {
-    const studentId = localStorage.getItem('studentId');
+    const apiURL = import.meta.env.VITE_API_URL;
     // set state for feedbacks
     const [myFeedBack, setMyFeedbacks] = useState([]);
     const [studentSessions, setStudentSessions] = useState([]);
@@ -14,7 +14,7 @@ export default function StudentFeedBack()
         {
             // http://localhost:5000/
             // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/feedback/getStudentFeedback`, {withCredentials:true});
-            const response = await axios.get(`http://localhost:5000/api/feedback/getStudentFeedback`, {withCredentials:true});
+            const response = await axios.get(`${apiURL}/api/feedback/getStudentFeedback`, {withCredentials:true});
     
             if (response.data.success)
             {
@@ -32,7 +32,7 @@ export default function StudentFeedBack()
         try
         {
             // https://university-student-psychiatrist.onrender.com
-            const response = await axios.get("http://localhost:5000/api/bookSession/getStudentBookedSessions", {withCredentials:true});
+            const response = await axios.get(`${apiURL}/api/bookSession/getStudentBookedSessions`, {withCredentials:true});
             // const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions", {withCredentials:true});
             // console.log('response.data');
             // console.log(response.data);
@@ -60,6 +60,7 @@ export default function StudentFeedBack()
     {
         return (<StudentFeedbackForm setFeedBack={setFeedBackView} sessionData={singleSession}/>)
     }
+    const skeleton_value = [1];
     return (
         <div className="space-y-6 p-5">
             <div className="flex items-center justify-between">
@@ -68,46 +69,70 @@ export default function StudentFeedBack()
             </div>
 
             <div className="space-y-4">
-                {
-                    myFeedBack.length === 0 && (
-                        <div className="dark:text-white dark:bg-slate-600  p-5 bg-gray-300 rounded-md">
-                            <p>No Feedbacks</p>
-                        </div>
-                    )
-                }
-
                 { 
-                    myFeedBack && myFeedBack.length > 0 &&
+                    myFeedBack && myFeedBack.length > 0 ?
                     (
                         myFeedBack.map((feedback) => (
-                            <div key={feedback._id} className="bg-white rounded-xl shadow-md p-6">
+                            <div key={feedback._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6">
                                 <div className="flex items-start justify-between mb-4">
-                                <div>
-                                    <h3 className="font-bold text-gray-900">{feedback.fullName}</h3>
-                                    <h3 className="font-bold text-gray-900">{feedback.specilization}</h3>
-                                    {/* <p className="text-sm text-gray-600">Session Date: {feedback.bookingId.sessionId ?  feedback.bookingId.sessionId : `NONE`}</p> */}
-                                </div>
-                                <div className="flex items-center space-x-1">
-                                    {[...Array(5)].map((_, i) => (
-                                    <span key={i} className={i < feedback.rating ? 'text-yellow-400' : 'text-gray-300'}>★</span>
-                                    ))}
-                                </div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 dark:text-white">{feedback.fullName}</h3>
+                                        <h3 className="font-bold text-gray-900 dark:text-white">{feedback.specilization}</h3>
+                                        {/* <p className="text-sm text-gray-600 dark:text-gray-400">Session Date: {feedback.bookingId.sessionId ?  feedback.bookingId.sessionId : `NONE`}</p> */}
+                                    </div>
+                                    <div className="flex items-center space-x-1">
+                                        {[...Array(5)].map((_, i) => (
+                                            <span key={i} className={i < feedback.rating ? 'text-yellow-400 dark:text-yellow-500' : 'text-gray-300 dark:text-gray-600'}>★</span>
+                                        ))}
+                                    </div>
                                 </div>
                                 
-                                <div className="bg-gray-50 rounded-lg p-4 mb-3">
-                                    <p className="text-gray-700">{feedback.feedbackMessage}</p>
+                                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-3">
+                                    <p className="text-gray-700 dark:text-gray-300">{feedback.feedbackMessage}</p>
                                 </div>
 
-                                {/*  THIS FEATURE WIL NOT BE IMPLELEMENTED FOR NOW*/}
+                                {/*  THIS FEATURE WILL NOT BE IMPLEMENTED FOR NOW*/}
                                 {/* {feedback.feedbackMessage && (
-                                <div className="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-600">
-                                    <p className="text-sm font-semibold text-gray-900 mb-1">Psychiatrist Response:</p>
-                                    <p className="text-gray-700">{feedback.response}</p>
+                                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border-l-4 border-blue-600 dark:border-blue-500">
+                                    <p className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Psychiatrist Response:</p>
+                                    <p className="text-gray-700 dark:text-gray-300">{feedback.response}</p>
                                 </div>
                                 )} */}
                             </div>
-                        ) 
-                ))}
+                        ))
+                    ) 
+                    : 
+                    (
+                        // {/* Show 3-5 skeleton feedback cards while loading */}
+                        [1].map((index:number) => (
+                            <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6">
+                                {/* Header Section - Name, Specialization & Rating */}
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex-1">
+                                        <div className="h-5 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
+                                        <div className="h-5 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                    </div>
+                                    <div className="flex items-center space-x-1">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <div key={star} className="h-5 w-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                        ))}
+                                    </div>
+                                </div>
+                                
+                                {/* Feedback Message Box */}
+                                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-3">
+                                    <div className="space-y-2">
+                                        <div className="h-4 w-full bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
+                                        <div className="h-4 w-full bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
+                                        <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )
+                }
+
+                {/* ADD FEEDBACK FOR SESSIONS */}
                 {
                     studentSessions.length == 0 ?
                     (

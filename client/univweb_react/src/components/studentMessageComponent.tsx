@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 
 export default function MessagingComponent()
 {
+    const apiURL = import.meta.env.VITE_API_URL;
     const myRole =  useSelector((state)=>state.myAuthSlicer.role);
     const [chatUsersList , setChatUsersList] = useState([]);
     const [chatContacts, setChatContacts] = useState([]);
@@ -18,7 +19,7 @@ export default function MessagingComponent()
         try
         {
             // const response = await axios.get('http://localhost:5000/api/messages/getAllPsychiatrist', {withCredentials:true});
-            const response = await axios.get('https://university-student-psychiatrist.onrender.com/api/messages/getAllPsychiatrist', {withCredentials:true});
+            const response = await axios.get(`${apiURL}/api/messages/getAllPsychiatrist`, {withCredentials:true});
             // console.log("Response from getPsychiatrists:");
             // console.log(response.data.data);
 
@@ -41,7 +42,7 @@ export default function MessagingComponent()
         {
             
             // const response = await axios.get('http://localhost:5000/api/messages/retrieveUserChatPartners', {withCredentials:true});
-            const response = await axios.get('https://university-student-psychiatrist.onrender.com/api/messages/retrieveUserChatPartners', {withCredentials:true});
+            const response = await axios.get(`${apiURL}/api/messages/retrieveUserChatPartners`, {withCredentials:true});
             // console.log("Response from getChatPartners:");
             // console.log(response.data.data.length );
             // console.log(response.data.data );
@@ -73,7 +74,7 @@ export default function MessagingComponent()
         try
         {
             // const response = await axios.get(`http://localhost:5000/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
-            const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
+            const response = await axios.get(`${apiURL}/api/messages/retrievemessages/${partnerId}`, {withCredentials:true});
             // console.log("Response from getMessagesBetweenUsers:");
             // console.log(response.data.data);
 
@@ -94,10 +95,10 @@ export default function MessagingComponent()
             console.error("Error fetching messages between users:", error);
         }
     }
-    // https://university-student-psychiatrist.onrender.com
+    // ${apiURL}
     let socketRef = useRef(null);
     useEffect(()=>{
-        socketRef.current = io("https://university-student-psychiatrist.onrender.com", 
+        socketRef.current = io(`${apiURL}`, 
             {
                 transports: ['websocket', 'polling'],
                 autoConnect: true,
@@ -203,8 +204,6 @@ export default function MessagingComponent()
                         return message.tempId == myNewMessage.tempId ? {...myNewMessage} : message
                     })
                 )
-    
-    
             })
         }
         return ()=>{
@@ -234,55 +233,53 @@ export default function MessagingComponent()
             {/* Sidebar - Chat List */}
             <div className="w-96 bg-white dark:bg-slate-900 border-r border-gray-200 flex flex-col">
                 {/* Sidebar Header */}
-                <div className="bg-gray-50 dark:bg-slate-900 px-4 py-3 border-b border-gray-200">
+                <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-2">
-                            <Heart className="w-6 h-6 dark:text-white text-blue-600" />
-                            <h1 className="text-xl font-bold dark:text-white text-gray-900">Messages</h1>
+                            <Heart className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Messages</h1>
                         </div>
-                        <button className="p-2 hover:bg-gray-200 rounded-full transition">
-                            <MoreVertical className="w-5 h-5 dark:text-white text-gray-600" />
+                        <button className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition">
+                            <MoreVertical className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                         </button>
                     </div>
                 
                     {/* Search Bar */}
                     <div className="relative">
-                        <Search className="w-5 dark:text-white  h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                         <input
                             type="text"
                             placeholder="Search conversations..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full dark:text-white dark:bg-slate-500  dark:placeholder-white pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent"
                         />
                     </div>
-
                 </div>
 
                 {/* Chat List */}
                 <div className="flex-1 overflow-y-auto">
-                    <div className='flex border-b-1 border-white flex-row space-x-5 px-2 py-2  '>
+                    <div className='flex border-b border-gray-200 dark:border-gray-700 flex-row space-x-5 px-2 py-2'>
                         <button 
-                            className="bg-slate-400 w-full p-[10px] rounded-md "
+                            className="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 w-full p-[10px] rounded-md transition"
                             onClick={()=>{console.log("set mychats state"); setViewChats(prevValue=> !prevValue); setViewContacts(false);}}>
-                            <h1>MyChats</h1>
+                            <h1 className="text-gray-900 dark:text-white font-medium">MyChats</h1>
                         </button>
                         <button
-                            className="bg-slate-600 w-full p-[10px] rounded-md" 
+                            className="bg-gray-400 dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-500 w-full p-[10px] rounded-md transition" 
                             onClick={()=>{console.log("set contacts state"); setViewContacts(prevValue=> !prevValue); setViewChats(false);}}>
-                            <p>Contacts</p>
+                            <p className="text-gray-900 dark:text-white font-medium">Contacts</p>
                         </button>
                     </div>
                     
                     {/* VIEWCHAT CONTAINER */}
                     {
-                        // VIEW CHATS IS STATE MANAGED BY BUTTON FOR DISPLAYING THE USER CHATS
                         viewChats && (
                             <div className="pt-2 px-2">
                                 {/* DISPLAY THIS IF NO CHATS */}
                                 {
                                     chatUsersList.length === 0 && (
-                                        <div className="p-4 text-center text-gray-500 dark:text-white">
+                                        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                                             No conversations available. Start a new chat to connect with your psychiatrist or support team.
                                         </div>
                                     )
@@ -291,20 +288,16 @@ export default function MessagingComponent()
                                 {
                                     chatUsersList.length > 0 && 
                                     chatUsersList.map((chat) => (
-                                        <div // used div which is good i thought buttons would be in use
+                                        <div
                                             key={chat._id}
                                             onClick={()=>{ 
                                                 console.log(`chat`);
-                                                // console.log(chat);
-                                                // console.log(`typeof: chat.psychiatristId : ${typeof(chat.psychiatristId)} ${chat.psychiatristId}`); // string 
-                                                console.log(`typeof: chat.​​studentId : ${typeof(chat.​​studentId)} ${chat.​​studentId}`); // string 
                                                 setChatHeader(chat);
                                                 getMessagesBetweenUsers(chat.psychiatristId || chat.studentId);
                                                 setSelectedChat(true)
                                             }}
-                                            // className={`px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 transition ${
-                                            className={`px-4 py-3 rounded-md bg-slate-600  cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-600 transition ${
-                                                chatHeaderMain?._id === chat._id ? 'bg-blue-50 dark:bg-gray-500' : ''
+                                            className={`px-4 py-3 mb-2 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition ${
+                                                chatHeaderMain?._id === chat._id ? 'bg-blue-50 dark:bg-gray-700 border-l-4 border-blue-600 dark:border-blue-500' : ''
                                             }`}
                                         >
                                             <div className="flex flex-row items-start space-x-5">
@@ -314,32 +307,32 @@ export default function MessagingComponent()
                                                         alt={chat.fullName ? chat.fullName : "User Avatar"}
                                                         className="w-12 h-12 rounded-full object-cover"
                                                     />
-                                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
 
                                                     {/* THIS WILL BE SET BY SOCEKT IO */}
                                                     {/* {chat.online && ( 
                                                         <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                                                     )} */}
                                                 </div>
+                                                {/* <p className="text-sm text-gray-500 dark:text-white truncate mb-1">{chat.recieverRole}</p> */}
+                                                {/* <div className="flex items-center justify-between"> */}
+                                                    {/* <p className={`text-sm truncate dark:text-white ${chat.unread > 0 ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
+                                                        {chat.lastMessage}
+                                                    </p> */}
+                                                    {/* {
+                                                        chat.unread > 0 && (
+                                                        <span className="ml-2 dark:text-white flex-shrink-0 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+                                                            {chat.unread}
+                                                        </span>
+                                                    )} */}
+                                                {/* </div> */}
                                                 
                                                 <div className="min-w-0">
                                                     <div className="flex flex-col items-start justify-between mb-1">
-                                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.fullName || chat.studentName}</h3>
-                                                        <h3 className="font-semibold dark:text-white text-gray-900 truncate">{chat.specilization || chat.course}</h3>
+                                                        <h3 className="font-semibold text-gray-900 dark:text-white truncate">{chat.fullName || chat.studentName}</h3>
                                                         {/* <span className="text-xs dark:text-white text-gray-500 flex-shrink-0 ml-2">{new Date(chat.updatedAt).toISOString().split("T")[0]}</span> */}
+                                                        <h3 className="font-semibold text-gray-900 dark:text-gray-300 truncate">{chat.specilization || chat.course}</h3>
                                                     </div>
-                                                    {/* <p className="text-sm text-gray-500 dark:text-white truncate mb-1">{chat.recieverRole}</p> */}
-                                                    {/* <div className="flex items-center justify-between"> */}
-                                                        {/* <p className={`text-sm truncate dark:text-white ${chat.unread > 0 ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
-                                                            {chat.lastMessage}
-                                                        </p> */}
-                                                        {/* {
-                                                            chat.unread > 0 && (
-                                                            <span className="ml-2 dark:text-white flex-shrink-0 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
-                                                                {chat.unread}
-                                                            </span>
-                                                        )} */}
-                                                    {/* </div> */}
                                                 </div>
                                             </div>
                                         </div>
@@ -349,11 +342,10 @@ export default function MessagingComponent()
                     }
 
 
-
                     {/* VIEW CONTACT LISTS ON CONTACTS */}
                     {
                         viewContacts && (
-                            <div className="p-4 text-center flex flex-col text-gray-500 dark:text-white">
+                            <div className="p-4 text-center flex flex-col text-gray-500 dark:text-gray-400">
                                 {
                                     chatContacts.length === 0 ? (
                                         <div>No contacts available at the moment.</div>
@@ -361,26 +353,24 @@ export default function MessagingComponent()
                                     :
                                     (
                                         chatContacts.map((contactItem)=>
-                                            <div className="flex  py-2 bg-linear-to-r  from-white dark:from-slate-700 to-whites  dark:to-slate-600 rounded-md px-2 flex-row items-start space-x-5">
+                                            <div key={contactItem._id} className="flex py-2 mb-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 flex-row items-start space-x-5 transition">
                                                 <div className="relative">
                                                     <img
                                                         src={contactItem.avatar ? contactItem.avatar : "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop"}
                                                         alt={contactItem.fullName ? contactItem.fullName : "User Avatar"}
                                                         className="w-12 h-12 rounded-full object-cover"
                                                     />
-                                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
                                                 </div>
 
-                                                <div className="flex-col  items-start min-w-0">
-                                                    {/* <div className="flex items-center justify-between mb-1"> */}
-                                                        <h3 className="font-semibold text-left dark:text-white text-gray-900 truncate">{contactItem.fullName}</h3>
-                                                        <h3 className="font-semibold text-left dark:text-white text-gray-900 truncate">{contactItem.specilization}</h3>
-                                                    {/* </div> */}
+                                                <div className="flex-col items-start min-w-0">
+                                                    <h3 className="font-semibold text-left text-gray-900 dark:text-white truncate">{contactItem.fullName}</h3>
+                                                    <h3 className="font-semibold text-left text-gray-900 dark:text-gray-300 truncate">{contactItem.specilization}</h3>
                                                 </div>
                                             </div>
                                         )
                                     )
-                                            
+           
                                 }
                             </div>
                         )
@@ -390,162 +380,146 @@ export default function MessagingComponent()
             </div>
 
             {/* Main Chat Area */}
-            {selectedChat && (
-                
-                <div className="flex-1 flex dark:bg-slate-900 flex-col  bg-gray-50">
-                    
+            {selectedChat && ( 
+                <div className="flex-1 flex flex-col bg-gray-50 dark:bg-gray-900">
+        
                     {/* Chat Header */}
-                    <div className="bg-white dark:bg-slate-900  px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                    <div className="bg-white dark:bg-gray-800 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                             <div className="relative">
                                 <img
-                                    // src={selectedChat.avatar ? selectedChat.avatar : "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop"}
                                     src={"https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop"}
-                                    // alt={selectedChat.name ? selectedChat.name : "User Avatar"}
                                     alt={"User Avatar"}
                                     className="w-10 h-10 rounded-full object-cover"
                                 />
-                                    {/* {selectedChat.online && (
-                                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                                    )} */}
                             </div>
                             <div>
-                                <h2 className="font-bold dark:text-white text-gray-900">{myRole == "student" ? chatHeaderMain?.fullName : chatHeaderMain?.studentName}</h2>
-                                {/* <p className="text-xs dark:text-white text-gray-500">{selectedChat.online ? 'Online' : 'Offline'}</p> */}
-                                <p className="text-xs dark:text-white text-gray-500">{ 'Offline'}</p>
+                                <h2 className="font-bold text-gray-900 dark:text-white">{myRole == "student" ? chatHeaderMain?.fullName : chatHeaderMain?.studentName}</h2>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Offline</p>
                             </div>
                         </div>
                         
                         <div className="flex items-center space-x-2">
-                            <button className="p-2 hover:bg-gray-100  dark:hover:bg-slate-500 rounded-full transition">
-                                <Video className="w-5  dark:text-white h-5 text-gray-600" />
+                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                                <Video className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                             </button>
-                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-500 rounded-full transition">
-                                <Phone className="w-5 h-5 dark:text-white text-gray-600" />
+                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                                <Phone className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                             </button>
-                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-500 rounded-full transition">
-                                <MoreVertical className="w-5 h-5 dark:text-white text-gray-600" />
+                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                                <MoreVertical className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                             </button>
                         </div>
                     </div>
 
-                {/* Messages Area */}
-                <div className="flex-1 dark:bg-slate-900 overflow-y-auto p-6 space-y-4">
-                    {
-                        chatMessages.length > 0 ? chatMessages.map((message) => (
-                            <div
-                                key={message._id}
-                                className={`flex  ${message.senderRole == myRole ? 'justify-end' : 'justify-start'}`}
-                                // className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'}`}
+                    {/* Messages Area */}
+                    <div className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto p-6 space-y-4">
+                        {
+                            chatMessages.length > 0 ? chatMessages.map((message) => (
+                                <div
+                                    key={message._id}
+                                    className={`flex ${message.senderRole == myRole ? 'justify-end' : 'justify-start'}`}
+                                >
+                                    <div className={`max-w-md`}>
+                                        <div
+                                            className={`rounded-lg px-4 py-2 ${
+                                            message.senderRole == myRole
+                                                ? 'bg-blue-600 dark:bg-blue-700 text-white'
+                                                : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+                                            } shadow-sm`}
+                                        >
+                                            <p className="text-sm">{message.message}</p>
+                                        </div>
+                                        <div className={`flex items-center space-x-1 mt-1 ${
+                                            message.senderRole === myRole ? 'justify-end' : 'justify-start'
+                                        }`}>
+                                            <span className={`text-xs text-gray-500 dark:text-gray-400`}>{new Date(message.updatedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false})}</span>
+                                            {message.senderRole === myRole && (
+                                            <span>
+                                                {message.status === 'sent' && <Check className="w-3 h-3 text-gray-500 dark:text-gray-400" />}
+                                                {message.status === 'delivered' && <CheckCheck className="w-3 h-3 text-gray-500 dark:text-gray-400" />}
+                                                {message.status === 'read' && <CheckCheck className="w-3 h-3 text-blue-600 dark:text-blue-400" />}
+                                            </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                            :
+                            (
+                                <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                                    <div className="text-center">
+                                        <div className="mb-4 flex justify-center">
+                                            <div className="w-32 h-32 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                                                <Heart className="w-16 h-16 text-blue-600 dark:text-blue-400" />
+                                            </div>
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                            Start Chatting
+                                        </h2>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    {/* Message Input */}
+                    <div className="bg-white dark:bg-gray-800 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                        <div className="flex items-end space-x-3">
+                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                                <Smile className="w-6 h-6 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
+                            </button>
+                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
+                                <Paperclip className="w-6 h-6 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
+                            </button>
+                            
+                            <div className="flex-1">
+                                <textarea
+                                    value={messageInput}
+                                    onChange={(e) => setMessageInput(e.target.value)}
+                                    onKeyDown={handleKeyPress}
+                                    placeholder="Type a message..."
+                                    rows="1"
+                                    className="w-full px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent resize-none"
+                                    style={{ minHeight: '48px', maxHeight: '120px' }}
+                                />
+                            </div>
+                            
+                            <button
+                                onClick={handleSendMessage}
+                                disabled={!messageInput.trim()}
+                                className={`p-3 rounded-full transition ${
+                                messageInput.trim()
+                                    ? 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white'
+                                    : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+                                }`}
                             >
-                                {/* <div className={`max-w-md ${message.recieverRole != 'student' ? 'order-1' : 'order-2'}`}> */}
-                                <div className={`max-w-md `}>
-                                    <div
-                                        className={`rounded-lg px-4 py-2 ${
-                                        message.senderRole == myRole
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-white dark:bg-slate-400 text-gray-900'
-                                        } shadow-sm`}
-                                    >
-                                        <p className="text-sm">{message.message}</p>
-                                    </div>
-                                    <div className={`flex items-center space-x-1 mt-1 ${
-                                        message.senderRole === myRole ? 'justify-end' : 'justify-start'
-                                    }`}>
-                                        <span className={`text-xs dark:text-white text-gray-500 `}>{new Date(message.updatedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false})}</span>
-                                        {message.senderRole === myRole && (
-                                        <span>
-                                            {message.status === 'sent' && <Check className="w-3 h-3 text-gray-500" />}
-                                            {message.status === 'delivered' && <CheckCheck className="w-3 h-3 text-gray-500" />}
-                                            {message.status === 'read' && <CheckCheck className="w-3 h-3 text-blue-600" />}
-                                        </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                        :
-                        (
-                            // Empty State: THIS WILL BE MODIFIED TO REFLECT : sTART CHATTING
-                            <div className="flex-1 dark:bg-slate-800 flex items-center justify-center bg-gray-50">
-                            <div className="text-center">
-                                <div className="mb-4 flex justify-center">
-                                    <div className="w-32 h-32 bg-blue-100 dark:bg-sky-600 rounded-full flex items-center justify-center">
-                                        <Heart className="w-16 h-16 dark:text-white text-blue-600" />
-                                    </div>
-                                </div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                                    Start Chatting
-                                </h2>
-
-                            </div>
-                            </div>
-                        )
-                        
-
-                    }
-                </div>
-
-                {/* Message Input */}
-                <div className="bg-white dark:bg-slate-900 px-6 py-4 border-t border-gray-200">
-                    <div className="flex items-end space-x-3">
-                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-500  rounded-full transition">
-                        <Smile className="w-6 h-6 dark:text-gray-400 dark:hover:text-white text-gray-600" />
-                    </button>
-                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-500 rounded-full transition">
-                        <Paperclip className="w-6 h-6 dark:text-gray-400 dark:hover:text-white text-gray-600" />
-                    </button>
-                    
-                    <div className="flex-1">
-                        <textarea
-                            value={messageInput}
-                            onChange={(e) => setMessageInput(e.target.value)}
-                            onKeyDown={handleKeyPress}
-                            placeholder="Type a message..."
-                            rows="1"
-                            className="w-full px-4 py-3 dark:bg-slate-500 dark:placeholder-white dark:text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
-                            style={{ minHeight: '48px', maxHeight: '120px' }}
-                        />
-                    </div>
-                    
-                    <button
-                        onClick={handleSendMessage}
-                        disabled={!messageInput.trim()}
-                        className={`p-3 rounded-full transition ${
-                        messageInput.trim()
-                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        }`}
-                    >
-                        <Send className="w-5 h-5" />
-                    </button>
+                                <Send className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
                 </div>
-                </div>
-            )
-            }
+            )}
             {
                 !selectedChat &&
                 (
-                // Empty State
-                    <div className="flex-1 dark:bg-slate-900 flex items-center justify-center bg-gray-50">
-                    <div className="text-center">
-                        <div className="mb-4 flex justify-center">
-                            <div className="w-32 h-32 bg-blue-100 dark:bg-sky-600 rounded-full flex items-center justify-center">
-                                <Heart className="w-16 h-16 dark:text-white text-blue-600" />
+                    <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                        <div className="text-center">
+                            <div className="mb-4 flex justify-center">
+                                <div className="w-32 h-32 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                                    <Heart className="w-16 h-16 text-blue-600 dark:text-blue-400" />
+                                </div>
                             </div>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                MindBridge Messaging
+                            </h2>
+                            <p className="text-gray-600 dark:text-gray-400 max-w-sm">
+                                Select a conversation to start messaging with your psychiatrist or support team
+                            </p>
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                            MindBridge Messaging
-                        </h2>
-                        <p className="text-gray-600 dark:text-white max-w-sm">
-                            Select a conversation to start messaging with your psychiatrist or support team
-                        </p>
-                    </div>
                     </div>
                 )   
-                
             }
         </div>
-  );
+    );
 }
