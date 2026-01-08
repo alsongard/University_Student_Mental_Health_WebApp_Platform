@@ -10,6 +10,7 @@ import {  useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 export default function StudentDashboard()
 {
+    const apiURL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     // check if studentDetails Exist in DB:
     const email = useSelector((state)=>{
@@ -21,7 +22,7 @@ export default function StudentDashboard()
         try
         {
             // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,{withCredentials:true});
-            const response = await axios.get(`http://localhost:5000/api/studentDetails/getStudentDetails/`, {withCredentials:true});
+            const response = await axios.get(`${apiURL}/api/studentDetails/getStudentDetails/`, {withCredentials:true});
             // console.log('checkStudentDetailsExist response.data.data');
             // console.log(response.data.data);
             // console.log('response');
@@ -65,7 +66,7 @@ export default function StudentDashboard()
 		try
 		{
 			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions",
-            const response = await axios.get("http://localhost:5000/api/studentSession/getAllSessions",
+            const response = await axios.get(`${apiURL}/api/studentSession/getAllSessions`,
                 {withCredentials:true}
             );
             // console.log(response)
@@ -85,7 +86,7 @@ export default function StudentDashboard()
         try
         {
             // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
-            const response = await axios.get(`http://localhost:5000/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
+            const response = await axios.get(`${apiURL}/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {
                 if (response.data.msg === "You have no booked sessions")
@@ -130,8 +131,8 @@ export default function StudentDashboard()
                     // console.log(calenderSessions);
             }, 8000);
         
-        }, [8000]
-    );
+        }, 
+    []);
 
 
 
@@ -181,6 +182,8 @@ export default function StudentDashboard()
         const today = new Date()
         if (theDate >= today)
         {
+            // console.log('this is session');
+            // console.log(sessions);
             return sessions
         }
     })
@@ -207,7 +210,7 @@ export default function StudentDashboard()
     (
         <div className="space-y-6 p-5">
             {/* Welcome Section */}
-            <div className="bg-linear-to-r from-blue-600 to-blue-700 flex flex-row justify-between items-center rounded-2xl p-8 text-white">
+            <div className="bg-linear-to-r from-blue-600 to-blue-700  dark:from-gray-800 dark:to-gray-700 flex flex-row justify-between items-center rounded-2xl p-8 text-white">
                 <div>
 
                     <h1 className="text-3xl font-bold mb-2">Welcome back, {email?.split("@")[0]}!</h1>
@@ -220,96 +223,102 @@ export default function StudentDashboard()
                 </button>
             </div>
 
+
+
             {/* Quick Stats */}
             <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-white hover:shadow-[0px_0px_10px_#18DEC8]  hover:cursor-pointer rounded-xl shadow-md p-6 border-l-4 border-blue-600">
-                    <div className="flex items-center justify-between  ">
+                {/* Card 1 - Upcoming Sessions */}
+                <div className="bg-white dark:bg-gray-800 hover:shadow-[0px_0px_10px_#18DEC8] dark:hover:shadow-[0px_0px_10px_#60A5FA] hover:cursor-pointer rounded-xl shadow-md dark:shadow-gray-900/50 p-6 border-l-4 border-blue-600 dark:border-blue-500">
+                    <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-gray-600 text-sm">Upcoming Sessions</p>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm">Upcoming Sessions</p>
                             {/* <p className="text-3xl font-bold text-gray-900">{allSessions.length > 0 ? allSessions.length : 0}</p> */}
-                            <p className="text-3xl font-bold text-gray-900">{newUpComingSessions.length}</p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">{newUpComingSessions.length}</p>
                         </div>
-                        <Calendar className="w-12 h-12 text-blue-600 opacity-20" />
+                        <Calendar className="w-12 h-12 text-blue-600 dark:text-blue-500 opacity-20 dark:opacity-30" />
                     </div>
                 </div>
 
-                <div className="bg-white hover:shadow-[0px_0px_10px_#18DEC8]  hover:cursor-pointer rounded-xl shadow-md p-6 border-l-4 border-green-600">
+                {/* Card 2 - Completed Sessions */}
+                <div className="bg-white dark:bg-gray-800 hover:shadow-[0px_0px_10px_#18DEC8] dark:hover:shadow-[0px_0px_10px_#60A5FA] hover:cursor-pointer rounded-xl shadow-md dark:shadow-gray-900/50 p-6 border-l-4 border-green-600 dark:border-green-500">
                     <div className="flex items-center justify-between">
                         <div>
-                        <p className="text-gray-600 text-sm">Completed Sessions</p>
-                        <p className="text-3xl font-bold text-gray-900">{studentBookedSessions.length}</p>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm">Completed Sessions</p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">{studentBookedSessions.length}</p>
                         </div>
-                        <CheckCircle className="w-12 h-12 text-green-600 opacity-20" />
+                        <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-500 opacity-20 dark:opacity-30" />
                     </div>
                 </div>
 
-                <div className="bg-white hover:shadow-[0px_0px_10px_#18DEC8]  hover:cursor-pointer rounded-xl shadow-md p-6 border-l-4 border-purple-600">
+                {/* Card 3 - Unread Messages */}
+                <div className="bg-white dark:bg-gray-800 hover:shadow-[0px_0px_10px_#18DEC8] dark:hover:shadow-[0px_0px_10px_#60A5FA] hover:cursor-pointer rounded-xl shadow-md dark:shadow-gray-900/50 p-6 border-l-4 border-purple-600 dark:border-purple-500">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-gray-600 text-sm">Unread Messages</p>
-                            <p className="text-3xl font-bold text-gray-900">{messages.filter(m => m.unread).length}</p>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm">Unread Messages</p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">{messages.filter(m => m.unread).length}</p>
                         </div>
-                        <MessageSquare className="w-12 h-12 text-purple-600 opacity-20" />
+                        <MessageSquare className="w-12 h-12 text-purple-600 dark:text-purple-500 opacity-20 dark:opacity-30" />
                     </div>
                 </div>
-                
             </div>
 
             {/* Upcoming Sessions */}
-            <div className="bg-white rounded-2xl shadow-md p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md dark:shadow-gray-900/50 p-6">
                 <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Upcoming Sessions</h2>
-                <button
-                    onClick={() => setActiveView('sessions')}
-                    className="text-blue-600 font-semibold hover:text-blue-700 flex items-center space-x-1"
-                >
-                    <span>View All</span>
-                    <ChevronRight className="w-4 h-4" />
-                </button>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Upcoming Sessions</h2>
+                    <button
+                        onClick={() => setActiveView('sessions')}
+                        className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 flex items-center space-x-1"
+                    >
+                        <span>View All</span>
+                        <ChevronRight className="w-4 h-4" />
+                    </button>
                 </div>
+                
                 
                 {
                     allSessions.length > 0 ? (
                     <div className="space-y-4">
                         {
                             newSessions.map((session) => (
-
-                            <div key={session._id} className="border-2 border-gray-200 rounded-xl p-4 hover:border-blue-600 transition">
-                                <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <div className="flex items-center space-x-2 mb-2">
-                                    <h3 className="font-bold text-gray-900">{session.psychiatristId.psychiatristName}</h3>
-                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                        session.sessionStatus === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                                    }`}>
-                                        {session.sessionStatus}
-                                    </span>
-                                    </div>
-                                    <p className="text-gray-600 text-sm mb-2">{session.type}</p>
-                                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                                    <div className="flex items-center space-x-1">
-                                        <Calendar className="w-4 h-4" />
-                                        {/* <span>{session.date}</span> */}
-                                        <span>{new Date(session.date).toISOString().split("T")[0]}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                        <Clock className="w-4 h-4" />
-                                        <span>{session.startTime}</span>
-                                        &#x2192;
-                                        <span>{ session.endTime}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                        <Video className="w-4 h-4" />
-                                        <span>{session.sessionMode}</span>
-                                    </div>
+                                <div key={session._id} className="border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl p-4 hover:border-blue-600 dark:hover:border-blue-500 transition">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            <div className="flex items-center space-x-2 mb-2">
+                                                <h3 className="font-bold text-gray-900 dark:text-white">{session.fullName}</h3>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                                    session.sessionStatus === 'confirmed' 
+                                                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
+                                                        : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                }`}>
+                                                    {session.sessionStatus}
+                                                </span>
+                                            </div>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{session.type}</p>
+                                            <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                                                <div className="flex items-center space-x-1">
+                                                    <Calendar className="w-4 h-4" />
+                                                    <span>{new Date(session.date).toISOString().split("T")[0]}</span>
+                                                </div>
+                                                <div className="flex items-center space-x-1">
+                                                    <Clock className="w-4 h-4" />
+                                                    <span>{session.startTime}</span>
+                                                    &#x2192;
+                                                    <span>{session.endTime}</span>
+                                                </div>
+                                                <div className="flex items-center space-x-1">
+                                                    <Video className="w-4 h-4" />
+                                                    <span>{session.sessionMode}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold">
+                                            Join
+                                        </button>
                                     </div>
                                 </div>
-                                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
-                                    Join
-                                </button>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        }
                     </div>
                     ) : (
                         <div className="text-center py-8 text-gray-500">
@@ -326,67 +335,72 @@ export default function StudentDashboard()
                     </div>
 
                     {/* Calendar & Activities */}
-                    <div className="grid lg:grid-cols-2 gap-6">
+                    <div className="grid lg:grid-cols-1 gap-6">
                         {/* Mini Calendar */}
-                        <div className="bg-white rounded-2xl shadow-md p-6">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">Calendar</h2>
-                        <div className="space-y-2">
-                            {
-                                calenderSessions.length > 0 && 
-                                ( 
-                                    calenderSessions.map((event, index) => (
-                                        <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-                                            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                                            <div className="flex-1">
-                                            <p className="font-semibold text-gray-900">{event.sessionType}</p>
-                                            <p className="text-sm text-gray-600">{new Date(event.sessionDate).toISOString().split("T")[0]}</p>
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md dark:shadow-gray-900/50 p-6">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Calendar</h2>
+                            <div className="space-y-2">
+                                {
+                                    calenderSessions.length > 0 ?
+                                    ( 
+                                        calenderSessions.map((event, index) => (
+                                            <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                                                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                                                <div className="flex-1">
+                                                    <p className="font-semibold text-gray-900">{event.sessionType}</p>
+                                                    <p className="text-sm text-gray-600">{new Date(event.sessionDate).toISOString().split("T")[0]}</p>
+                                                </div>
                                             </div>
-                                        </div>
+                                            )
                                         )
                                     )
-                                )
-                            }
-                            {
-                                calenderSessions.length < 0 && 
-                                (
-                                    <div>
-                                        <Loader/>
-                                    </div>
-                                )
-                            }
-                        </div>
+                                :
+                                    (
+                                        // {/* Show 3-5 skeleton items while loading */}
+                                        [1].map((index) => (
+                                            <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 dark:bg-gray-700 rounded-lg">
+                                                <div className="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full animate-pulse"></div>
+                                                <div className="flex-1 space-y-2">
+                                                    <div className="h-5 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                                                    <div className="h-4 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )
+                                }
+                            </div>
                         </div>
 
                         {/* Recent Messages */}
-                        <div className="bg-white rounded-2xl shadow-md p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-gray-900">Recent Messages</h2>
-                            <button
-                            onClick={() => setActiveView('messages')}
-                            className="text-blue-600 font-semibold hover:text-blue-700"
-                            >
-                            View All
-                            </button>
-                        </div>
-                        <div className="space-y-3">
-                            {messages.slice(0, 3).map((message) => (
-                            <div key={message.id} className={`p-3 rounded-lg cursor-pointer hover:bg-gray-50 ${message.unread ? 'bg-blue-50' : ''}`}>
-                                <div className="flex items-start justify-between mb-1">
-                                <p className="font-semibold text-gray-900">{message.from}</p>
-                                {message.unread && <div className="w-2 h-2 bg-blue-600 rounded-full"></div>}
-                                </div>
-                                <p className="text-sm text-gray-600 truncate">{message.preview}</p>
-                                <p className="text-xs text-gray-500 mt-1">{message.timestamp}</p>
+                        {/* <div className="bg-white rounded-2xl shadow-md p-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-xl font-bold text-gray-900">Recent Messages</h2>
+                                <button
+                                    onClick={() => setActiveView('messages')}
+                                    className="text-blue-600 font-semibold hover:text-blue-700"
+                                >
+                                    View All
+                                </button>
                             </div>
-                            ))}
-                        </div>
-                        </div>
+                            <div className="space-y-3">
+                                {messages.slice(0, 3).map((message) => (
+                                <div key={message.id} className={`p-3 rounded-lg cursor-pointer hover:bg-gray-50 ${message.unread ? 'bg-blue-50' : ''}`}>
+                                    <div className="flex items-start justify-between mb-1">
+                                    <p className="font-semibold text-gray-900">{message.from}</p>
+                                    {message.unread && <div className="w-2 h-2 bg-blue-600 rounded-full"></div>}
+                                    </div>
+                                    <p className="text-sm text-gray-600 truncate">{message.preview}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{message.timestamp}</p>
+                                </div>
+                                ))}
+                            </div>
+                        </div> */}
                     </div>
                 </div>
     );
     
     return (
-        <div className="flex flex-row h-screen dark:bg-slate-800 bg-gray-50">
+        <div className="flex flex-row h-screen dark:bg-slate-900 bg-gray-50">
             {/* studentSideBar */}
             <StudentSideBar activeView={activeView} setActiveView={setActiveView}/>
             {/* Main Content */}
