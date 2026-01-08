@@ -4,8 +4,8 @@ const express = require("express");
 
 const router = express.Router();
 const {ViewSessions} = require("../controllers/psySessionController.js");
-
-
+const {getStudentPassSessions, getFutureStudentSessions} = require("../controllers/bookingSessionController.js");
+const {getAuthenticated} = require("../middleware/auth.js")
 /**
  * @swagger
  * /api/studentSession/getAllSessions:
@@ -65,6 +65,7 @@ const {ViewSessions} = require("../controllers/psySessionController.js");
 router.get("/getAllSessions", ViewSessions);
 
 
-
+router.get("/getStudentPastSessions", getAuthenticated, getStudentPassSessions);
+router.get("/getStudentFutureSessions", getAuthenticated, getFutureStudentSessions);
 const studentSessionRoutes = router;
 module.exports = studentSessionRoutes;
