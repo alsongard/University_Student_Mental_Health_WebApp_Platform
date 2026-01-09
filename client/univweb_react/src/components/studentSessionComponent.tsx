@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search, Clock, Stethoscope, User, MoveRight, Calendar, Loader, View } from "lucide-react";
 import axios from "axios";
 import type { SingleSession, AllSessionData } from "./types";
 import ViewStudentBookedInfo from "../components/viewStudentBookedInfo";
-export default function StudentSessionComponent()
+
+export default function StudentSessionComponent(props:any)
 {
+    const {refreshView} = props;
+    // console.log("refreshView")
+    // console.log(refreshView)
     const apiURL = import.meta.env.VITE_API_URL;
     const [selectedSession, setSelectedSession] = useState(null);    
     const [myUpcomingSessions, setMyUpcomingSessions] = useState<AllSessionData[]>([]);
-    const getAllSessions = async()=>{
+    const getAllSessions = useCallback( async()=>{
 		try
 		{
             const response = await axios.get(`${apiURL}/api/studentSession/getAllSessions`);
@@ -23,16 +27,16 @@ export default function StudentSessionComponent()
 		{
 			console.log(`Error: ${err}`);
 		}
-	}
+	}, []);
     useEffect(()=>{
         getAllSessions();
         GetStudentBookedSessions();
-    },[]);
+    },[refreshView.sessions]);
 
 
-    
+
     const [studentBookedSessions, setStudentBookedSessions] = useState([]);
-    const GetStudentBookedSessions = async ()=>{
+    const GetStudentBookedSessions = useCallback( async ()=>{
         try
         {
             // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentSession/getStudentFutureSessions`, {withCredentials:true});
@@ -51,7 +55,7 @@ export default function StudentSessionComponent()
         {
             console.log(`Error: ${err}`)
         }
-    }
+    }, []);
 
     const [bookSession, setBookSession] = useState(false);
     const [singleSession, setSingleSession] = useState<SingleSession>();
