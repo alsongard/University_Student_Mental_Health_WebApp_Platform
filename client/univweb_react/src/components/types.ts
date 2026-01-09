@@ -116,3 +116,11 @@ export interface PsychiatristBookedSession {
     createdAt: string,
     updatedAt: string
 }
+
+export interface RefreshViews {
+    overview: number,
+    sessions: number,
+    messages: number,
+    feedback: number,
+    profile: number  
+}
