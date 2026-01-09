@@ -21,17 +21,16 @@ import PsychiatristDetails from "./pages/psychiatristDetails/psychiatristDetails
 import TrialStudentSessions from "./pages/trials/TrialPage";
 import {Analytics} from "@vercel/analytics/react";
 import OtpPage from "./pages/otp/otpPage";
-
+import { ThemeProvider } from "./components/themeContext";
 export default function App()
 {
 	
 	const dispatch = useDispatch();
 
 
-
+	const apiUrl = import.meta.env.VITE_API_URL;
 	// console.log(`this is userRole: ${userRole}`);
 	// the below is a ADANCED SOLUTION TO REDUX PERSISTENCE
-	const [darkMode, setDarkMode] = useState(false);
 
 	// NOT IN USE FOR THE MOMENT
 	async function CheckSession()
@@ -40,7 +39,7 @@ export default function App()
 		try
 		{
 			// const response = await axios.get("http://localhost:5000/api/auth/me", {withCredentials:true})
-			const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/auth/me", {withCredentials:true})
+			const response = await axios.get(`${apiUrl}/api/auth/me`, {withCredentials:true})
 			if (response.status === 200)
 			{
 				// console.log('User is authenticated');
@@ -58,10 +57,6 @@ export default function App()
 		}
 	};
 
-	useEffect(()=>{
-		const result = window.matchMedia('(prefers-color-scheme: dark)')
-		setDarkMode(result.matches);
-	}, []);
 	
 	useEffect(()=>{
 		CheckSession();
@@ -73,14 +68,12 @@ export default function App()
 	const ProtectedPsychiatristDetails = requireAuth(PsychiatristDetails, ['psychiatrist', 'Counselor']);
 	const ProtectedStudentDetails = requireAuth(StudentDetailsRegistration);
 	// how to handle persistence
-	
 
-	const dark = darkMode == true  ? 'dark': ''
 	return (
-		<div className={`${dark}`}>
+		<ThemeProvider>
 			<BrowserRouter>
 				<Routes>
-					<Route path="/" element={<div><Header darkMode={darkMode} setDarkMode={setDarkMode}/><Outlet/><Footer/></div>}>
+					<Route path="/" element={<div><Header/><Outlet/><Footer/></div>}>
 						<Route index element={<Home/>}/>
 						<Route path="about" element={<AboutPage/>}/>
 						<Route path='services' element={<ServicesPage/>}/>
@@ -96,6 +89,6 @@ export default function App()
 				</Routes>
 				<Analytics/>
 			</BrowserRouter>
-		</div>
+		</ThemeProvider>
 	)	
 }
