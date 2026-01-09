@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import StudentSideBar from '../../components/studentSideBar';
 import { Heart, Home, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search, Sidebar, Loader } from 'lucide-react';
@@ -8,9 +8,17 @@ import StudentFeedBack from '../../components/studentFeedbackComponent';
 import StudentProfile from '../../components/studentProfileComponent';
 import {  useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type {RefreshViews} from "../../components/types";
 export default function StudentDashboard()
 {
     const apiURL = import.meta.env.VITE_API_URL;
+    const [refreshState, setRefreshState] = useState<RefreshViews>({
+        overview: 0,
+        sessions: 0,
+        messages: 0,
+        feedback: 0,
+        profile: 0  
+    });
     const navigate = useNavigate();
     // check if studentDetails Exist in DB:
     const email = useSelector((state)=>{
@@ -18,7 +26,7 @@ export default function StudentDashboard()
     });
 
     // console.log(`this is email from myAuthSlicer: ${email}`);
-    const checkStudentDetailsExist = async()=>{
+    const checkStudentDetailsExist = useCallback(async()=>{
         try
         {
             // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,{withCredentials:true});
@@ -53,16 +61,16 @@ export default function StudentDashboard()
                 }
             }
         }
-    }
+    }, []);
 
 
-    
+
     const [activeView, setActiveView] = useState('overview');
     
     
     const [allSessions, setAllSessions] = useState([]);
 
-    const getAllSessions = async()=>{
+    const getAllSessions = useCallback(async()=>{
 		try
 		{
 			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions",
@@ -79,10 +87,10 @@ export default function StudentDashboard()
 		{
 			console.log(`Error: ${err}`);
 		}
-	};
+	}, []);
 
     const [studentBookedSessions, setStudentBookedSessions] = useState([]);
-    const GetStudentBookedSessions = async ()=>{
+    const GetStudentBookedSessions = useCallback(async ()=>{ // returns present,past, future
         try
         {
             // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
@@ -101,50 +109,45 @@ export default function StudentDashboard()
         {
             console.log(`Error: ${err}`)
         }
-    }
+    }, []);
+
     useEffect(()=>{
 
+        // RUN CHECKSTUDENTDETAILS EXIST FIRST: if not redirected to studentdetails
         checkStudentDetailsExist();
+
+        // run studentbookedSessions:  retrieved all sessions for student and displays them calender if future
         GetStudentBookedSessions();
-        setTimeout(()=>{
+        const allSessionTimer = setTimeout(()=>{
             getAllSessions();   
-        }, 60000);
+        }, 5000);
 
 
-        setTimeout(()=>
-            {
-                const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>
-                {
-                    const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
-                    // console.log('theDate');
-                    // console.log(theDate);
-                    const today = new Date()
-                    if (theDate > today)
-                    {
-                        return studentSession
-                    }
-                    }).map((studentSession)=>{
-                            return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
-                    });
+        // const calenderTimer = setTimeout(()=>
+        //     {
+        //         const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>
+        //         {
+        //             const theDate = new Date(studentSession.sessionId.date);
+        //             // console.log('theDate');
+        //             // console.log(theDate);
+        //             const today = new Date(); 
+        //             if (theDate >= today)// this will return from today date:time forward: future
+        //             {
+        //                 return studentSession
+        //             }
+        //             }).map((studentSession)=>{
+        //                     return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
+        //             });
 
-                    // console.log("calenderSessions");
-                    // console.log(calenderSessions);
-            }, 8000);
+        //             // console.log("calenderSessions");
+        //             // console.log(calenderSessions);
+        //     }, 8000);
         
-        }, 
-    []);
-
-
-
-
-  // Sample calendar events
-    const calendarEvents = [
-        { date: "2025-10-28", title: "Therapy Session", type: "session" },
-        { date: "2025-10-30", title: "Group Therapy", type: "group" },
-        { date: "2025-11-02", title: "Follow-up", type: "session" }
-    ];
-
-   
+        return ()=>{
+            // clearTimeout(calenderTimer);
+            clearTimeout(allSessionTimer);
+        }
+    }, [refreshState.overview]);
 
     // Sample messages : ARRAY
     const messages = [
@@ -164,12 +167,15 @@ export default function StudentDashboard()
         }
     ];
 
-    // check sessions
+    // check sessions for upcoming sessions:done
     const newUpComingSessions = allSessions.filter((sessions)=>{
-        const theDate = new Date(sessions.date.split("T")[0]);
+        // const theDate = new Date(sessions.date.split("T")[0]);
+        const theDate = new Date(sessions.date);
         const today = new Date()
-        if (theDate > today)
+        if (theDate >= today)
         {
+            // console.log('newUpcomingSessions');
+            // console.log(sessions);
             return sessions
         }
     })
@@ -194,7 +200,7 @@ export default function StudentDashboard()
         // console.log('theDate');
         // console.log(theDate);
         const today = new Date()
-        if (theDate > today)
+        if (theDate == today || theDate > today)
         {
             return studentSession
         }
@@ -277,7 +283,7 @@ export default function StudentDashboard()
                 
                 
                 {
-                    allSessions.length > 0 ? (
+                    allSessions.length > 0 ? ( // allSession must exist : fetch all PsychiatristSessions
                     <div className="space-y-4">
                         {
                             newSessions.map((session) => (
@@ -402,17 +408,17 @@ export default function StudentDashboard()
     return (
         <div className="flex flex-row h-screen dark:bg-slate-900 bg-gray-50">
             {/* studentSideBar */}
-            <StudentSideBar activeView={activeView} setActiveView={setActiveView}/>
+            <StudentSideBar activeView={activeView} setRefreshState={setRefreshState} setActiveView={setActiveView}/>
             {/* Main Content */}
             <main className="flex-1 overflow-y-auto">
            
             {/* Content Area */}
                 <div className={`${activeView != "messages" && 'p-0'}`}>
                     {activeView === "overview" && renderOverview}
-                    {activeView === "sessions" && <StudentSessionComponent/>}
-                    {activeView === "messages" && <MessagingComponent/>}
-                    {activeView === "feedback" && <StudentFeedBack/>}
-                    {activeView === "profile" && <StudentProfile/>}
+                    {activeView === "sessions" && <StudentSessionComponent  refreshView={refreshState}/>}
+                    {activeView === "messages" && <MessagingComponent refreshView={refreshState}/>}
+                    {activeView === "feedback" && <StudentFeedBack refreshView={refreshState}/>}
+                    {activeView === "profile" && <StudentProfile refreshView={refreshState}/>}
                 </div>
             </main>
         </div>
