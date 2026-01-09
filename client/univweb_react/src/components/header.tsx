@@ -136,7 +136,7 @@ export default function Header(props:any)
 								darkMode === false &&
 								(
 									<Moon
-										className={clsx(darkMode ? "text-white" : "")}
+										className={clsx(darkMode ? "text-white" : " ")}
 										onClick={()=>{
 											// console.log(`darkMode: ${darkMode}`)
 											return setDarkMode(true)}}
