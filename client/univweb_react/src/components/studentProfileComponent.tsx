@@ -1,12 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Eye, Camera } from "lucide-react";
 import { current } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
 import type { StudentProfile } from "./types";
     // RENDERPROFILE
-export default  function StudentProfile()
+export default function StudentProfile(props:any)
 {
+    // const {} = props;
+    const {refreshView} = props;
     const apiURL = import.meta.env.VITE_API_URL;
     let retrievedData;
     const [isEditDetails, setIsEditDetails] = useState(false)
@@ -28,7 +30,7 @@ export default  function StudentProfile()
     const studentId = localStorage.getItem("studentId");
     const [studentDetailsState, setStudentDetailsState] = useState(false);
     const [errorOnProfileFetch, seterrorOnProfileFetch] = useState(false);
-    const getStudentDetails = async ()=>
+    const getStudentDetails = useCallback(async ()=>
     {
         try
         {
@@ -64,11 +66,11 @@ export default  function StudentProfile()
             console.log(`Error: ${err}`);
             seterrorOnProfileFetch(true);
         }
-    }
+    }, []);
 
     useEffect(()=>{
         getStudentDetails();
-    }, []);
+    }, [refreshView.profile]);
 
     
     // Sample student data
@@ -119,7 +121,7 @@ export default  function StudentProfile()
 
 
     const [successChangePassword, setSuccessChangePassword] = useState(false);
-    const handleUpdatePassword = async ()=>
+    const handleUpdatePassword = useCallback(async ()=>
     {
         try
         {
@@ -140,7 +142,8 @@ export default  function StudentProfile()
         {
             console.log(`Error: ${err}`);
         }
-    };
+    }, []);
+    
 
     const [selectedFile, setSelectedFile] = useState(null);
 

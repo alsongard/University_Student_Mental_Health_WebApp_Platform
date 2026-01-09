@@ -1,11 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { Search, MoreVertical, Paperclip, Smile, Send, Phone, Video, Check, CheckCheck, Heart } from 'lucide-react';
 import {io, Socket} from "socket.io-client";
 import axios from 'axios';
+
 import { useSelector } from 'react-redux';
 
-export default function MessagingComponent()
+export default function MessagingComponent(props:any)
 {
+    const  {refreshView} = props;
     const apiURL = import.meta.env.VITE_API_URL;
     const myRole =  useSelector((state)=>state.myAuthSlicer.role);
     const [chatUsersList , setChatUsersList] = useState([]);
@@ -14,7 +16,7 @@ export default function MessagingComponent()
     const [chatHeaderMain, setChatHeader] = useState("");
     const [theRecieverId, setTheRecieverId] = useState<String>("");
 
-    const getPsychiatristsContacts = async () =>
+    const getPsychiatristsContacts = useCallback( async () =>
     {
         try
         {
@@ -32,11 +34,11 @@ export default function MessagingComponent()
         catch(error){
             console.error("Error fetching psychiatrists:", error);
         }
-    };
+    }, [])
 
     const getAllStudentsContacts = async () =>{}
 
-    const getUserChatPartnersSideBar = async () =>
+    const getUserChatPartnersSideBar =  useCallback(async () =>
     {
         try
         {
@@ -65,9 +67,9 @@ export default function MessagingComponent()
         catch(error){
             console.error("Error fetching chat users:", error);
         }
-    };
+    }, []);
 
-    const getMessagesBetweenUsers = async (partnerId:String) =>
+    const getMessagesBetweenUsers = useCallback(async (partnerId:String) =>
     {
         // console.log(`Getting messages between users with partnerId: ${partnerId}`);
         setTheRecieverId(partnerId);
@@ -94,7 +96,9 @@ export default function MessagingComponent()
         catch(error){
             console.error("Error fetching messages between users:", error);
         }
-    }
+    }, []);
+
+
     // ${apiURL}
     let socketRef = useRef(null);
     useEffect(()=>{
@@ -113,7 +117,8 @@ export default function MessagingComponent()
         return ()=>{
             socketRef.current?.disconnect()
         }
-    }, []);
+    }, [refreshView.messages]);
+
     const [selectedChat, setSelectedChat] = useState(false);
     const [messageInput, setMessageInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -128,8 +133,6 @@ export default function MessagingComponent()
         }
     );
 
-    // using local Storage but will be changed to cookies soon
-    const studentId = localStorage.getItem("studentId");
     const handleSendMessage = () => {
         console.log('sending message');
         if (messageInput.trim()) 

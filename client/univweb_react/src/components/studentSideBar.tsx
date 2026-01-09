@@ -4,7 +4,7 @@ import { Link , useNavigate} from 'react-router-dom';
 import {  useDispatch } from 'react-redux';
 import { isLoggedOut } from '../features/auth/authSlicer';
 import axios from 'axios';
-
+import type {RefreshViews} from "./types"
 function StudentSideBar(props:any)
 {
     const apiURL = import.meta.env.VITE_API_URL;
@@ -38,6 +38,19 @@ function StudentSideBar(props:any)
         navigate("/",{replace:true});
         window.location.reload();
     };
+
+    const handleRefresh = (view:string)=>{
+        setRefreshState((prevValue:RefreshViews)=>{
+            // console.log("prevValue");
+            // console.log(prevValue);
+            // console.log('view');
+            // console.log(view)
+            return {
+                ...prevValue,
+                [view]: prevValue[view] + 1
+            }
+        })
+    }
 
     return (
         // {/* Sidebar */}
@@ -83,7 +96,7 @@ function StudentSideBar(props:any)
             {/* Refresh */}
             <div className="p-4 border-t border-blue-500 dark:border-gray-700">
                 <button
-                    onClick={() => {console.log('Refresh clicked'); setRefreshState((prevValue:boolean)=>!prevValue)} }
+                    onClick={() => {console.log('Refresh clicked'); handleRefresh(activeView) }}
                     className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 dark:bg-gray-700 hover:bg-blue-400 dark:hover:bg-gray-600 rounded-lg transition"
                 >
                     {sidebarCollapsed ? <RefreshCw className="w-5 h-5" /> : <RefreshCw className="w-5 h-5" />}

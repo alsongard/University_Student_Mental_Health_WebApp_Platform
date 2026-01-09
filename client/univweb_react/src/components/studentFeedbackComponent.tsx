@@ -1,14 +1,16 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import StudentFeedbackForm from "./studentFeedbackForm";
-export default function StudentFeedBack() 
+
+export default function StudentFeedBack(props:any) 
 {
+    const {refreshView} = props;
     const apiURL = import.meta.env.VITE_API_URL;
     // set state for feedbacks
     const [myFeedBack, setMyFeedbacks] = useState([]);
     const [studentSessions, setStudentSessions] = useState([]);
     // get StudentFeedback from backend API here
-    const getStudentFeedback = async ()=>   
+    const getStudentFeedback = useCallback(async ()=>   
     {
         try
         {
@@ -26,8 +28,9 @@ export default function StudentFeedBack()
         {
             console.error("Error fetching student feedback:", err);
         }
-    }
-    const getStudentSessions  = async ()=>
+    }, []);
+
+    const getStudentSessions  = useCallback(async ()=>
     {
         try
         {
@@ -42,12 +45,13 @@ export default function StudentFeedBack()
         {
             console.log(`Error: ${err}`);
         }
-    }
+    },[]);
+
     useEffect(()=>{
         // Fetch feedbacks when component mounts
         getStudentFeedback();
         getStudentSessions();
-    }, []);
+    }, [refreshView.feedback]);
     // Sample feedbacks : ARRAY
     // setInterval(()=>{
     //     console.log(myFeedBack)}
@@ -60,7 +64,6 @@ export default function StudentFeedBack()
     {
         return (<StudentFeedbackForm setFeedBack={setFeedBackView} sessionData={singleSession}/>)
     }
-    const skeleton_value = [1];
     return (
         <div className="space-y-6 p-5">
             <div className="flex items-center justify-between">
