@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Heart, Home, Calendar, RefreshCw, MessageSquare, FileText, LogOut, User, Clock, CheckSquare, ChevronLeft, ChevronRight, Bell } from 'lucide-react';
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -35,7 +35,7 @@ function PsychiatristSidebar(props:any)
 
 	const pathName = 'usePathname';
 
-	const GetPsychiatristInfo = async ()=>{
+	const GetPsychiatristInfo = useCallback(async ()=>{
 		try
 		{
 			// https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/
@@ -63,57 +63,30 @@ function PsychiatristSidebar(props:any)
 		}
 
 
-	}
+	}, []);
 	useEffect(()=>{
 		GetPsychiatristInfo()
 	}, []);
 
 	const navigationItems = [
-		{ 
-			id: 'overview', 
-			icon: <Home className="w-5 h-5" />, 
-			label: 'Overview',
-			badge: null,
-			href: "/psychiatristdashboard"
-		},
-		{ 
-			id: 'sessions', 
-			icon: <Clock className="w-5 h-5" />, 
-			label: 'Sessions',
-			badge: null,
-			href: "/psychiatristdashboard/session"
-
-		},
-		{ 
-			id: 'booked-sessions', 
-			icon: <CheckSquare className="w-5 h-5" />, 
-			label: 'Booked Sessions',
-			badge:myNumber ,
-			href: "/psychiatristdashboard/viewbookedsessions"
-		},
-		{ 
-			id: 'messages', 
-			icon: <MessageSquare className="w-5 h-5" />, 
-			label: 'Messages',
-			badge: 3,
-			href: "/psychiatristdashboard/messages"
-		},
-		{ 
-			id: 'feedback', 
-			icon: <FileText className="w-5 h-5" />, 
-			label: 'Feedback',
-			badge: 12,
-			href: "/psychiatristdashboard/feedback"
-		},
-		{ 
-			id: 'profile', 
-			icon: <User className="w-5 h-5" />, 
-			label: 'Profile',
-			badge: null,
-			href: "/psychiatristdashboard/profile"
-
-		}
+		{ id: 'overview', icon: <Home className="w-5 h-5" />, label: 'Overview',badge: null,href: "/psychiatristdashboard"},
+		{  id: 'sessions',  icon: <Clock className="w-5 h-5" />,  label: 'Sessions', badge: null, href: "/psychiatristdashboard/session"},
+		{ id: 'bookedSessions', icon: <CheckSquare className="w-5 h-5" />, label: 'Booked Sessions', badge:myNumber , href: "/psychiatristdashboard/viewbookedsessions"},
+		{ id: 'messages', icon: <MessageSquare className="w-5 h-5" />, label: 'Messages',badge: 3,href: "/psychiatristdashboard/messages"},
+		{ id: 'feedback', icon: <FileText className="w-5 h-5" />, label: 'Feedback',badge: 12,href: "/psychiatristdashboard/feedback"},
+		{ id: 'profile',  icon: <User className="w-5 h-5" />,  label: 'Profile', badge: null, href: "/psychiatristdashboard/profile"}
 	];
+
+	const handleRefresh = (view:string)=>{
+		setRefreshFlag((prevData)=>{
+			console.log('prevData');
+			console.log(prevData);
+			return {
+				...prevData,
+				[view]: prevData[view] + 1
+			}
+		})
+	};
 
 	/*		{ 
 			id: 'calendar', 
@@ -126,24 +99,24 @@ function PsychiatristSidebar(props:any)
 	*/
 
 	return (
-		<div className="flex h-screen bg-gray-50">
+		<div className="flex h-screen bg-gray-50 dark:bg-gray-900">
 			{/* Sidebar */}
-			<aside className={`bg-gradient-to-b from-blue-600 to-blue-700 text-white transition-all duration-300 ${
+			<aside className={`bg-gradient-to-b from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-300 ${
 				sidebarCollapsed ? 'w-20' : 'w-64'
 			} flex flex-col`}>
 				{/* Logo & User Info */}
-				<div className="p-6 border-b border-blue-500">
+				<div className="p-6 border-b border-blue-500 dark:border-gray-700">
 				{!sidebarCollapsed ? (
 					<div>
 						<div className="flex items-center space-x-3">
 							<img
 								src={psychiatristDetails.avatar ? psychiatristDetails.avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop"}
 								alt={psychiatristDetails.name ? psychiatristDetails.name: "loading"}
-								className="w-12 h-12 rounded-full object-cover border-2 border-white"
+								className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-gray-600"
 							/>
 							<div className="flex-1 min-w-0">
 								<p className="font-bold text-white truncate">{psychiatristDetails.name ? psychiatristDetails.name: "loading"}</p>
-								<p className="text-xs text-blue-200 truncate">{psychiatristDetails.specialization  ? psychiatristDetails.specialization :"loading"}</p>
+								<p className="text-xs text-blue-200 dark:text-gray-300 truncate">{psychiatristDetails.specialization  ? psychiatristDetails.specialization :"loading"}</p>
 							</div>
 						</div>
 					</div>
@@ -152,9 +125,9 @@ function PsychiatristSidebar(props:any)
 					<div className="flex flex-col items-center">
 						<Heart className="w-8 h-8 mb-3" />
 						<img
-							src={psychiatristDetails.avatar ? psychiatristDetails.avatar : "loading"}
+							src={psychiatristDetails.avatar ? psychiatristDetails.avatar : "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop"}
 							alt={psychiatristDetails.name ? psychiatristDetails.name : "loading"}
-							className="w-12 h-12 rounded-full object-cover border-2 border-white"
+							className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-gray-600"
 						/>
 					</div>
 				)}
@@ -162,21 +135,17 @@ function PsychiatristSidebar(props:any)
 
 				{/* Navigation */}
 				<nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-
 					{navigationItems.map((item) => (
 						<button
 							key={item.id}
-							// href={item.href}
 							onClick={()=>{
 								setActiveView(item.id)
-							}
-
-							}
-							// interesting: you can pass mutliple conditios to className provided: use {} and then followed `` templateString for condition
-							// lastly ${playWithCondtion}
+							}}
 							className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition 
 								${
-									activeView === item.id ? 'bg-white text-blue-600': 'text-blue-100 hover:bg-blue-500'
+									activeView === item.id 
+										? 'bg-white text-blue-600 dark:bg-gray-700 dark:text-blue-400' 
+										: 'text-blue-100 hover:bg-blue-500 dark:text-gray-300 dark:hover:bg-gray-700'
 								} 
 								${
 									sidebarCollapsed ? 'justify-center' : ''
@@ -191,8 +160,8 @@ function PsychiatristSidebar(props:any)
 						{!sidebarCollapsed && item.badge && (
 							<span className={`px-2 py-1 text-xs font-bold rounded-full ${
 							pathName === item.href
-								? 'bg-blue-600 text-white'
-								: 'bg-blue-500 text-white'
+								? 'bg-blue-600 text-white dark:bg-blue-700'
+								: 'bg-blue-500 text-white dark:bg-blue-600'
 							}`}>
 							{item.badge}
 							</span>
@@ -201,22 +170,22 @@ function PsychiatristSidebar(props:any)
 					))}
 				</nav>
 
-
 				{/* Refresh */}
-				<div className="p-4 border-t border-blue-500">
+				<div className="p-4 border-t border-blue-500 dark:border-gray-700">
 					<button
-						onClick={() => setRefreshFlag((prev:boolean)=>!prev) }
-						className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 hover:bg-blue-400 rounded-lg transition"
+						onClick={() => {console.log("refresh clicked"); handleRefresh(activeView)}}
+						className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 dark:bg-gray-700 hover:bg-blue-400 dark:hover:bg-gray-600 rounded-lg transition"
 					>
 						{sidebarCollapsed ? <RefreshCw className="w-5 h-5" /> : <RefreshCw className="w-5 h-5" />}
-						{!sidebarCollapsed && <span  title='Refresh' className="font-semibold">Refresh</span>}
+						{!sidebarCollapsed && <span title='Refresh' className="font-semibold">Refresh</span>}
 					</button>
 				</div>
+
 				{/* Collapse Button */}
-				<div className="p-4 border-t border-blue-500">
+				<div className="p-4 border-t border-blue-500 dark:border-gray-700">
 					<button
 						onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-						className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 hover:bg-blue-400 rounded-lg transition"
+						className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 dark:bg-gray-700 hover:bg-blue-400 dark:hover:bg-gray-600 rounded-lg transition"
 					>
 						{sidebarCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
 						{!sidebarCollapsed && <span className="font-semibold">Collapse</span>}
@@ -224,8 +193,8 @@ function PsychiatristSidebar(props:any)
 				</div>
 
 				{/* Logout */}
-				<div className="p-4 border-t border-blue-500">
-					<button  onClick={handleLogout} className={`w-full flex items-center space-x-3 px-4 py-3 bg-red-500 hover:bg-red-600 rounded-lg transition ${
+				<div className="p-4 border-t border-blue-500 dark:border-gray-700">
+					<button onClick={handleLogout} className={`w-full flex items-center space-x-3 px-4 py-3 bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 rounded-lg transition ${
 						sidebarCollapsed ? 'justify-center' : ''
 					}`}>
 						<LogOut className="w-5 h-5" />
