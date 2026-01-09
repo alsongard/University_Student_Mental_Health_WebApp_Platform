@@ -7,6 +7,7 @@ import {isLoggedOut} from "../features/auth/authSlicer"
 import { useNavigate } from 'react-router-dom';
 function PsychiatristSidebar(props:any) 
 {
+	const apiURL = import.meta.env.VITE_API_URL;
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const {activeView, setActiveView, setUserDetials, setRefreshFlag, myNumber} = props;
@@ -16,7 +17,7 @@ function PsychiatristSidebar(props:any)
 
 	const handleLogout = async ()=>{
 		// console.log('I was clicked!')
-		const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
+		const response = await axios.post(`${apiURL}/api/logout`, {}, {withCredentials:true});
 		// const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
 		dispatch(isLoggedOut());
 		navigate("/");
@@ -41,7 +42,7 @@ function PsychiatristSidebar(props:any)
 			// https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails/
 			// https://university-student-psychiatrist.onrender.com/
 			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
-			const response = await axios.get(`http://localhost:5000/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
+			const response = await axios.get(`${apiURL}/api/psychiatristDetails/getPsychiatristDetails`, {withCredentials:true});
 	
 			if (response.data.success)
 			{

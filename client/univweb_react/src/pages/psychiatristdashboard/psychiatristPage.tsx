@@ -25,7 +25,7 @@ export default function PsychiatristDashboard()
 		bookedSessions: 0,
 		feedback:0,
 		messages:0,
-		profile:0,
+		profile:0
 	});
 	const [activeView, setActiveView] = useState('overview');
 	const [userDetails, setUserDetials] = useState(null);

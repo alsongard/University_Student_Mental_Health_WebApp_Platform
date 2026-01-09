@@ -3,6 +3,7 @@ import { User, Phone, MapPin, FileText, Briefcase, GraduationCap, Calendar, Cloc
 
 export default function PsychiatristDetails() 
 {
+    const apiURL = import.meta.env.VITE_API_URL;
     const [formData, setFormData] = useState({
         fullName: '',
         phoneNumber: '',
@@ -38,7 +39,7 @@ export default function PsychiatristDetails()
         {
             // https://university-student-psychiatrist.onrender.com/
             // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/uploadFile", formData, {
-            const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
+            const response = await axios.post(`${apiURL}/api/uploadFile`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Set the content type
                 },
