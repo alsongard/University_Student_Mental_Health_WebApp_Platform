@@ -730,11 +730,12 @@ Mode: In-Person
 ```
 
 
+
+**http://localhost:5000/api/bookSession/psychiatristViewBooked/692bbcb9946ace680fc7e177**
+
+
+
 ```
-http://localhost:5000/api/bookSession/psychiatristViewBooked/692bbcb9946ace680fc7e177
-
-
-
 {
 	
 	"success": true,
