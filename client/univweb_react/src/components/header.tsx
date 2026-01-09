@@ -3,10 +3,10 @@ import { useState } from "react"
 import clsx from "clsx";
 import { NavLink , replace, useNavigate} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { useTheme } from "./themeContext";
 
 export default function Header(props:any)
 {
-	const dispatch = useDispatch();
 	const isAuthenticated = useSelector((state)=>{
 		// console.log(`state.authSlicer.isAuthenticated: ${state.myAuthSlicer.isAuthenticated}`);
 		return state.myAuthSlicer.isAuthenticated;
@@ -16,8 +16,7 @@ export default function Header(props:any)
 		return state.myAuthSlicer.role
 	});
 	
-	const {darkMode, setDarkMode} = props;
-
+	const {darkMode, setDarkMode} = useTheme()
 	const navigate = useNavigate()
 	// const router = useRouter();
 	const [displayLogin,setDisplayLogin] = useState(false);
@@ -45,10 +44,14 @@ export default function Header(props:any)
 	}
 
 
+	// {/* <header className="bg-white bg-gradient-to-r from-white  dark:from-slate-900 to-white dark:to-slate-900  dark:border-b-1 dark:border-white shadow-sm sticky top-0 z-50"> */}
+	// {/* <header className="bg-white bg-gradient-to-r from-white   to-white   shadow-sm sticky top-0 z-50"> */}
+	// {/* <header className="bg-white bg-gradient-to-r from-white to-white shadow-sm sticky top-0 z-50 dark:bg-gray-900 dark:from-gray-900 dark:to-gray-800 dark:shadow-gray-700/50"> */}
+	// {/* <header className="bg-white bg-gradient-to-r from-white to-white shadow-sm sticky top-0 z-50 dark:bg-gradient-to-r dark:from-gray-800 dark:to-gray-900 dark:shadow-gray-700/50"> */}
     return (
 	// {/* Header */}
 		<div>
-			<header className="bg-white bg-gradient-to-r from-white  dark:from-slate-900 to-white dark:to-slate-900  dark:border-b-1 dark:border-white shadow-sm sticky top-0 z-50">
+			<header className="bg-white shadow-sm sticky top-0 z-50 dark:bg-gray-900 dark:shadow-gray-700/50">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
 					<div className="flex items-center space-x-2">
 						<Heart className="w-8 h-8 text-blue-600" />
@@ -122,6 +125,7 @@ export default function Header(props:any)
 							{
 								darkMode === true &&
 									(<Sun 
+										className={clsx(darkMode ? "text-white" : "")}
 										onClick={()=>{
 
 											// console.log(`darkMode: ${darkMode}`)
@@ -130,11 +134,14 @@ export default function Header(props:any)
 							}
 							{
 								darkMode === false &&
-								(<Moon 
+								(
+									<Moon
+										className={clsx(darkMode ? "text-white" : "")}
 										onClick={()=>{
 											// console.log(`darkMode: ${darkMode}`)
 											return setDarkMode(true)}}
-								/>)
+									/>
+								)
 							}
 						</div>
 					</nav>
