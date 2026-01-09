@@ -171,7 +171,7 @@ router.delete("/deleteBooking/:bookingId",DeleteBookingSession );
  *       500:
  *        description: Server error
  */
-router.get("/getStudentBookedSessions", ViewStudentBookedSessions)
+router.get("/getStudentBookedSessions", ViewStudentBookedSessions); // this returns all the student sessions: both past, present and future
 
 const bookingRoutes = router;
 module.exports = bookingRoutes;

@@ -246,7 +246,6 @@ module.exports.ViewSessions = async (req, res)=>{
     catch(err)
     {
         console.log(`Error: ${err}`);
-        return res.status(500).json({success:false, msg:"Internal Server Error!"})      
+        return res.status(500).json({success:false, msg:"Internal Server Error!"});
     }
 }
-
