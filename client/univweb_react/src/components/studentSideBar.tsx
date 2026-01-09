@@ -7,7 +7,8 @@ import axios from 'axios';
 
 function StudentSideBar(props:any)
 {
-    const {activeView, setActiveView} = props;
+    const apiURL = import.meta.env.VITE_API_URL;
+    const {activeView, setRefreshState, setActiveView} = props;
     const navigate = useNavigate();
     const dispatch = useDispatch();
     //
@@ -26,16 +27,18 @@ function StudentSideBar(props:any)
 
 
 
-    const handleLogout = async ()=>{
-            localStorage.clear();
-            console.log('Running logout');
-            // https://university-student-psychiatrist.onrender.com
-            // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
-            const response = await axios.post("http://localhost:5000/api/logout", {}, {withCredentials:true});
-            dispatch(isLoggedOut());
-            navigate("/",{replace:true});
-            window.location.reload();
-        }
+    const handleLogout = async ()=>
+    {
+        localStorage.clear();
+        console.log('Running logout');
+        // https://university-student-psychiatrist.onrender.com
+        // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/logout", {}, {withCredentials:true});
+        const response = await axios.post(`${apiURL}/api/logout`, {}, {withCredentials:true});
+        dispatch(isLoggedOut());
+        navigate("/",{replace:true});
+        window.location.reload();
+    };
+
     return (
         // {/* Sidebar */}
         <aside className={`bg-gradient-to-b from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-300 ${
@@ -80,7 +83,7 @@ function StudentSideBar(props:any)
             {/* Refresh */}
             <div className="p-4 border-t border-blue-500 dark:border-gray-700">
                 <button
-                    onClick={() => console.log('Refresh clicked')}
+                    onClick={() => {console.log('Refresh clicked'); setRefreshState((prevValue:boolean)=>!prevValue)} }
                     className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-500 dark:bg-gray-700 hover:bg-blue-400 dark:hover:bg-gray-600 rounded-lg transition"
                 >
                     {sidebarCollapsed ? <RefreshCw className="w-5 h-5" /> : <RefreshCw className="w-5 h-5" />}
