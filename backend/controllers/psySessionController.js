@@ -1,5 +1,8 @@
 const PsychiatristDetails = require("../models/psychiatristdetail.model");
-const PsychiatristSession = require("../models/psychiatristSession.model")
+const PsychiatristSession = require("../models/psychiatristSession.model");
+const FeedBack = require("../models/feedback.model");
+const studentDetails = require("../models/studentDetails.model");
+const StudentDetails = require("../models/studentDetails.model");
 
 // createSession Controller
 module.exports.createSession = async (req, res)=>
@@ -243,6 +246,98 @@ module.exports.ViewSessions = async (req, res)=>{
         return res.status(200).json({success:true, data:sessionsWithDetails});
 
     }
+    catch(err)
+    {
+        console.log(`Error: ${err}`);
+        return res.status(500).json({success:false, msg:"Internal Server Error!"});
+    }
+}
+
+
+// GET YOUR FEEDBACKS
+module.exports.ViewPsychFeedBack = async (req, res)=>
+{
+    const psychId = req.userId;
+    const role = req.role;
+    // console.log(`psychId: ${psychId}\n role:${role}`);
+
+    if (role != 'psychiatrist')
+    {
+        return res.status(400).json({success:false, msg:"Authentication Failed"});
+    }
+    try
+    {
+        // const foundFeedBacks = await FeedBack.find({psychiatristId:psychId}).populate('bookingId');
+        const foundFeedBacks = await FeedBack.find({psychiatristId:psychId});
+        // console.log("foundFeedBacks");
+        // console.log(foundFeedBacks);
+
+
+        // first we get unique studentId
+        // const studentIds = [...new Set(foundFeedBacks.map((feedBackItem)=>{
+        //     return feedBackItem.studentId
+        // }))];
+
+        // console.log("studentIds")
+        // console.log(studentIds)
+        // Now since we have feedbacks if anonymity is set to false we get student details
+        // const foundStudentDetailsData = await StudentDetails.find({studentId:{$in:studentIds}}).select('studentName studentId')
+        
+        // console.log("foundStudentDetailsData");
+        // console.log(foundStudentDetailsData);
+;
+        // Get details for these studentIds
+        /*
+            foundStudentDetailsData
+            [
+            {
+                _id: new ObjectId('6930958ab9ea6134b94b7f5d'),
+                studentId: new ObjectId('6903a4963253494881272acb'),
+                studentName: 'Emma Watson'
+            }
+            ]
+        */
+
+        // Create a map for quick lookup
+        // const detailsMap = {};
+        // foundStudentDetailsData.forEach(detail => 
+        //     {
+        //         detailsMap[detail.studentId.toString()] = {
+        //             name: detail.studentName,
+        //         };
+        //     }
+        // );
+
+        // console.log("detailsMap");
+        // console.log(detailsMap);
+
+
+        /*
+        detailsMap
+        {
+            '692bbcb9946ace680fc7e177': { fullName: 'Dr. Michael Chen', specialization: undefined }
+        }
+        */
+        // Combine sessions with details
+        // const feedbackWithStudentDetails = foundFeedBacks.map(feedBackItem => 
+        //     {
+        //         const detail = detailsMap[feedBackItem.studentId.toString()] || {}; // using studentId as key for accessing values in detailsMap if not exist return empty
+        //         return {
+        //             ...feedBackItem.toObject(),
+        //             fullName: detail.name,
+        //         };
+        //     });
+
+        // console.log("feedbackWithStudentDetails");
+        // console.log(feedbackWithStudentDetails);
+
+        if (foundFeedBacks.length == 0)
+        {
+            return res.status(200).json({success:true, msg:"No feedback at the moment", data:[]});
+        }
+        return res.status(200).json({success:true, data:foundFeedBacks});
+    }
+
     catch(err)
     {
         console.log(`Error: ${err}`);
