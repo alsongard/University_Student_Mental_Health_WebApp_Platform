@@ -296,7 +296,7 @@ export default function StudentSessionComponent(props:any)
                                                     <p className="text-gray-900 dark:text-gray-100">Remaining Bookings: 1</p>
                                                     <button
                                                         className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition text-sm font-medium text-gray-700 dark:text-gray-300"
-                                                        onClick={()=>setBookSession(true)}
+                                                        onClick={()=>{setBookSession(true); setSelectedSession(session);}}
                                                     >
                                                         View Session Details
                                                     </button>
