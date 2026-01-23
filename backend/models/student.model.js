@@ -7,7 +7,7 @@ const StudentSchema = new  mongoose.Schema({
     password: {type:String, required:true},
     isAccountVerified: {type:Boolean, default:false},
     role: {type:String, default:"student"},
-    verifyOtp: {type:String, default:"0"},
+    verifyOtp: {type:String, default:null},
     verifyOtpExpiresIn: {type:Number, default:0},
     resentOTP: {type:String, default:"0"},
     resetOtpExpiresIn: {type:Number, default:0}
