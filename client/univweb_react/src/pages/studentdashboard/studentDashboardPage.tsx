@@ -195,7 +195,7 @@ export default function StudentDashboard()
     })
 
 
-    const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>{
+    const calenderSessions = studentBookedSessions?.length > 0 && studentBookedSessions.filter((studentSession)=>{
         const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
         // console.log('theDate');
         // console.log(theDate);
