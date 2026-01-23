@@ -138,7 +138,6 @@ export default function AuthForms(props:any)
                     alert('Passwords do not match!');
                     return;
                 }
-                setStudentSuccess("An email has been sent with your OTP for acccount creation are being otp prompted...");
                 // https://university-student-psychiatrist.onrender.com
                 // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/studentCreate", 
                 const response = await axios.post(`${apiURL}/api/student/studentCreate`, 
@@ -151,17 +150,16 @@ export default function AuthForms(props:any)
                 );
                 if (response.data.success)
                 {
-
-                    setStudentSuccess("true");
+                    setStudentSuccess("An email has been sent with your OTP for acccount creation are being otp prompted...");
                     setTimeout(()=>{
                         setStudentSuccess("");
-                        navigate("/otp")
+                        navigate("/otp");
                     }, 5000);
                     
                     // console.log(response.data.data.token); // TESTING
                     // console.log(response.data.data.studentId); // TESTING
-                    localStorage.setItem('token', response.data.data.token);
-                    localStorage.setItem("studentId", response.data.data.studentId);
+                    // localStorage.setItem('token', response.data.data.token);
+                    // localStorage.setItem("studentId", response.data.data.studentId);
                 }
             }
         }

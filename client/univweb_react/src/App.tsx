@@ -66,7 +66,7 @@ export default function App()
 	const ProtectedStudentDashboard = requireAuth(StudentDashboard, ['student']);
 	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard, ['psychiatrist', 'Counselor']);
 	const ProtectedPsychiatristDetails = requireAuth(PsychiatristDetails, ['psychiatrist', 'Counselor']);
-	const ProtectedStudentDetails = requireAuth(StudentDetailsRegistration);
+	const ProtectedStudentDetails = requireAuth(StudentDetailsRegistration,['student']);
 	// how to handle persistence
 
 	return (

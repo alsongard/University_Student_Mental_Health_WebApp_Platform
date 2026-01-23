@@ -1,11 +1,17 @@
 import React, { useState, useEffect} from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { isLoggedIn } from "../../features/auth/authSlicer.js";
+
 export default function OtpPage() 
 {
+    const apiURL = import.meta.env.VITE_API_URL;
     const [otpValue, setOtpValue] = useState('');
     const [studentSuccess, setStudentSuccess] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
+
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     // HANDLING OTP VERIFICATION
     const handleOtp = async (event)=>{
@@ -18,7 +24,7 @@ export default function OtpPage()
             // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/getOTP",
             // const response = await axios.post("api/student/getOTP",
             // const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/student/getOTP",
-            const response = await axios.post("http://localhost:5000/api/student/getOTP",
+            const response = await axios.post(`${apiURL}/api/student/getOTP`,
                 {
                     userOtp: otpValue,
                 },
@@ -27,8 +33,21 @@ export default function OtpPage()
             if (response.data.success) {
                 // Handle successful OTP verification
                 // console.log('this is response');
-                setStudentSuccess("true");
-                navigate("/studentdetails");
+                setStudentSuccess("Your otp has been verified successfully! Redirecting to your details page...");
+                const {email, role} = response.data.data.studentInfo;
+                // console.log(Loginresponse.data.data)
+                // localStorage.setItem("email", email);
+                const myPayload = {
+                    email: email,
+                    role: role
+                };
+                dispatch(isLoggedIn(myPayload));
+                setTimeout(()=>{
+                    setStudentSuccess("");
+                    navigate("/studentdetails");
+                }, 5000);
+                
+
             }
         } 
         catch (err) {
