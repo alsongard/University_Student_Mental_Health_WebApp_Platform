@@ -1662,3 +1662,47 @@ foundFeedBacks
   }
 ]
 ```
+
+
+Gother#109
+uniqueuser4u@gmail.com
+bcs-05-0123/2332
+Gother#109
+
+
+res.cookie("namemOfCookie", valueCokkkie, {
+    maxk
+})
+
+
+
+
+
+{
+  "_id": {
+    "$oid": "6973943f6d3f2980867d484b"
+  },
+  "studentId": {
+    "$oid": "6973910c6d3f2980867d4834"
+  },
+  "studentName": "William kamau",
+  "studentAge": 12,
+  "gender": "Male",
+  "phoneNumber": "254 13479694",
+  "image": "",
+  "course": "Computer Science",
+  "yearOfStudy": 2,
+  "address": "nairobi",
+  "emergencyContact": {
+    "name": "Allan wangechi",
+    "phoneNumber": "071234565",
+    "relationship": "Sibling"
+  },
+  "createdAt": {
+    "$date": "2026-01-23T15:31:11.183Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-23T15:31:11.183Z"
+  },
+  "__v": 0
+}
