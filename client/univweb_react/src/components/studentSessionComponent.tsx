@@ -206,8 +206,8 @@ export default function StudentSessionComponent(props:any)
             return session
         }
     });
-    // console.log('new sessions');
-    // console.log(newSessions);
+    console.log('new sessions');
+    console.log(newSessions);
 
     const getStatusColor = (status:string) => {
         const colors = {
@@ -269,7 +269,7 @@ export default function StudentSessionComponent(props:any)
         
                         <div className="grid lg:grid-cols-2 gap-6">
                             {
-                                newSessions.length > 0  ? (
+                                newSessions?.length > 0  ? (
                                     newSessions.map((session) => (
                                         <div key={session._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6 hover:shadow-xl dark:hover:shadow-[0px_0px_15px_rgba(59,130,246,0.5)] transition">
                                             <div className="flex items-start justify-between mb-4">
@@ -296,7 +296,7 @@ export default function StudentSessionComponent(props:any)
                                                     <p className="text-gray-900 dark:text-gray-100">Remaining Bookings: 1</p>
                                                     <button
                                                         className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition text-sm font-medium text-gray-700 dark:text-gray-300"
-                                                        onClick={()=>{setBookSession(true); setSelectedSession(session);}}
+                                                        onClick={()=>{setBookSession(true); setSingleSession(session); }}
                                                     >
                                                         View Session Details
                                                     </button>
@@ -308,7 +308,7 @@ export default function StudentSessionComponent(props:any)
                                                 <button 
                                                     onClick={()=>{
                                                         setSingleSession(session);
-                                                        setBookSession(true)
+                                                        setBookSession(true);
                                                     }} 
                                                     className="px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold"
                                                 >
@@ -479,7 +479,7 @@ export default function StudentSessionComponent(props:any)
                             </div>
                         </div>
                         {
-                            studentBookedSessions.length === 0 && 
+                            studentBookedSessions?.length === 0 && 
                             (
                                 <div className="w-full">
                                     <div className="text-center  dark:bg-slate-600   rounded-md py-8 text-gray-500">
