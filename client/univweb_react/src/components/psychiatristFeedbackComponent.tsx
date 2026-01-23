@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect} from 'react';
 import { Star, Search, Filter, MessageSquare, User, Calendar, Eye, X, TrendingUp, AlertCircle, ThumbsUp } from 'lucide-react';
+import axios from 'axios';
 
-export default function PsychiatristFeedback() {
+export default function PsychiatristFeedback()
+{
+	const apiURL = import.meta.env.VITE_API_URL;
 	const [searchQuery, setSearchQuery] = useState('');
 	const [filterRating, setFilterRating] = useState('all');
 	const [filterMonth, setFilterMonth] = useState('all');
 	const [selectedFeedback, setSelectedFeedback] = useState(null);
 	const [showFeedbackDetails, setShowFeedbackDetails] = useState(false);
+	const [myCustomFeedBack, setMyCustomFeedBack] = useState([]);
+	const getStudentFeedBack = useCallback(async ()=>{
+		const response = await axios.get(`${apiURL}/api/psychiatristSession/getPsychFeedback`);
+		if (response.data.status)
+		{
+			//perform something
+			setMyCustomFeedBack(response.data.data);
+		}
+	}, []);
 
+	useEffect(()=>{
+		getStudentFeedBack();
+	}, [])
 	// Sample feedback data
 	const [feedbackList] = useState([
 			{
