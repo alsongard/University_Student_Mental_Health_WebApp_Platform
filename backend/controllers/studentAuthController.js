@@ -36,6 +36,8 @@ const registerStudent = async (req, res)=>{
 
 
         const otp = crypto.randomBytes(64).toString('hex').slice(0,11);
+        console.log('otp');
+        console.log(otp);
         new_student.verifyOtp = otp;
 
         const otpExpireTimer = Date.now() + (30 * 60 * 1000); // milliseconds minutes * seconds * milliseconds
@@ -55,8 +57,12 @@ const registerStudent = async (req, res)=>{
 
         const info = await transporter.sendMail(mailOptions);
 
+        console.log("info");
+        console.log(info);
 
         infoStatus = info.response.split(" ")[2];
+        console.log("infoStatus");
+        console.log(infoStatus)
         // generate tempToken using jwt
         console.log(`infostatus: ${infoStatus}`);
         if (infoStatus == 'OK')
