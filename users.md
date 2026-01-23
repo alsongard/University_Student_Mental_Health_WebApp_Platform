@@ -1632,3 +1632,33 @@ course: "Computer Science"
   }
 ]
 ```
+
+**http://localhost:5000/api/psychiatristSession/getPsychFeedback**
+```js
+foundFeedBacks
+[
+  {
+    _id: new ObjectId('6932ae40f648d8d17eeaa572'),
+    bookingId: new ObjectId('692e364e57db98fb8b3ad0fc'),
+    studentId: new ObjectId('6903a4963253494881272acb'),
+    rating: 5,
+    feedbackMessage: 'Cool and Awasome session.. I loved the way you  breaked down things and open minded.',
+    anonymity: true,
+    __v: 0,
+    psychiatristId: new ObjectId('692bbcb9946ace680fc7e177')
+  },
+  {
+    _id: new ObjectId('69585670f8aceeb8342a69f7'),
+    bookingId: new ObjectId('6943f818e97935145fb46924'),
+    studentId: new ObjectId('6903a4963253494881272acb'),
+    rating: 4,
+    feedbackMessage: 'I resolved my issues on what was pulling me down. I loved the way Dr. Michael braked down things like solving the dragon\n' +
+      'learning how to replace my bad habits was interesting',
+    anonymity: true,
+    createdAt: 2026-01-02T23:36:16.134Z,
+    updatedAt: 2026-01-02T23:36:16.134Z,
+    __v: 0,
+    psychiatristId: new ObjectId('692bbcb9946ace680fc7e177')
+  }
+]
+```
