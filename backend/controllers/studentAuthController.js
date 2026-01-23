@@ -138,14 +138,18 @@ const getOTPUser = async (req,res)=>{
             const authToken = jwt.sign({userId: foundStudent._id, role: 'student', email: foundStudent.email}, process.env.JWT_SECRET, {expiresIn: "240"});
             console.log("authToken");
             console.log(authToken);
-            res.cookie.clear('tempToken');
+            res.clearCookie('tempToken');
             res.cookie('authToken', authToken, {
                 httpOnly:true,
                 secure: process.env.NODE_ENV === 'production' ? true : false, 
                 sameSite: process.env.NODE_ENV === 'production' ? "None" : "lax", 
                 maxAge: 25 * 60 *1000, //25 minutes
             });
-            return res.status(200).json({success:true, msg:"Account Verified"});
+            const studentInfo = {email: foundStudent.email, role:foundStudent.role};
+            console.log('studentInfo');
+            console.log(studentInfo);
+
+            return res.status(200).json({success:true, data:{studentInfo: studentInfo}, msg:"Account Verified"});
         }
         else
         {
