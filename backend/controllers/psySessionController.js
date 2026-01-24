@@ -51,15 +51,20 @@ module.exports.createSession = async (req, res)=>
  */
 module.exports.UpdateSession = async (req, res)=>{
     const {sessionId} = req.params;
-    const {psychiatristId, date,  startTime, endTime, sessionType, sessionMode, sessionDuration, maxBookings, sessionStatus} = req.body;
+    const psychiatristId = req.userId;
+    console.log(req.body);
+    const {date,  startTime, endTime, sessionType, sessionMode, sessionDuration, maxBookings, description, sessionStatus} = req.body;
+
+
+    
     // console.log(`${psychiatristId}\n ${date}\  ${startTime}\n ${endTime}\n ${sessionType}\n ${sessionMode}\n ${sessionDuration}`)
-    if (!psychiatristId || !date || !startTime || !endTime || !sessionDuration || !sessionType || !sessionMode || !sessionDuration ) {
-        return res.status(400).json({error: "Invalid Input for creating session"});
+    if (!psychiatristId || !date || !startTime || !endTime || !sessionDuration || !sessionType ||  !description || !sessionMode || !sessionDuration ) {
+        return res.status(400).json({status: false, msg: "Invalid Input for updating session"});
 
     }
     if (!sessionId)
     {
-        return res.status(400).json({success:false, msg: "No sessionId "});
+        return res.status(400).json({success:false, msg: "No sessionId provided "});
     }
     if (!psychiatristId || !date || !startTime || !endTime || !sessionType || !sessionStatus)
     {
@@ -68,8 +73,7 @@ module.exports.UpdateSession = async (req, res)=>{
 
     try
     {
-
-        const foundSession = await PsychiatristSession.findById({id:sessionId});
+        const foundSession = await PsychiatristSession.findById({_id:sessionId});
     
         if(!foundSession)
         {
@@ -77,17 +81,26 @@ module.exports.UpdateSession = async (req, res)=>{
         }
     
         // to update we tenary operation if value is given we do the following:
-    
+        console.log('foundSession');
+        // console.log(foundSession);
+
+
         foundSession.psychiatristId = psychiatristId;
         foundSession.date = date;
         foundSession.startTime = startTime;
         foundSession.endTime = endTime;
         foundSession.sessionType = sessionType;
         foundSession.sessionStatus = sessionStatus;
-    
-        foundSession.save();
-    
-        const updatedFoundSession = await PsychiatristSession.findById({id:sessionId});
+        foundSession.sessionMode = sessionMode;
+        foundSession.sessionDuration = sessionDuration;
+        foundSession.sessionStatus = sessionStatus;
+        foundSession.maxBookings = maxBookings;
+        foundSession.sessionDescription = description;
+
+
+        await foundSession.save();
+        console.log('foundSession after save');
+        const updatedFoundSession = await PsychiatristSession.findById({_id:sessionId});
         return res.status(200).json({success:true, msg:"Update Success", data:updatedFoundSession});
     }
     catch(err)
@@ -101,6 +114,9 @@ module.exports.UpdateSession = async (req, res)=>{
 // Delete Sessions
 module.exports.DeleteSession = async (req, res)=>{
     const {sessionId} = req.params;
+    console.log('entering delete session');
+    // console.log(`sessionId: ${sessionId}`);
+
     if (!sessionId)
     {
         return res.status(400).json({success:false, msg: "No sessionId "});
@@ -128,7 +144,7 @@ module.exports.DeleteSession = async (req, res)=>{
 
 // ViewSessions for a specific Psychiatrist
 module.exports.ViewPsychiatristSession = async (req,res)=>{
-    const psychiatristId = req.userId;
+    const psychiatristId = req.userId; 
     const role = req.role;
     if (!psychiatristId || !role )
     {
@@ -259,7 +275,7 @@ module.exports.ViewPsychFeedBack = async (req, res)=>
 {
     const psychId = req.userId;
     const role = req.role;
-    // console.log(`psychId: ${psychId}\n role:${role}`);
+    console.log(`psychId: ${psychId}\n role:${role}`);
 
     if (role != 'psychiatrist')
     {
