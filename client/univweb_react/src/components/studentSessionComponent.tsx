@@ -13,28 +13,21 @@ export default function StudentSessionComponent(props:any)
     const [selectedSession, setSelectedSession] = useState(null);    
     const [myUpcomingSessions, setMyUpcomingSessions] = useState<AllSessionData[]>([]);
     const getAllSessions = useCallback( async()=>{
-		try
+        try
 		{
             const response = await axios.get(`${apiURL}/api/studentSession/getAllSessions`);
 			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions", );
             // console.log(response)
             if (response.data.success)
-            {
-                setMyUpcomingSessions(response.data.data);
+                {
+                    setMyUpcomingSessions(response.data.data);
+                }
             }
-		}
-		catch(err)
-		{
-			console.log(`Error: ${err}`);
-		}
-	}, []);
-    useEffect(()=>{
-        getAllSessions();
-        GetStudentBookedSessions();
-    },[refreshView.sessions]);
-
-
-
+            catch(err)
+            {
+                console.log(`Error: ${err}`);
+            }
+        }, []);
     const [studentBookedSessions, setStudentBookedSessions] = useState([]);
     const GetStudentBookedSessions = useCallback( async ()=>{
         try
@@ -43,12 +36,14 @@ export default function StudentSessionComponent(props:any)
             const response = await axios.get(`${apiURL}/api/studentSession/getStudentFutureSessions`, {withCredentials:true});
             if (response.data.success)
             {
-                if (response.data.msg === "You have no future booked sessions")
+                if (response.data.msg === "You have no booked sessions")
                 {
+                    console.log('runnign on specific')
                     setStudentBookedSessions([]);
                     return;
                 }
-                setStudentBookedSessions(response.data.data);
+                console.log("am runnig on normal mode")
+                // setStudentBookedSessions(response.data.data);
             }
         }
         catch(err)
@@ -56,6 +51,16 @@ export default function StudentSessionComponent(props:any)
             console.log(`Error: ${err}`)
         }
     }, []);
+
+
+    useEffect(()=>{
+        getAllSessions();
+        GetStudentBookedSessions();
+    },[refreshView.sessions]);
+
+
+
+
 
     const [bookSession, setBookSession] = useState(false);
     const [singleSession, setSingleSession] = useState<SingleSession>();
@@ -401,18 +406,19 @@ export default function StudentSessionComponent(props:any)
         
         
                     {/* STUDENT BOOKED SESSIONS */}
-                    <div className="">
+                    <div className=" mb-[20px]">
         
-                        <div className="mb-6">
+                        <div className="mb-3">
                             <h1 className="text-2xl font-bold dark:text-white text-gray-800">My Sessions</h1>
                             <p className="text-gray-600 dark:text-white text-sm">Your upcoming therapy appointments</p>
                         </div>
+
                         {/* <div className=" bg-gradient-to-br from-blue-50 rounded-sm to-indigo-100 p-6"> */}
-                        <div className="   rounded-sm  py-6">
+                        <div className=" rounded-sm  ">
                             <div className="max-w-6xl mx-auto">
                                 <div className="">
                                     {
-                                        studentBookedSessions && studentBookedSessions.length > 0 && 
+                                        studentBookedSessions && studentBookedSessions?.length > 0 && 
                                             (studentBookedSessions.map((bookedSession) => (
                                                 <div 
                                                     key={bookedSession._id} 
@@ -479,10 +485,10 @@ export default function StudentSessionComponent(props:any)
                             </div>
                         </div>
                         {
-                            studentBookedSessions?.length === 0 && 
+                            studentBookedSessions.length == 0 && 
                             (
-                                <div className="w-full">
-                                    <div className="text-center  dark:bg-slate-600   rounded-md py-8 text-gray-500">
+                                <div className="w-full  ">
+                                    <div className="text-center  dark:bg-slate-600   rounded-md mb-[20px] py-[20px] text-gray-500">
                                         <Calendar className="w-16 dark:text-white h-16 mx-auto mb-4 opacity-30" />
                                             <p className="text-white">No upcoming sessions scheduled</p>
                                         <button

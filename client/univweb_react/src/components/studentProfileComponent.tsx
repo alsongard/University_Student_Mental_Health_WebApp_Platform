@@ -126,7 +126,7 @@ export default function StudentProfile(props:any)
         try
         {
             // const response = await axios.put("https://university-student-psychiatrist.onrender.com/api/studentDetails/updateStudentPassword/", passwordInfo, {withCredentials:true})  
-            const response = await axios.put(`${apiURL}/api/studentDetails/updateStudentPassword/`, passwordInfo,{withCredentials:true})  
+            const response = await axios.put(`${apiURL}/api/student/studentChangePassword/`, passwordInfo,{withCredentials:true})  
             // console.log(response);
             if (response.data.success)
             {

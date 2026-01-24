@@ -7,7 +7,7 @@ export default function StudentDetailsRegistration()
 {
 	const navigate = useNavigate();
 	const [selectedFile, setSelectedFile] = useState(null);
-	
+	const apiURL = import.meta.env.VITE_API_URL;
 	const handleFileChange = (event) => {
 		setSelectedFile(event.target.files[0]);
 	};
@@ -82,7 +82,7 @@ export default function StudentDetailsRegistration()
 		{
 			// https://university-student-psychiatrist.onrender.com
             // const response = await axios.post("http://localhost:5000/api/uploadFile", formData, {
-            const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/uploadFile", formData, {
+            const response = await axios.post(`${apiURL}/api/uploadFile`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Set the content type
                 },
@@ -102,7 +102,7 @@ export default function StudentDetailsRegistration()
 			if (validate()) 
 			{	
 				// const response = await axios.post("http://localhost:5000/api/studentDetails/createDetails/", {
-				const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/studentDetails/createDetails/", {
+				const response = await axios.post(`${apiURL}/api/studentDetails/createDetails/`, {
 					studentName: formData.studentName,
 					studentAge: formData.studentAge, 
 					gender: formData.gender,

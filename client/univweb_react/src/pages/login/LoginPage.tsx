@@ -86,7 +86,7 @@ export default function AuthForms(props:any)
     // state for success
     const [studentSuccess, setStudentSuccess] = useState("");
 
-
+    const [buttonMsg, setButtonMsg] = useState("");
 
 
     // HANDLING STUDENT SIGNUP & LOGIN SUBMIT
@@ -97,6 +97,7 @@ export default function AuthForms(props:any)
             // LOGIN
             if (formMode === "login" )
             {
+                setButtonMsg("Please wait...");
                 // console.log(`entering loginform submit`)
                 // console.log('formDAta submitted');
                 // console.log(studentSignupData)
@@ -111,6 +112,7 @@ export default function AuthForms(props:any)
 
                 if (Loginresponse.status === 200)
                 {
+                    setButtonMsg("");
                     // get student name
                     const {email, role} = Loginresponse.data.data.studentInfo;
                     // console.log(Loginresponse.data.data)
@@ -130,6 +132,7 @@ export default function AuthForms(props:any)
             }
             if (formMode === "signup")
             {
+                setButtonMsg("Please wait...");
 
                 console.log(`entering singnupform submit`)
 
@@ -150,6 +153,7 @@ export default function AuthForms(props:any)
                 );
                 if (response.data.success)
                 {
+                    setButtonMsg("");
                     setStudentSuccess("An email has been sent with your OTP for acccount creation are being otp prompted...");
                     setTimeout(()=>{
                         setStudentSuccess("");
@@ -165,6 +169,7 @@ export default function AuthForms(props:any)
         }
         catch(err)
         {
+            setButtonMsg("");
             console.log(`Error: ${err}`);
             console.log('err.response');
             console.log(err.response.data.msg);
@@ -194,6 +199,7 @@ export default function AuthForms(props:any)
     const handlePsychiatristLoginSubmit = async (e) => {
         setPsychErrorMsg('');
         e.preventDefault();
+        setButtonMsg("Please wait...")
         try
         {
             // https://university-student-psychiatrist.onrender.com/
@@ -208,6 +214,7 @@ export default function AuthForms(props:any)
             );
             if (response.data.success)
             {
+                setButtonMsg("");
                 setSuccessPsychLoginMsg("Login successfull.. You are being redirected to Psychiatrist Dashboard");
                 // console.log
                 const role = response.data.data.role;
@@ -226,6 +233,7 @@ export default function AuthForms(props:any)
         }
         catch(err)
         {
+            setButtonMsg("");
             console.log(`Error: ${err}`);
             if (err.response.data.msg === "Invalid credentials")
             {
@@ -573,6 +581,15 @@ export default function AuthForms(props:any)
 
                             </>
                         )
+                    }
+                    {/* WAIT MESSAGE */}
+                    {
+                      buttonMsg &&
+                      (
+                        <>
+                            <p className="text-green-800  mt-[15px] font-semibold">{buttonMsg} </p>
+                        </>
+                      )  
                     }
                     {/* Success Message */}
                     <div className='py-2.5'>  

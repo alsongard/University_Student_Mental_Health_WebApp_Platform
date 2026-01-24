@@ -39,6 +39,12 @@ export default function StudentFeedBack(props:any)
             // const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions", {withCredentials:true});
             // console.log('response.data');
             // console.log(response.data);
+            if (response.data.msg === "You have no booked sessions")
+            {
+                console.log('runnign on specific')
+                setStudentSessions([]);
+                return;
+            }
             setStudentSessions(response.data.data)
         }
         catch(err)
@@ -51,6 +57,13 @@ export default function StudentFeedBack(props:any)
         // Fetch feedbacks when component mounts
         getStudentFeedback();
         getStudentSessions();
+        const timer1 = setTimeout(() => {
+            setDisplaySkeleton(false);
+        }, 10000);
+
+        return ()=>{
+            clearTimeout(timer1);
+        }
     }, [refreshView.feedback]);
     // Sample feedbacks : ARRAY
     // setInterval(()=>{
@@ -64,6 +77,10 @@ export default function StudentFeedBack(props:any)
     {
         return (<StudentFeedbackForm setFeedBack={setFeedBackView} sessionData={singleSession}/>)
     }
+    
+
+    const [displaySkeleton, setDisplaySkeleton] = useState(true);
+
     return (
         <div className="space-y-6 p-5">
             <div className="flex items-center justify-between">
@@ -73,7 +90,7 @@ export default function StudentFeedBack(props:any)
 
             <div className="space-y-4">
                 { 
-                    myFeedBack && myFeedBack.length > 0 ?
+                    myFeedBack && myFeedBack.length > 0 &&
                     (
                         myFeedBack.map((feedback) => (
                             <div key={feedback._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6">
@@ -104,7 +121,10 @@ export default function StudentFeedBack(props:any)
                             </div>
                         ))
                     ) 
-                    : 
+                
+                }
+                {
+                    myFeedBack.length == 0  && displaySkeleton && // display this on loadeer and then exit
                     (
                         // {/* Show 3-5 skeleton feedback cards while loading */}
                         [1].map((index:number) => (
@@ -133,13 +153,17 @@ export default function StudentFeedBack(props:any)
                             </div>
                         ))
                     )
+
                 }
+                    
+                    
+                
 
                 {/* ADD FEEDBACK FOR SESSIONS */}
                 {
                     studentSessions.length == 0 ?
                     (
-                        <p>No student Sessions Yet... Book and Attend the session to get started</p>
+                        <p className="dark:text-white">No student Sessions Yet... Book and Attend the session to get started</p>
                     )
                     : 
                     (
