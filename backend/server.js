@@ -255,7 +255,7 @@ io.on("connection", (socket)=>{
     console.log('server is listening on port 5000: Socket connected');
     try
     {
-        socket.on("sendMessage", async (dataReceived, callback)=>
+        socket.on("sendMessage", async (dataReceived)=>
         {
             console.log('=== SERVER: sendMessage event ===');
             console.log('Socket ID:', socket.id);
@@ -266,24 +266,24 @@ io.on("connection", (socket)=>{
             const userId = socket.userId;
             const role = socket.role;
 
-            await sendMessage(data=dataReceived, socket, callback);
-            if (typeof(callback) === "function")
-            {
-                // Save message to database
-                console.log('Calling callback...');
-                callback({
-                    status: "ok", 
-                    msg: "Message received at server"
-                });
-                // console.log('Callback called successfully');
-                // saveMessageToDB(dataReceived);
-            }
-            else 
-            {
-                console.log('WARNING: No callback provided by client!');
-                // we create new emit event for the user
+            await sendMessage(data=dataReceived, socket);
+            // if (typeof(callback) === "function")
+            // {
+            //     // Save message to database
+            //     console.log('Calling callback...');
+            //     callback({
+            //         status: "ok", 
+            //         msg: "Message received at server"
+            //     });
+            //     // console.log('Callback called successfully');
+            //     // saveMessageToDB(dataReceived);
+            // }
+            // else 
+            // {
+            //     console.log('WARNING: No callback provided by client!');
+            //     // we create new emit event for the user
                 
-            }
+            // }
         });
 
         let someData =""
