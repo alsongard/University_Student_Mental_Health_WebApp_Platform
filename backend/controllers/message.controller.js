@@ -4,7 +4,7 @@ const Message = require("../models/messages.model");
 const PsychiatristDetails = require("../models/psychiatristdetail.model");
 const StudentDetails = require("../models/studentDetails.model");
 
-const sendMessage = async (data, socket,  callback)=>{
+const sendMessage = async (data, socket)=>{
     // console.log("callback");
     // console.log(callback);
     const senderId = socket.userId;
@@ -110,8 +110,9 @@ const sendMessage = async (data, socket,  callback)=>{
         })
         if (newMessage)
         {
-            // console.log("New Message Created:");
+            console.log("New Message Created:");
             // console.log(newMessage);
+            if (socket) {console.log('socket is available')}
             socket.emit("newMessage", newMessage); // this event will be emited if message is stored then the newMessage will be displayed on the user
         }
         // perform something with SOCKETIO
