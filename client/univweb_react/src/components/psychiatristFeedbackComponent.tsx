@@ -2,27 +2,34 @@ import React, { useState, useCallback, useEffect} from 'react';
 import { Star, Search, Filter, MessageSquare, User, Calendar, Eye, X, TrendingUp, AlertCircle, ThumbsUp } from 'lucide-react';
 import axios from 'axios';
 
-export default function PsychiatristFeedback()
+export default function PsychiatristFeedback(props)
 {
+	const {refreshView} = props;
 	const apiURL = import.meta.env.VITE_API_URL;
 	const [searchQuery, setSearchQuery] = useState('');
 	const [filterRating, setFilterRating] = useState('all');
 	const [filterMonth, setFilterMonth] = useState('all');
 	const [selectedFeedback, setSelectedFeedback] = useState(null);
 	const [showFeedbackDetails, setShowFeedbackDetails] = useState(false);
+
+
+
 	const [myCustomFeedBack, setMyCustomFeedBack] = useState([]);
 	const getStudentFeedBack = useCallback(async ()=>{
-		const response = await axios.get(`${apiURL}/api/psychiatristSession/getPsychFeedback`);
-		if (response.data.status)
+		const response = await axios.get(`${apiURL}/api/psychiatristSession/getPsychFeedback`, {withCredentials:true});
+		if (response.data.success)
 		{
 			//perform something
+			console.log('response.data.data');
+			// console.log(response.data.data);
 			setMyCustomFeedBack(response.data.data);
 		}
 	}, []);
 
 	useEffect(()=>{
+		console.log('run on feedback');
 		getStudentFeedBack();
-	}, [])
+	}, [refreshView.feedback])
 	// Sample feedback data
 	const [feedbackList] = useState([
 			{
@@ -40,22 +47,6 @@ export default function PsychiatristFeedback()
 				specificPositives: "Great listening skills, practical advice, made me feel safe",
 				areasOfImprovement: "None, session was perfect",
 				submittedDate: "2025-10-30"
-			},
-			{
-				id: 2,
-				studentName: "Sarah Johnson",
-				studentAdmissionNum: "ADM12346",
-				studentAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-				sessionDate: "2025-10-22",
-				sessionType: "Follow-up Session",
-				rating: 4,
-				feedbackMessage: "The follow-up session was helpful in addressing some of the concerns from the previous meeting. I appreciated the continuity of care.",
-				anonymity: false,
-				sessionHelpful: "yes",
-				wouldRecommend: "yes",
-				specificPositives: "Professional approach, knowledgeable about my case",
-				areasOfImprovement: "Could have provided more written resources to take home",
-				submittedDate: "2025-10-25"
 			},
 			{
 				id: 3,
@@ -88,45 +79,13 @@ export default function PsychiatristFeedback()
 				specificPositives: "Compassionate, empathetic, practical techniques, excellent communication",
 				areasOfImprovement: "None",
 				submittedDate: "2025-10-12"
-			},
-			{
-				id: 5,
-				studentName: "Michael Chen",
-				studentAdmissionNum: "ADM12349",
-				studentAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-				sessionDate: "2025-09-28",
-				sessionType: "Medication Management",
-				rating: 4,
-				feedbackMessage: "Good discussion about medication adjustments. Clear explanation of side effects and benefits.",
-				anonymity: false,
-				sessionHelpful: "yes",
-				wouldRecommend: "yes",
-				specificPositives: "Thorough explanation, answered all questions",
-				areasOfImprovement: "Could have provided more detail about long-term outcomes",
-				submittedDate: "2025-10-02"
-			},
-			{
-				id: 6,
-				studentName: "Anonymous Student",
-				studentAdmissionNum: "ADM12350",
-				studentAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-				sessionDate: "2025-09-21",
-				sessionType: "Individual Therapy",
-				rating: 2,
-				feedbackMessage: "While the psychiatrist was professional, I didn't feel a strong connection. Didn't feel like my specific concerns were fully addressed.",
-				anonymity: true,
-				sessionHelpful: "no",
-				wouldRecommend: "no",
-				specificPositives: "Professional demeanor",
-				areasOfImprovement: "Better personalization of approach, more active listening",
-				submittedDate: "2025-09-24"
 			}
 		]);
 
 	// Calculate statistics
 	// const averageRating:Number = (feedbackList.reduce((sum, f) => sum + f.rating, 0) / feedbackList.length).toFixed(1);
-	const averageRating:Number = (feedbackList.reduce((sum, f) => sum + f.rating, 0) / feedbackList.length);
-	const totalFeedbacks = feedbackList.length;
+	const averageRating:Number = (myCustomFeedBack.reduce((sum, f) => sum + f.rating, 0) / myCustomFeedBack.length);
+	const totalFeedbacks = myCustomFeedBack.length;
 	const recommendationRate = Math.round((feedbackList.filter(f => f.wouldRecommend === 'yes').length / totalFeedbacks) * 100);
 	const helpfulRate = Math.round((feedbackList.filter(f => f.sessionHelpful === 'yes').length / totalFeedbacks) * 100);
 
@@ -177,192 +136,174 @@ export default function PsychiatristFeedback()
 	};
 
   return (
-		<div className="min-h-screen bg-gray-50 p-8">
-			<div className="max-w-7xl mx-auto">
-				{/* Header */}
-				<div className="mb-8">
-				<h1 className="text-3xl font-bold text-gray-900 mb-2">Student Feedback</h1>
-				<p className="text-gray-600">Review feedback from students after completed sessions</p>
-				</div>
+	<div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
+		<div className="max-w-7xl mx-auto">
+			{/* Header */}
+			<div className="mb-8">
+				<h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Student Feedback</h1>
+				<p className="text-gray-600 dark:text-gray-400">Review feedback from students after completed sessions</p>
+			</div>
 
-				{/* Stats Cards */}
-				<div className="grid md:grid-cols-4 gap-6 mb-6">
-				<div className="bg-white rounded-xl shadow-md p-6">
-					<p className="text-gray-600 text-sm mb-2">Average Rating</p>
+			{/* Stats Cards */}
+			<div className="grid md:grid-cols-4 gap-6 mb-6">
+				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6">
+					<p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Average Rating</p>
 					<div className="flex items-center space-x-2">
-					<p className="text-3xl font-bold text-gray-900">{String(averageRating)}</p>
-					<div className="flex space-x-1">
-						{[...Array(5)].map((_, i) => (
-						<Star
-							key={i}
-							className={`w-4 h-4 ${i < Math.round(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-						/>
-						))}
-					</div>
-					</div>
-				</div>
-
-				<div className="bg-white rounded-xl shadow-md p-6">
-					<p className="text-gray-600 text-sm mb-2">Total Feedback</p>
-					<p className="text-3xl font-bold text-gray-900">{totalFeedbacks}</p>
-					<p className="text-xs text-gray-500 mt-1">From completed sessions</p>
-				</div>
-
-				<div className="bg-white rounded-xl shadow-md p-6">
-					<p className="text-gray-600 text-sm mb-2">Would Recommend</p>
-					<div className="flex items-center space-x-2">
-					<p className="text-3xl font-bold text-green-600">{recommendationRate}%</p>
-					<ThumbsUp className="w-5 h-5 text-green-600" />
-					</div>
-				</div>
-
-				<div className="bg-white rounded-xl shadow-md p-6">
-					<p className="text-gray-600 text-sm mb-2">Found Helpful</p>
-					<div className="flex items-center space-x-2">
-					<p className="text-3xl font-bold text-blue-600">{helpfulRate}%</p>
-					<TrendingUp className="w-5 h-5 text-blue-600" />
-					</div>
-				</div>
-				</div>
-
-				{/* Filters and Search */}
-				<div className="bg-white rounded-xl shadow-md p-6 mb-6">
-				<div className="grid md:grid-cols-3 gap-4">
-					<div className="relative">
-					<Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-					<input
-						type="text"
-						placeholder="Search by student name or feedback content..."
-						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
-						className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-					/>
-					</div>
-
-					<div className="relative">
-					<Filter className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-					<select
-						value={filterRating}
-						onChange={(e) => setFilterRating(e.target.value)}
-						className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none"
-					>
-						<option value="all">All Ratings</option>
-						<option value="5">5 Stars</option>
-						<option value="4">4 Stars</option>
-						<option value="3">3 Stars</option>
-						<option value="2">2 Stars</option>
-						<option value="1">1 Star</option>
-					</select>
-					</div>
-
-					<div className="relative">
-					<Calendar className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-					<select
-						value={filterMonth}
-						onChange={(e) => setFilterMonth(e.target.value)}
-						className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent appearance-none"
-					>
-						<option value="all">All Time</option>
-						<option value="current">Current Month</option>
-						<option value="last3">Last 3 Months</option>
-					</select>
-					</div>
-				</div>
-				</div>
-
-				{/* Feedback List */}
-				<div className="space-y-4">
-				{filteredFeedbacks.length > 0 ? (
-					filteredFeedbacks.map((feedback) => (
-					<div key={feedback.id} className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
-						<div className="flex items-start justify-between mb-4">
-						<div className="flex items-start space-x-4 flex-1">
-							<img
-							src={feedback.studentAvatar}
-							alt={feedback.studentName}
-							className="w-12 h-12 rounded-full object-cover"
-							/>
-							<div className="flex-1 min-w-0">
-							<div className="flex items-center space-x-2 mb-1">
-								<h3 className="font-bold text-gray-900">
-								{feedback.anonymity ? 'Anonymous Student' : feedback.studentName}
-								</h3>
-								{feedback.anonymity && (
-								<span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full font-semibold">
-									Anonymous
-								</span>
-								)}
-							</div>
-							<p className="text-sm text-gray-600 mb-1">
-								{feedback.anonymity ? 'Admission: Hidden' : `Admission: ${feedback.studentAdmissionNum}`}
-							</p>
-							<p className="text-xs text-gray-500">
-								Session: {feedback.sessionType} • {feedback.sessionDate}
-							</p>
-							</div>
-						</div>
-
-						<div className="flex items-center space-x-2">
-							<div className={`flex items-center space-x-1 px-3 py-1 rounded-full ${getRatingBgColor(feedback.rating)}`}>
+						<p className="text-3xl font-bold text-gray-900 dark:text-white">{String(averageRating)}</p>
+						<div className="flex space-x-1">
 							{[...Array(5)].map((_, i) => (
 								<Star
-								key={i}
-								className={`w-4 h-4 ${i < feedback.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+									key={i}
+									className={`w-4 h-4 ${i < Math.round(averageRating) ? 'fill-yellow-400 text-yellow-400 dark:fill-yellow-500 dark:text-yellow-500' : 'text-gray-300 dark:text-gray-600'}`}
 								/>
 							))}
-							<span className="ml-1 font-bold text-gray-900">{feedback.rating}</span>
-							</div>
 						</div>
-						</div>
-
-						{/* Feedback Message Preview */}
-						<p className="text-gray-700 mb-4 line-clamp-2">
-						"{feedback.feedbackMessage}"
-						</p>
-
-						{/* Quick Indicators */}
-						<div className="flex items-center space-x-4 mb-4 pb-4 border-b border-gray-200">
-						<div className="flex items-center space-x-1 text-sm">
-							{feedback.sessionHelpful === 'yes' ? (
-							<span className="text-green-700 font-semibold flex items-center space-x-1">
-								<ThumbsUp className="w-4 h-4" />
-								<span>Found Helpful</span>
-							</span>
-							) : feedback.sessionHelpful === 'maybe' ? (
-							<span className="text-yellow-700 font-semibold">Somewhat Helpful</span>
-							) : (
-							<span className="text-red-700 font-semibold">Not Helpful</span>
-							)}
-						</div>
-						<div className="text-xs text-gray-500">
-							{feedback.wouldRecommend === 'yes' 
-							? 'Would recommend' 
-							: feedback.wouldRecommend === 'maybe'
-							? 'Maybe would recommend'
-							: 'Would not recommend'}
-						</div>
-						<div className="text-xs text-gray-500">
-							Submitted: {feedback.submittedDate}
-						</div>
-						</div>
-
-						<button
-						onClick={() => handleViewFeedback(feedback)}
-						className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
-						>
-						View Full Feedback
-						</button>
 					</div>
-					))
-				) : (
-					<div className="bg-white rounded-xl shadow-md p-12 text-center">
-					<MessageSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-					<p className="text-gray-600 text-lg">No feedback found</p>
-					<p className="text-gray-500 text-sm">Try adjusting your search or filters</p>
+				</div>
+
+				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6">
+					<p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Total Feedback</p>
+					<p className="text-3xl font-bold text-gray-900 dark:text-white">{totalFeedbacks}</p>
+					<p className="text-xs text-gray-500 dark:text-gray-500 mt-1">From completed sessions</p>
+				</div>
+
+				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6">
+					<p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Would Recommend</p>
+					<div className="flex items-center space-x-2">
+						<p className="text-3xl font-bold text-green-600 dark:text-green-500">{recommendationRate}%</p>
+						<ThumbsUp className="w-5 h-5 text-green-600 dark:text-green-500" />
 					</div>
-				)}
+				</div>
+
+				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6">
+					<p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Found Helpful</p>
+					<div className="flex items-center space-x-2">
+						<p className="text-3xl font-bold text-blue-600 dark:text-blue-500">{helpfulRate}%</p>
+						<TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-500" />
+					</div>
 				</div>
 			</div>
+
+			{/* Filters and Search */}
+			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6 mb-6">
+				<div className="grid md:grid-cols-3 gap-4">
+					<div className="relative">
+						<Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+						<input
+							type="text"
+							placeholder="Search by student name or feedback content..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent"
+						/>
+					</div>
+
+					<div className="relative">
+						<Filter className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+						<select
+							value={filterRating}
+							onChange={(e) => setFilterRating(e.target.value)}
+							className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent appearance-none"
+						>
+							<option value="all">All Ratings</option>
+							<option value="5">5 Stars</option>
+							<option value="4">4 Stars</option>
+							<option value="3">3 Stars</option>
+							<option value="2">2 Stars</option>
+							<option value="1">1 Star</option>
+						</select>
+					</div>
+
+					<div className="relative">
+						<Calendar className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+						<select
+							value={filterMonth}
+							onChange={(e) => setFilterMonth(e.target.value)}
+							className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent appearance-none"
+						>
+							<option value="all">All Time</option>
+							<option value="current">Current Month</option>
+							<option value="last3">Last 3 Months</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			{/* Feedback List */}
+			<div className="space-y-4 ">
+				{
+					myCustomFeedBack.length > 0 ?
+					(
+						myCustomFeedBack.map((feedBackItem)=>
+							<div key={feedBackItem._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6 hover:shadow-lg dark:hover:shadow-xl transition-shadow duration-300">
+								{/* Header Section - Anonymity & Rating */}
+								<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+									{/* Anonymity Badge */}
+									<div className="flex items-center gap-2">
+										{feedBackItem.anonymity ? (
+											<div className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">
+												<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+												</svg>
+												<span className="text-sm font-semibold">Anonymous</span>
+											</div>
+										) : (
+											<div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full">
+												<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+												</svg>
+												<span className="text-sm font-semibold">Verified</span>
+											</div>
+										)}
+									</div>
+
+									{/* Star Rating */}
+									<div className="flex items-center gap-1">
+										{[1, 2, 3, 4, 5].map((star) => (
+											<svg
+												key={star}
+												className={`w-5 h-5 sm:w-6 sm:h-6 ${
+													star <= feedBackItem.rating
+														? 'text-yellow-400 dark:text-yellow-500 fill-current'
+														: 'text-gray-300 dark:text-gray-600'
+												}`}
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+												/>
+											</svg>
+										))}
+										<span className="ml-2 text-sm font-semibold text-gray-600 dark:text-gray-400">
+											{feedBackItem.rating}/5
+										</span>
+									</div>
+								</div>
+
+								{/* Feedback Message */}
+								<div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+									<p className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
+										{feedBackItem.feedbackMessage}
+									</p>
+								</div>
+							</div>
+						)
+					)
+					:
+					(
+						<div className="bg-white rounded-xl shadow-md p-12 text-center">
+							<MessageSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+							<p className="text-gray-600 text-lg">No feedback found</p>
+							<p className="text-gray-500 text-sm">Try adjusting your search or filters</p>
+						</div>
+					)
+				}
+			</div>
+		</div>
 
 			{/* Feedback Details Modal */}
 			{showFeedbackDetails && selectedFeedback && (
