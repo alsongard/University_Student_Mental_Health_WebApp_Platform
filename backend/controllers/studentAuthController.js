@@ -365,7 +365,7 @@ const UpdatePassword = async (req, res)=>
 {
     console.log('entering Update Password');
     const id= req.userId;  // this will be acquired from token
-
+    // console.log(`this is usedId from updatePass: ${id}`);
     const { currentPassword, password} = req.body;
     if (!currentPassword || !password)
     {
@@ -375,6 +375,7 @@ const UpdatePassword = async (req, res)=>
     try
     {
         const foundStudent = await Student.findById({_id:id});
+        console.log(foundStudent);
         if (!foundStudent)
         {
             return res.status(404).json({success:false, msg:`No user found with the id: ${id}`});

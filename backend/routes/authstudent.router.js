@@ -292,7 +292,7 @@ authRouter.post("/getOTP",  getOTPUser);
  *                   type: string
  *                   description: Message with the error.
  */
-authRouter.put("/studentChangePassword", UpdatePassword);
+authRouter.put("/studentChangePassword", getAuthenticated, UpdatePassword);
 
 /**
  * @swagger
