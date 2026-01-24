@@ -65,13 +65,13 @@ export default function PsychiatristSessionsManagement(props:any)
 	};
 
 	const [successMessage, setSuccessMessage] = useState(false);
-	const [errorMessage, setErroorMessage] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 	const handleCreate = async (e) => {
 		e.preventDefault();
 		try
 		{
 			// const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/createSession", {
-			const response = await axios.post(`$PapiURL}/api/psychiatristSession/createSession`, {
+			const response = await axios.post(`${apiURL}/api/psychiatristSession/createSession`, {
 				date:formData.date,
 				startTime: formData.startTime,
 				endTime:formData.endTime,
@@ -89,7 +89,7 @@ export default function PsychiatristSessionsManagement(props:any)
 					setSuccessMessage(false)
 					resetForm();
 					setView('list');
-				}, 6000)
+				}, 4000)
 
 			}
 		}
@@ -98,8 +98,11 @@ export default function PsychiatristSessionsManagement(props:any)
 			console.log(`Error: ${err}`);
 			if (err.data.response.msg)
 			{
-				setErroorMessage(err);
+				setErrorMessage(err.data.response.msg);
 			}
+			setTimeout(()=>{
+				setErrorMessage('');
+			}, 4000)
 		}
 	};
 
@@ -119,15 +122,57 @@ export default function PsychiatristSessionsManagement(props:any)
 		setView('edit');
 	};
 
-	const handleUpdate = (e) => {
-		e.preventDefault();
-		setSessions(sessions.map(s => 
-			s.id === selectedSession.id 
-				? { ...s, ...formData }
-				: s
-		));
-		setView('list');
-		resetForm();
+	const [updateSuccess, setUpdateSuccess] = useState("");
+	const handleUpdate = async (event) => {
+		event.preventDefault();
+		console.log("formData");
+		// console.log(formData);
+		console.log('selected session Id');
+		// console.log(selectedSession._id);
+		try
+		{
+			const response = await axios.put(`${apiURL}/api/psychiatristSession/updateSession/${selectedSession._id}`, {
+				date:formData.date,
+				startTime: formData.startTime,
+				endTime:formData.endTime,
+				sessionType:formData.type,
+				sessionMode:formData.mode,
+				sessionDuration: formData.duration,
+				sessionStatus: formData.status,
+				maxBookings: formData.maxBookings,
+				description: formData.sessionDescription
+				}, {withCredentials:true});
+
+			
+			console.log("response");
+			// console.log(response.data);
+			if (response.data.success)
+			{
+				setUpdateSuccess("Session Updated Successfully");
+				setTimeout(()=>{
+					setUpdateSuccess("");
+					setView('list');
+					resetForm();
+				},4000)
+			}
+		}
+		catch(err)
+		{
+			console.log(`Error: ${err}`);
+			if (err.response.data.msg)
+			{
+				setErrorMessage(err.response.data.msg);
+			};
+			setTimeout(()=>{
+				setErrorMessage('');
+			}, 4000)
+		}
+		// setSessions(sessions.map(s => 
+		// 	s.id === selectedSession.id 
+		// 		? { ...s, ...formData }
+		// 		: s
+		// ));
+	
 	};
 
 	const handleDelete = async (id:String) => {
@@ -137,7 +182,7 @@ export default function PsychiatristSessionsManagement(props:any)
 			if (confirmResult) // true
 			{
 				// const response = await axios.delete(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
-				const response = await axios.delete(`${apiURL}:5000/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
+				const response = await axios.delete(`${apiURL}/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
 				console.log(`response`);
 				console.log(response);
 				if (response.data.success)
