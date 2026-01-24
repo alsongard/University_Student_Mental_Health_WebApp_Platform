@@ -145,7 +145,7 @@ export default function MessagingComponent(props:any)
                 text: messageInput,
                 image: "",
                 timestamp: new Date().toJSON(),
-                status: "sent"
+                status: "sending"
             };
             
             // const updatedChat = {
@@ -171,18 +171,17 @@ export default function MessagingComponent(props:any)
 
             if (socketRef.current)
             {
-                // console.log('=== CLIENT: Before emit ===');
+                console.log('=== CLIENT: Before emit ===');
                 // console.log('Socket exists:', !!socketRef);
                 // console.log('socketRef connected:', socketRef.current.connected);
                 // console.log('socketRef ID:', socketRef.current.id);
-                socketRef.current.emit("sendMessage", newMessage, (response)=>{
-                    setMessageInput('');
-                    // console.log("argument from backend");
-                    if(response.status == "ok")
-                    {
-                        console.log('Message sent successfully');
-                    }
-                })
+                socketRef.current.emit("sendMessage", newMessage);
+                console.log('message has been sent');
+                setMessageInput("");
+                // if(response.status == "ok")
+                // {
+                //     console.log('Message sent successfully');
+                // }
             }
             else 
             {
@@ -194,14 +193,13 @@ export default function MessagingComponent(props:any)
 
     // Listener on event:
     useEffect(()=>{
-        if (!socketRef.current) return;
 
         if (socketRef.current)
         {
             socketRef.current.on("newMessage", (myNewMessage)=>{
                 // append message to chats displayed
-                // console.log('newMessage on someData below')
-                // console.log(myNewMessage);
+                console.log('newMessage on someData below')
+                console.log(myNewMessage);
                 setChatMessages((prevData)=>
                     prevData.map((message)=>{
                         return message.tempId == myNewMessage.tempId ? {...myNewMessage} : message
@@ -213,7 +211,8 @@ export default function MessagingComponent(props:any)
             socketRef.current.off("newMessage")
         }
 
-    },[])
+    },[]);
+
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -264,12 +263,19 @@ export default function MessagingComponent(props:any)
                 <div className="flex-1 overflow-y-auto">
                     <div className='flex border-b border-gray-200 dark:border-gray-700 flex-row space-x-5 px-2 py-2'>
                         <button 
-                            className="bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 w-full p-[10px] rounded-md transition"
-                            onClick={()=>{console.log("set mychats state"); setViewChats(prevValue=> !prevValue); setViewContacts(false);}}>
+                            className={`bg-gray-300 ${viewChats == true ? "dark:bg-green-700": "dark:bg-gray-700"}  hover:bg-gray-400 dark:hover:bg-gray-600 w-full p-[10px] rounded-md transition`}
+                            onClick={()=>{console.log("set mychats state"); setViewChats(prevValue=> {
+                                if (prevValue == true)
+                                {
+                                    console.log(`prevValue: ${prevValue}`);
+                                    return;
+                                }
+                                return !prevValue;
+                            }); setViewContacts(false);}}>
                             <h1 className="text-gray-900 dark:text-white font-medium">MyChats</h1>
                         </button>
                         <button
-                            className="bg-gray-400 dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-500 w-full p-[10px] rounded-md transition" 
+                            className={`bg-gray-400 ${viewContacts == true ? "dark:bg-green-700" : "dark:bg-gray-700"} dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-500 w-full p-[10px] rounded-md transition`} 
                             onClick={()=>{console.log("set contacts state"); setViewContacts(prevValue=> !prevValue); setViewChats(false);}}>
                             <p className="text-gray-900 dark:text-white font-medium">Contacts</p>
                         </button>
@@ -439,8 +445,8 @@ export default function MessagingComponent(props:any)
                                             <span className={`text-xs text-gray-500 dark:text-gray-400`}>{new Date(message.updatedAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false})}</span>
                                             {message.senderRole === myRole && (
                                             <span>
-                                                {message.status === 'sent' && <Check className="w-3 h-3 text-gray-500 dark:text-gray-400" />}
-                                                {message.status === 'delivered' && <CheckCheck className="w-3 h-3 text-gray-500 dark:text-gray-400" />}
+                                                {message.status === 'sent' && <CheckCheck className="w-3 h-3 text-gray-500 dark:text-gray-400" />}
+                                                {message.status === 'sending' && <CheckCheck className="w-3 h-3 text-gray-500 dark:text-gray-400" />}
                                                 {message.status === 'read' && <CheckCheck className="w-3 h-3 text-blue-600 dark:text-blue-400" />}
                                             </span>
                                             )}
