@@ -248,6 +248,10 @@ export default function AuthForms(props:any)
                 console.log(err.response.data.msg);
                 setPsychErrorMsg("An error occurred during login. Please try again later.");
             }
+
+            setTimeout(()=>{
+                setPsychErrorMsg("")
+            }, 4000);
         }
         // console.log('Psychiatrist Login Data:', psychiatristLoginData);
         // alert('Psychiatrist Login Submitted!\nCheck console for data.');
