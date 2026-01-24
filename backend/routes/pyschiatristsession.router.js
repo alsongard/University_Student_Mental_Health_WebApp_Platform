@@ -7,7 +7,7 @@ const {UpdateSession, DeleteSession, createSession, ViewPsychFeedBack ,ViewPsych
 
 
 pyschiatristSessionRouter.post("/createSession", getAuthenticated, createSession);
-pyschiatristSessionRouter.put("/updateSession/:sessionId", UpdateSession);
+pyschiatristSessionRouter.put("/updateSession/:sessionId", getAuthenticated, UpdateSession);
 pyschiatristSessionRouter.get("/viewSession", getAuthenticated, ViewPsychiatristSession);
 pyschiatristSessionRouter.delete("/deleteSession/:sessionId",getAuthenticated, DeleteSession);
 pyschiatristSessionRouter.get("/getPsychFeedback",getAuthenticated,ViewPsychFeedBack);
@@ -16,3 +16,4 @@ pyschiatristSessionRouter.get("/getPsychFeedback",getAuthenticated,ViewPsychFeed
 
 
 module.exports = pyschiatristSessionRouter;
+
