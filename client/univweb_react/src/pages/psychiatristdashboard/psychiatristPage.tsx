@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 
 export default function PsychiatristDashboard()
 {
-	const apiURL = import.meta.env.API_URL;	
+	const apiURL = import.meta.env.VITE_API_URL;	
 	const email = useSelector((state)=>{return state.myAuthSlicer.email});
 	const role = useSelector((state)=>{return state.myAuthSlicer.role});
 	// console.log('PsychiatristDashboard Email from Redux Store: ', email); // TESTING:WORKING
@@ -42,10 +42,10 @@ export default function PsychiatristDashboard()
 			if (response.data.success)
 			{
 				setmyBookedSessions(response.data.data);
-				setTimeout(() => {
-					// console.log('Booked Sessions for Psychiatrist: ');
-					// console.log(myBookedSessions);
-				}, 1000);
+				// setTimeout(() => {
+				// 	// console.log('Booked Sessions for Psychiatrist: ');
+				// 	// console.log(myBookedSessions);
+				// }, 1000);
 				// console.log('Booked Sessions for Psychiatrist: ');
 				// console.log(response.data.data);
 			}
@@ -197,7 +197,7 @@ export default function PsychiatristDashboard()
 					{activeView === "overview" && renderOverView()}
 					{activeView === "sessions" && <PsychiatristSessionsManagement refreshView={refreshFlag}/>}
 					{activeView === "bookedSessions" && <PsychiatristBookedSessions refreshView={refreshFlag}/>}
-					{activeView === "feedback" && <PsychiatristFeedback/>}
+					{activeView === "feedback" && <PsychiatristFeedback refreshView={refreshFlag}/>}
 					{activeView === "messages" && <MessagingComponent refreshView={refreshFlag}/>}
 					{activeView === "profile" && <PsychiatristProfile refreshView={refreshFlag}/>}
 				</div>
