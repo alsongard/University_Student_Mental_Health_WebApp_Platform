@@ -50,7 +50,7 @@ export default function Header(props:any)
 	// {/* <header className="bg-white bg-gradient-to-r from-white to-white shadow-sm sticky top-0 z-50 dark:bg-gradient-to-r dark:from-gray-800 dark:to-gray-900 dark:shadow-gray-700/50"> */}
     return (
 	// {/* Header */}
-		<div>
+		
 			<header className="bg-white shadow-sm sticky top-0 z-50 dark:bg-gray-900 dark:shadow-gray-700/50">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
 					<div className="flex items-center space-x-2">
@@ -147,6 +147,6 @@ export default function Header(props:any)
 					</nav>
 				</div>
 			</header>  
-		</div>
+		
     )
 }
