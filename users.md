@@ -1667,7 +1667,7 @@ foundFeedBacks
 Gother#109
 uniqueuser4u@gmail.com
 bcs-05-0123/2332
-Gother#109
+Gother#110
 
 
 res.cookie("namemOfCookie", valueCokkkie, {
@@ -1706,3 +1706,98 @@ res.cookie("namemOfCookie", valueCokkkie, {
   },
   "__v": 0
 }
+```
+
+
+**ORIGINAL SESSION**
+
+{filteredFeedbacks.length > 0 ? (
+	filteredFeedbacks.map((feedback) => (
+	<div key={feedback.id} className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+		<div className="flex items-start justify-between mb-4">
+		<div className="flex items-start space-x-4 flex-1">
+			{/* <img
+			// src={feedback.studentAvatar}
+			// alt={feedback.studentName}
+			className="w-12 h-12 rounded-full object-cover"
+			/> */}
+			<div className="flex-1 min-w-0">
+			<div className="flex items-center space-x-2 mb-1">
+				<h3 className="font-bold text-gray-900">
+				{feedback.anonymity ? 'Anonymous Student' : feedback.studentName}
+				</h3>
+				{feedback.anonymity && (
+				<span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full font-semibold">
+					Anonymous
+				</span>
+				)}
+			</div>
+			<p className="text-sm text-gray-600 mb-1">
+				{feedback.anonymity ? 'Admission: Hidden' : `Admission: ${feedback.studentAdmissionNum}`}
+			</p>
+			<p className="text-xs text-gray-500">
+				Session: {feedback.sessionType} • {feedback.sessionDate}
+			</p>
+			</div>
+		</div>
+
+		<div className="flex items-center space-x-2">
+			<div className={`flex items-center space-x-1 px-3 py-1 rounded-full ${getRatingBgColor(feedback.rating)}`}>
+			{[...Array(5)].map((_, i) => (
+				<Star
+				key={i}
+				className={`w-4 h-4 ${i < feedback.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+				/>
+			))}
+			<span className="ml-1 font-bold text-gray-900">{feedback.rating}</span>
+			</div>
+		</div>
+		</div>
+
+		{/* Feedback Message Preview */}
+		<p className="text-gray-700 mb-4 line-clamp-2">
+		"{feedback.feedbackMessage}"
+		</p>
+
+		{/* Quick Indicators */}
+		<div className="flex items-center space-x-4 mb-4 pb-4 border-b border-gray-200">
+		<div className="flex items-center space-x-1 text-sm">
+			{feedback.sessionHelpful === 'yes' ? (
+			<span className="text-green-700 font-semibold flex items-center space-x-1">
+				<ThumbsUp className="w-4 h-4" />
+				<span>Found Helpful</span>
+			</span>
+			) : feedback.sessionHelpful === 'maybe' ? (
+			<span className="text-yellow-700 font-semibold">Somewhat Helpful</span>
+			) : (
+			<span className="text-red-700 font-semibold">Not Helpful</span>
+			)}
+		</div>
+		<div className="text-xs text-gray-500">
+			{feedback.wouldRecommend === 'yes' 
+			? 'Would recommend' 
+			: feedback.wouldRecommend === 'maybe'
+			? 'Maybe would recommend'
+			: 'Would not recommend'}
+		</div>
+		<div className="text-xs text-gray-500">
+			Submitted: {feedback.submittedDate}
+		</div>
+		</div>
+
+		<button
+		onClick={() => handleViewFeedback(feedback)}
+		className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+		>
+		View Full Feedback
+		</button>
+	</div>
+	))
+) : (
+	<div className="bg-white rounded-xl shadow-md p-12 text-center">
+	<MessageSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+	<p className="text-gray-600 text-lg">No feedback found</p>
+	<p className="text-gray-500 text-sm">Try adjusting your search or filters</p>
+	</div>
+)}
+
