@@ -59,7 +59,14 @@ export default function App()
 
 	
 	useEffect(()=>{
-		CheckSession();
+		const currentPath = window.location.pathname;
+		const runCheckSessions = ['studentdashboard', 'psychiatristdashboard', 'studentdetails', 'psychiatristdetails'];
+		const  publicPages = ["/", "about", "services", "contact", "login/student", "login/psychiatrist"]
+		console.log(`currentPath: ${currentPath}`);
+		if (runCheckSessions.includes("currentPath"))
+		{
+			CheckSession();
+		}
 	}, [dispatch]);
 
 	
