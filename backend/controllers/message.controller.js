@@ -10,9 +10,8 @@ const sendMessage = async (data, socket)=>{
     const senderId = socket.userId;
     const userRole = socket.role;
 
-    let senderDetails;
-    let receiverDetails;
-
+    let senderDetails; // variables are used to details for the sender
+    let receiverDetails; // variables are used to details for the receiver
     console.log(`role: ${userRole}`);
     const message = data.text;
     const image = data.image;
@@ -28,12 +27,14 @@ const sendMessage = async (data, socket)=>{
             //     status: "False", 
             //     msg: "No message to send"
             // });
+            return;
         }
         // Double Check For Ids
         if (!senderId || !receiverId)
         {
             console.log("No sender or receiver Id");
             console.log(`senderId: ${senderId}, receiverId: ${receiverId}`);
+            return;
             // callback({
             //     status: "False", 
             //     msg: "No sender or receiver Id"
@@ -43,6 +44,7 @@ const sendMessage = async (data, socket)=>{
         {
             console.log("Sender and Receiver cannot be the same");
             console.log(`senderId == receiverId : ${senderId == receiverId}`);
+            return;
             // callback({
             //     status: "False", 
             //     msg: "Sender and Receiver cannot be the same"
@@ -94,6 +96,8 @@ const sendMessage = async (data, socket)=>{
         {
             console.log("Cannot create Message - missing details");
         }
+        
+
         const newMessage = await Message.create({
             senderId: senderId,
             senderName:userRole == "student" ? senderDetails.studentName : senderDetails.fullName,
@@ -227,7 +231,7 @@ const getAllPsychiatrist = async (req, res)=>
 {
     try
     {
-        const foundPsychatriast = await  PsychiatristDetails.find().select("fullName specilization");
+        const foundPsychatriast = await  PsychiatristDetails.find().select("fullName specilization psychiatristId");
         if (!foundPsychatriast)
         {
             return res.status(200).json({success:true, msg:"No Psychiatrist found"});
