@@ -91,15 +91,19 @@ pnpm dev                   # Start React dev server (http://localhost:5173)
 4. Socket.IO connections authenticated via same tokens
 ```
 
-### Key Endpoints
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| POST | `/api/auth/register` | Student registration with OTP | Public |
-| POST | `/api/auth/login` | User login | Public |
-| GET | `/api/sessions/available` | Browse available sessions | Student |
-| POST | `/api/sessions/book` | Book a session | Student |
-| POST | `/api/messages` | Send message | Authenticated |
-| GET | `/api/profile` | Get user profile | Authenticated |
+### API Endpoints
+
+| Base Route | Description | Main Endpoints |
+|------------|-------------|----------------|
+| `/api/student` | Authentication & user management | `POST /studentCreate`, `POST /studentLogin`, `POST /getOTP`, `PUT /studentChangePassword`, `POST /resendOTP` |
+| `/api/psychiatrist` | Authentication &  Psychiatrist Management | `POST /createPsychatriast`, `POST psychiatristLogin`, `POST /getOtp`, `PUT /updatePsychiatristPassword`  |
+| `/api/psychiatristSession` |  Session management for counsellors | `POST /createSession`, `GET /viewSession`, `PUT /updateSession/:sessionId`, `DELETE /deleteSession/:sessionId`, `GET /getPsychFeedback` |
+| `/api/studentDetails` | student details management | `POST /createBooking`, `GET /psychiatristViewBooked`, `GET /getStudentBookedSessions`, `DELETE /deleteBooking/:bookingId` |
+| `/api/psychiatrist` | Counselor operations | `GET /sessions`, `POST /sessions`, `GET /appointments` |
+| ``/api/feedback`` | Feedback management | ``POST /createFeedback``, ``POST /getStudentFeedback`` |
+| ``/api/psychiatristDetails`` | Psychiatrist details management |``POST /createPsychDetails``,`` GET /getPsychiatristDetails``, `` PUT /updatePsychiatristDetails``|
+| ``/api/messages`` | Messaging operations | ``GET /retrievemessages/:id``, ``GET /retrieveUserChatPartners``, ``GET /getAllPsychiatrist``|
+| ``/api/studentSession`` | Student session management |  ``GET /getStudentFutureSessions``, ``GET /getStudentPastSessions``, ``GET /getAllSessions``|
 
 ---
 
