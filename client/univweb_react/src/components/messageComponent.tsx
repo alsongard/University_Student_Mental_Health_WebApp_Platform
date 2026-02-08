@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { Search, MoreVertical, Paperclip, Smile, Send, Phone, Video, Check, CheckCheck, Heart } from 'lucide-react';
 import {io, Socket} from "socket.io-client";
 import axios from 'axios';
+import type {AllContactChatSideBar} from "../types";
 
 import { useSelector } from 'react-redux';
 
@@ -10,10 +11,15 @@ export default function MessagingComponent(props:any)
     const  {refreshView} = props;
     const apiURL = import.meta.env.VITE_API_URL;
     const myRole =  useSelector((state)=>state.myAuthSlicer.role);
-    const [chatUsersList , setChatUsersList] = useState([]);
-    const [chatContacts, setChatContacts] = useState([]);
-    const [chatMessages, setChatMessages] = useState([]);
-    const [chatHeaderMain, setChatHeader] = useState("");
+    const [chatUsersList , setChatUsersList] = useState([]); // state for chatted Users
+    const [chatContacts, setChatContacts] = useState([]); // state for chatContacts sideba
+    const [chatMessages, setChatMessages] = useState([]); // messages
+    const [chatHeaderMain, setChatHeader] = useState<AllContactChatSideBar>({
+        _id: "",
+        psychiatristId: "",
+        fullName: "",
+        specilization: ""
+    });
     const [theRecieverId, setTheRecieverId] = useState<String>("");
 
     const getPsychiatristsContacts = useCallback( async () =>
@@ -36,7 +42,7 @@ export default function MessagingComponent(props:any)
         }
     }, [])
 
-    const getAllStudentsContacts = async () =>{}
+    // const getAllStudentsContacts = async () =>{} // NO NEED FOR THESE AS PSYCHIATRIST DOES NEED TO SEE CHAT PARTNERS
 
     const getUserChatPartnersSideBar =  useCallback(async () =>
     {
@@ -88,8 +94,6 @@ export default function MessagingComponent(props:any)
                 }
                 // console.log(response.data.data);
                 setChatMessages(response.data.data);
-
-
             }
 
         }
@@ -135,13 +139,18 @@ export default function MessagingComponent(props:any)
 
     const handleSendMessage = () => {
         console.log('sending message');
+        if (!theRecieverId)
+        {
+            console.log(`Error: message cannot be sent as no id is given!!`);
+            return;
+        }
         if (messageInput.trim()) 
         {
             // the above will always evaluate to true since string.trim() on any string that has space at the
             // beginning or end will be returned and even with no space 
             const newMessage = {
                 id: Date.now(), // This should be replaced with a unique ID from the backend
-                receiverId: theRecieverId, // receiverId is acquired from the chatBetweenUsers
+                receiverId: theRecieverId, // receiverId is acquired from the chatBetweenUsers || However if it's a new chat we do the following:
                 text: messageInput,
                 image: "",
                 timestamp: new Date().toJSON(),
@@ -229,6 +238,15 @@ export default function MessagingComponent(props:any)
                 
             })
         )
+    
+    const add2Chat = (contactItem:AllContactChatSideBar)=>{
+        console.log(`contactItem`);
+        console.log(contactItem);
+        setChatHeader(contactItem);
+        setTheRecieverId(contactItem.psychiatristId)
+        // getMessagesBetweenUsers(chat.psychiatristId || chat.studentId);
+        setSelectedChat(true)
+    }
 
     return (
         <div className="flex h-screen   ">
@@ -362,7 +380,9 @@ export default function MessagingComponent(props:any)
                                     :
                                     (
                                         chatContacts.map((contactItem)=>
-                                            <div key={contactItem._id} className="flex py-2 mb-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 flex-row items-start space-x-5 transition">
+                                            <div onClick={()=>{
+                                                add2Chat(contactItem);
+                                            }} key={contactItem._id} className="flex py-2 mb-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 flex-row items-start space-x-5 transition">
                                                 <div className="relative">
                                                     <img
                                                         src={contactItem.avatar ? contactItem.avatar : "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&h=150&fit=crop"}
@@ -379,7 +399,6 @@ export default function MessagingComponent(props:any)
                                             </div>
                                         )
                                     )
-           
                                 }
                             </div>
                         )
@@ -488,7 +507,7 @@ export default function MessagingComponent(props:any)
                                     onChange={(e) => setMessageInput(e.target.value)}
                                     onKeyDown={handleKeyPress}
                                     placeholder="Type a message..."
-                                    rows="1"
+                                    rows={1}
                                     className="w-full px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent resize-none"
                                     style={{ minHeight: '48px', maxHeight: '120px' }}
                                 />
