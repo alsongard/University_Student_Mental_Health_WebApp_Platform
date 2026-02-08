@@ -3,12 +3,13 @@ import axios from 'axios';
 import StudentSideBar from '../../components/studentSideBar';
 import { Heart, Home, Calendar, MessageSquare, FileText, Clock, ChevronLeft, ChevronRight, User, Bell, LogOut, Video, CheckCircle, AlertCircle, Plus, Search, Sidebar, Loader } from 'lucide-react';
 import StudentSessionComponent from '../../components/studentSessionComponent';
-import MessagingComponent from '../../components/studentMessageComponent';
+import MessagingComponent from '../../components/messageComponent';
 import StudentFeedBack from '../../components/studentFeedbackComponent';
 import StudentProfile from '../../components/studentProfileComponent';
 import {  useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type {RefreshViews} from "../../components/types";
+import type {RefreshViews} from "../../types";
+
 export default function StudentDashboard()
 {
     const apiURL = import.meta.env.VITE_API_URL;
@@ -29,7 +30,6 @@ export default function StudentDashboard()
     const checkStudentDetailsExist = useCallback(async()=>{
         try
         {
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/studentDetails/getStudentDetails`,{withCredentials:true});
             const response = await axios.get(`${apiURL}/api/studentDetails/getStudentDetails/`, {withCredentials:true});
             // console.log('checkStudentDetailsExist response.data.data');
             // console.log(response.data.data);
@@ -73,7 +73,6 @@ export default function StudentDashboard()
     const getAllSessions = useCallback(async()=>{
 		try
 		{
-			// const response = await axios.get("https://university-student-psychiatrist.onrender.com/api/studentSession/getAllSessions",
             const response = await axios.get(`${apiURL}/api/studentSession/getAllSessions`,
                 {withCredentials:true}
             );
@@ -93,7 +92,6 @@ export default function StudentDashboard()
     const GetStudentBookedSessions = useCallback(async ()=>{ // returns present,past, future
         try
         {
-            // const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             const response = await axios.get(`${apiURL}/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Search, Clock, Stethoscope, User, MoveRight, Calendar, Loader, View } from "lucide-react";
 import axios from "axios";
-import type { SingleSession, AllSessionData } from "./types";
+import type { SingleSession, AllSessionData } from "../types";
 import ViewStudentBookedInfo from "../components/viewStudentBookedInfo";
 
 export default function StudentSessionComponent(props:any)

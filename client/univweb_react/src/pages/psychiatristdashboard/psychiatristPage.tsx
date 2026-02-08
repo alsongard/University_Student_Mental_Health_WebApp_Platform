@@ -6,7 +6,7 @@ import PsychiatristSessionsManagement from '../../components/pyschiatristSession
 import PsychiatristFeedback from '../../components/psychiatristFeedbackComponent';
 import PsychiatristProfile from '../../components/psychiatristProfileComponent';
 import axios from 'axios';
-import MessagingComponent from '../../components/studentMessageComponent';
+import MessagingComponent from '../../components/messageComponent';
 import { useSelector } from 'react-redux';
 
 

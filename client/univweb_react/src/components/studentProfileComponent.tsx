@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Eye, Camera } from "lucide-react";
 import { current } from "@reduxjs/toolkit";
 import { Link } from "react-router-dom";
-import type { StudentProfile } from "./types";
+import type { StudentProfile } from "../types";
     // RENDERPROFILE
 export default function StudentProfile(props:any)
 {

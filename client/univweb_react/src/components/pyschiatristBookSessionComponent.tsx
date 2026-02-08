@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Calendar, Clock, BookCheck,  User, Phone, Video, MapPin, Search, Filter, CheckCircle, AlertCircle, X, MessageSquare, FileText } from 'lucide-react';
 import axios from 'axios';
-import type {PsychiatristBookedSession} from "./types"
+import type {PsychiatristBookedSession} from "../types"
 
 export default function PsychiatristBookedSessions(props:any) 
 {

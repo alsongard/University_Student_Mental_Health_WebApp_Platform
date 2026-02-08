@@ -4,7 +4,7 @@ import { Link , useNavigate} from 'react-router-dom';
 import {  useDispatch } from 'react-redux';
 import { isLoggedOut } from '../features/auth/authSlicer';
 import axios from 'axios';
-import type {RefreshViews} from "./types"
+import type {RefreshViews} from "../types"
 function StudentSideBar(props:any)
 {
     const apiURL = import.meta.env.VITE_API_URL;
