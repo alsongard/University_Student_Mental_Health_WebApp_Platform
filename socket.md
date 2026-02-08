@@ -98,7 +98,107 @@ But if we are using rooms (which is more scalable for group chats and easy to ma
 ``socket.emit()``: this is used to emit an event to a specific user
 
 ``socket.broadcast.emit()``: To everyone except the sender: implementation: on user logged in send this to others:
-
+i
 ``io.emit()``:Broadcast to all users including the sender:status online
 
 ``io.to(room).emit()``:  Send to all clients in a specific room/group
+
+
+Room
+a room is a server side chanell that client can join. One can then send messages using this specific room without broadcasting to everyone.[targeted_communication]
+
+
+# Socket 
+```js
+// server-side
+io.on("connection", (socket) => {
+  console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
+});
+
+// client-side
+socket.on("connect", () => {
+	console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
+});
+```
+
+**Using Rooms**
+User click on chat message for him/her (between users on chat sidebar):
+- launch:
+```js
+	socket.emit('join_chat',{roomId, userId})
+```
+The roomId can be created from a mixture of both the user A and user B (slice(0,5) + slice(0,5))
+backend:   
+```js
+	socket.on('join_chat', ({roomId, userId})=>{
+	socket.join(roomId);
+	socket.to(roomId).emit('user_joined', {userId})
+})
+```
+
+- Send Messages
+```js
+	socket.emit("sendMessage", {message,roomId})
+```
+
+backend:  
+```js
+socket.on('sendMessage', ({roomId, messagge})=>{
+    // using the room id we save the message to the database
+})
+```
+
+
+Question: i have the following on server:
+```
+const io = new Server(httpServer, {
+    cors: [...],
+    methods: [..]
+})
+```
+my thoughts: when the server starts this is run (why: because the code is setup in server.js file and scripts are: node server.js || nodemon server.js)
+
+
+Within the same file i have:
+```
+io.on('connection', (socket)=>{
+    socket.on('eventName', (dataReceived)=>{
+        //..perform sth
+    })
+})
+```
+
+does the above get run when i do : nodemon server.js or for on production to : node server.js
+
+Approach A: Emit login event via HTTP and then use Socket.IO to broadcast the status change.
+    * When the user logs in (HTTP), we can emit a socket event to update the status.
+    * But the socket connection might not be established at the exact moment of HTTP login.
+
+Approach B: Use Socket.IO connection event to set the user as online.
+    * When the socket connects, we have the user information (from the authentication of the socket).
+    * Then we can set the user as online and notify others.
+
+On this approach B will it depend on the startup code mentioned above (does ``io.on('connect')`` get run when the file is executed)
+
+When the user logs in (HTTP), we don't emit the online status. Instead, we wait for the socket connection.: Does this mean when we setup an event on the frontend: after login success we emit event to the backend: (my thoughts: seems a bit odd: why you may ask? Because if a setup an emit event on the frontend i have to add a listener to the backend and then again emit an event to all users:) Instead i could just use the login controller on my backend after a student or psychiatrist is logged in the event emmited: (note: there are 2 auth files for the student and psychiatrist: each one handling the given user: one for student and the other for psychiatrist)
+
+
+
+
+So  i think just moving with a basic approach to see how it works for the time being that is:
+```
+app.set('io', io)
+```
+Then in the loginAuth controller emit the event (Question: since am already setting up  io on the server.js file does this mean it's always available)
+
+I have seen the issue with this logic:
+How is it i add a value to io for a only a given user for his/her online status to be updated
+
+e.g 
+io.emit(onlineStatus) ; // this goes to every body : but how do i set it that only the userA online status is displayed
+
+
+Do not write any code this is more of a brainstorming session
+
+Why you may wonder: i want to break up this login untill i understand it
+
