@@ -17,11 +17,11 @@ const jwt = require("jsonwebtoken");
 const cookie = require('cookie-parser');
 const app = express();
 const sendMessage = require("./controllers/message.controller").sendMessage;
-const httpServer = createServer(app);
 const multer = require('multer');
 const cloudinary = require("cloudinary").v2;
 const {specs} = require("./swagger");
 
+const httpServer = createServer(app);
 
 
 const corsOption = {
@@ -206,7 +206,7 @@ app.post("/api/logout", (req,res)=>{
 
 const io  = new Server(httpServer, {
     cors: ["http://localhost:5173", "https://university-student-psychiatrist-web.vercel.app"],
-    methods: ["POST", "GET", "DELETE", "PUT"]
+    methods: ["POST", "GET", "DELETE", "PUT", 'OPTIONS']
 });
 
 
