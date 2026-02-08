@@ -33,40 +33,45 @@ export default function App()
 	// the below is a ADANCED SOLUTION TO REDUX PERSISTENCE
 
 	// NOT IN USE FOR THE MOMENT
-	async function CheckSession()
-	{
-		console.log('Running getVerifiedSession')
-		try
-		{
-			// const response = await axios.get("http://localhost:5000/api/auth/me", {withCredentials:true})
-			const response = await axios.get(`${apiUrl}/api/auth/me`, {withCredentials:true})
-			if (response.status === 200)
-			{
-				// console.log('User is authenticated');
-				// console.log(response.data.data);
-				const {email, role} = response.data.data;
-				const myPayload  = { role, email};
-				dispatch(isLoggedIn(myPayload));
-			}
-
-		}
-		catch(err)
-		{
-			console.log(`Error: ${err}`);
-			dispatch(isLoggedOut());
-		}
-	};
+	
 
 	
 	useEffect(()=>{
-		const currentPath = window.location.pathname;
-		const runCheckSessions = ['studentdashboard', 'psychiatristdashboard', 'studentdetails', 'psychiatristdetails'];
-		const  publicPages = ["/", "about", "services", "contact", "login/student", "login/psychiatrist"]
-		console.log(`currentPath: ${currentPath}`);
-		if (runCheckSessions.includes("currentPath"))
+		async function CheckSession()
 		{
-			CheckSession();
-		}
+			console.log('Running getVerifiedSession')
+			try
+			{
+				// const response = await axios.get("http://localhost:5000/api/auth/me", {withCredentials:true})
+				const response = await axios.get(`${apiUrl}/api/auth/me`, {withCredentials:true})
+				// console.log('response from api/auth/me');
+				// console.log(response.data.data);
+				if (response.data.success)
+				{
+					// console.log('User is authenticated');
+					// console.log(response.data.data);
+					const {email, role} = response.data.data;
+					const myPayload  = { role, email};
+					dispatch(isLoggedIn(myPayload));
+				}
+			}
+			catch(err)
+			{
+				if (err.response.data)
+				{
+					console.log(`Error: ${err}`);
+					dispatch(isLoggedOut());
+				}
+			}
+		};
+		const currentPath = window.location.pathname;
+		// const runCheckSessions = ['studentdashboard', 'psychiatristdashboard', 'studentdetails', 'psychiatristdetails']; // this was set to only allow checkSession to run on the given routes
+		// const  publicPages = ["/", "about", "services", "contact", "login/student", "login/psychiatrist"] // this was set to only allow checkSession to run on the given routes
+		// console.log(`currentPath: ${currentPath}`);
+		CheckSession();
+		// if (runCheckSessions.includes(currentPath))
+		// {
+		// }
 	}, [dispatch]);
 
 	

@@ -6,7 +6,8 @@ export const authenticationSlicer = createSlice({
     initialState: {
         role: null,
         email:null,
-        isAuthenticated:false
+        isAuthenticated:false,
+        hasCheckedSession: false // this will be used for allowing requireAuth to run
     },
     reducers: {
         isLoggedIn: (state, action) =>{
@@ -15,6 +16,7 @@ export const authenticationSlicer = createSlice({
             state.role = action.payload.role;
             state.email = action.payload.email;
             state.isAuthenticated = true;
+            state.hasCheckedSession = true;
         },
         isLoggedOut: (state)=>{
             console.log(`Entering isLoggedOut`);
@@ -22,6 +24,10 @@ export const authenticationSlicer = createSlice({
             state.role = null;
             state.email = null;
             state.isAuthenticated = false;
+            state.hasCheckedSession = true
+        },
+        setCheckedSession: (state)=>{
+            console.log(`state.hasCheckedSession: ${state.hasCheckedSession}`);
         },
         getCurrentState: (state)=>{
             console.log('Get Current State');
