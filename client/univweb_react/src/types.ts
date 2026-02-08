@@ -124,3 +124,10 @@ export interface RefreshViews {
     feedback: number,
     profile: number  
 }
+
+export interface AllContactChatSideBar {
+    _id: string,
+    fullName: string,
+    psychiatristId: string,
+    specilization: string
+}
