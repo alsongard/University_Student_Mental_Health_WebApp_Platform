@@ -177,13 +177,10 @@ export default function AuthForms(props:any)
             if (err.response.data.msg === "Invalid credentials")
             {
                 setErrorMsg("Invalid credentials.");
-                setInterval(()=>{
-                    setErrorMsg('');
-                }, 15000);
             }
-            if (err.response.data.msg)
+            else 
             {
-                setErrorMsg(err.response.data.msg);
+                setErrorMsg('Internal server error');
             }
 
             setTimeout(()=>{
