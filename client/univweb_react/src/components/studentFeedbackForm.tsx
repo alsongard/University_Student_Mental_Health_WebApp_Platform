@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { User, Calendar, Clock, Video, MapPin, Phone, Shield, Heart, Star, AlertCircle, CheckCircle } from 'lucide-react';
 import axios from 'axios';
+interface PropType {
+    setFeedBack: (item:boolean)=>void
+}
 export default function StudentFeedbackForm(props)
 {
     const apiURL = import.meta.env.VITE_API_URL;
