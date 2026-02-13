@@ -13,6 +13,7 @@ import type {RefreshViews} from "../../types";
 export default function StudentDashboard()
 {
     const apiURL = import.meta.env.VITE_API_URL;
+    const [calenderLoading, setCalenderLoading] = useState(true);
     const [refreshState, setRefreshState] = useState<RefreshViews>({
         overview: 0,
         sessions: 0,
@@ -31,10 +32,8 @@ export default function StudentDashboard()
         try
         {
             const response = await axios.get(`${apiURL}/api/studentDetails/getStudentDetails/`, {withCredentials:true});
-            // console.log('checkStudentDetailsExist response.data.data');
-            // console.log(response.data.data);
-            // console.log('response');
-            // console.log(response);
+
+            // console.log('checkStudentDetailsExist response.data.data'); // console.log(response.data.data); // console.log('response'); // console.log(response);
             if (!response.data.success)
             {
                 // Means no student details found
@@ -42,16 +41,10 @@ export default function StudentDashboard()
             }
             // success	false
             // msg	"Student details not found"
-
         }
         catch(err)
         {
-            // console.log(`Error: ${err}`);
-            // console.log('response.data.data')
-            // console.log(err.response.data.data);
-
-            console.log('response.status')
-            console.log(err.response.status);
+            // console.log(`Error: ${err}`); // console.log('response.data.data') // console.log(err.response.data.data); // console.log('response.status') // console.log(err.response.status);
             if (!err.response.data.success)
             {
                 if (err.response.status === 400)
@@ -66,11 +59,10 @@ export default function StudentDashboard()
 
 
     const [activeView, setActiveView] = useState('overview');
-    
-    
-    const [allSessions, setAllSessions] = useState([]);
 
-    const getAllSessions = useCallback(async()=>{
+    const [allSessions, setAllSessions] = useState([]);
+    let newSessions = [];
+    const getAllSessions = useCallback(async()=>{ // USED TO FETCH ALL PSYCHIATRIST SESSION FOR THE STUDENT
 		try
 		{
             const response = await axios.get(`${apiURL}/api/studentSession/getAllSessions`,
@@ -80,6 +72,13 @@ export default function StudentDashboard()
             if (response.data.success)
             {
                 setAllSessions(response.data.data);     
+                    // newSessions get the session that are from the current day to the future
+                newSessions = allSessions.filter((sessions)=>{
+                    const theDate = new Date(sessions.date.split("T")[0]);
+                    const today = new Date()
+                    return theDate >= today
+                });
+
             }
 		}
 		catch(err)
@@ -88,19 +87,30 @@ export default function StudentDashboard()
 		}
 	}, []);
 
-    const [studentBookedSessions, setStudentBookedSessions] = useState([]);
-    const GetStudentBookedSessions = useCallback(async ()=>{ // returns present,past, future
+    const [studentBookedSessions, setStudentBookedSessions] = useState([]); // state for getting the student booked sessions
+
+    let calenderSessions = [];
+    const GetStudentBookedSessions = useCallback(async ()=>{ //  GET THE STUDENT BOOKED SESSIONS
         try
         {
             const response = await axios.get(`${apiURL}/api/bookSession/getStudentBookedSessions/`, {withCredentials:true});
             if (response.data.success)
             {
-                if (response.data.msg === "You have no booked sessions")
-                {
-                    setStudentBookedSessions([]);
-                    return;
-                }
+                
                 setStudentBookedSessions(response.data.data);
+                calenderSessions = studentBookedSessions?.length > 0 && studentBookedSessions.filter((studentSession)=>{
+                    const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
+                    // console.log('theDate');
+                    // console.log(theDate);
+                    const today = new Date()
+                    if (theDate == today || theDate > today)
+                    {
+                        return studentSession
+                    }
+                    }).map((studentSession)=>{
+                            return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
+                    });
+                setCalenderLoading(false);  
             }
         }
         catch(err)
@@ -116,30 +126,10 @@ export default function StudentDashboard()
 
         // run studentbookedSessions:  retrieved all sessions for student and displays them calender if future
         GetStudentBookedSessions();
+
         const allSessionTimer = setTimeout(()=>{
             getAllSessions();   
         }, 5000);
-
-
-        // const calenderTimer = setTimeout(()=>
-        //     {
-        //         const calenderSessions = studentBookedSessions.length > 0 && studentBookedSessions.filter((studentSession)=>
-        //         {
-        //             const theDate = new Date(studentSession.sessionId.date);
-        //             // console.log('theDate');
-        //             // console.log(theDate);
-        //             const today = new Date(); 
-        //             if (theDate >= today)// this will return from today date:time forward: future
-        //             {
-        //                 return studentSession
-        //             }
-        //             }).map((studentSession)=>{
-        //                     return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
-        //             });
-
-        //             // console.log("calenderSessions");
-        //             // console.log(calenderSessions);
-        //     }, 8000);
         
         return ()=>{
             // clearTimeout(calenderTimer);
@@ -165,46 +155,13 @@ export default function StudentDashboard()
         }
     ];
 
-    // check sessions for upcoming sessions:done
-    const newUpComingSessions = allSessions.filter((sessions)=>{
-        // const theDate = new Date(sessions.date.split("T")[0]);
-        const theDate = new Date(sessions.date);
-        const today = new Date()
-        if (theDate >= today)
-        {
-            // console.log('newUpcomingSessions');
-            // console.log(sessions);
-            return sessions
-        }
-    })
 
 
 
 
-    const newSessions = allSessions.filter((sessions)=>{
-        const theDate = new Date(sessions.date.split("T")[0]);
-        const today = new Date()
-        if (theDate >= today)
-        {
-            // console.log('this is session');
-            // console.log(sessions);
-            return sessions
-        }
-    })
 
 
-    const calenderSessions = studentBookedSessions?.length > 0 && studentBookedSessions.filter((studentSession)=>{
-        const theDate = new Date(studentSession.sessionId.date.split("T")[0]);
-        // console.log('theDate');
-        // console.log(theDate);
-        const today = new Date()
-        if (theDate == today || theDate > today)
-        {
-            return studentSession
-        }
-        }).map((studentSession)=>{
-                return { sessionDate: studentSession.sessionId.date, sessionType: studentSession.sessionId.sessionType }
-        });
+   
 
         // console.log("calenderSessions");
         // console.log(calenderSessions);
@@ -237,7 +194,7 @@ export default function StudentDashboard()
                         <div>
                             <p className="text-gray-600 dark:text-gray-400 text-sm">Upcoming Sessions</p>
                             {/* <p className="text-3xl font-bold text-gray-900">{allSessions.length > 0 ? allSessions.length : 0}</p> */}
-                            <p className="text-3xl font-bold text-gray-900 dark:text-white">{newUpComingSessions.length}</p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">{newSessions.length}</p>
                         </div>
                         <Calendar className="w-12 h-12 text-blue-600 dark:text-blue-500 opacity-20 dark:opacity-30" />
                     </div>
@@ -281,50 +238,52 @@ export default function StudentDashboard()
                 
                 
                 {
-                    allSessions.length > 0 ? ( // allSession must exist : fetch all PsychiatristSessions
-                    <div className="space-y-4">
-                        {
-                            newSessions.map((session) => (
-                                <div key={session._id} className="border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl p-4 hover:border-blue-600 dark:hover:border-blue-500 transition">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center space-x-2 mb-2">
-                                                <h3 className="font-bold text-gray-900 dark:text-white">{session.fullName}</h3>
-                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                                    session.sessionStatus === 'confirmed' 
-                                                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
-                                                        : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                                                }`}>
-                                                    {session.sessionStatus}
-                                                </span>
+                    newSessions.length > 0 ? ( // allSession must exist : fetch all PsychiatristSessions
+                        <div className="space-y-4">
+                            {
+                                newSessions.map((session) => (
+                                    <div key={session._id} className="border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl p-4 hover:border-blue-600 dark:hover:border-blue-500 transition">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center space-x-2 mb-2">
+                                                    <h3 className="font-bold text-gray-900 dark:text-white">{session.fullName}</h3>
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                                        session.sessionStatus === 'confirmed' 
+                                                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
+                                                            : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                    }`}>
+                                                        {session.sessionStatus}
+                                                    </span>
+                                                </div>
+                                                <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{session.type}</p>
+                                                <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                                                    <div className="flex items-center space-x-1">
+                                                        <Calendar className="w-4 h-4" />
+                                                        <span>{new Date(session.date).toISOString().split("T")[0]}</span>
+                                                    </div>
+                                                    <div className="flex items-center space-x-1">
+                                                        <Clock className="w-4 h-4" />
+                                                        <span>{session.startTime}</span>
+                                                        &#x2192;
+                                                        <span>{session.endTime}</span>
+                                                    </div>
+                                                    <div className="flex items-center space-x-1">
+                                                        <Video className="w-4 h-4" />
+                                                        <span>{session.sessionMode}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{session.type}</p>
-                                            <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                                                <div className="flex items-center space-x-1">
-                                                    <Calendar className="w-4 h-4" />
-                                                    <span>{new Date(session.date).toISOString().split("T")[0]}</span>
-                                                </div>
-                                                <div className="flex items-center space-x-1">
-                                                    <Clock className="w-4 h-4" />
-                                                    <span>{session.startTime}</span>
-                                                    &#x2192;
-                                                    <span>{session.endTime}</span>
-                                                </div>
-                                                <div className="flex items-center space-x-1">
-                                                    <Video className="w-4 h-4" />
-                                                    <span>{session.sessionMode}</span>
-                                                </div>
-                                            </div>
+                                            <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold">
+                                                Join
+                                            </button>
                                         </div>
-                                        <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold">
-                                            Join
-                                        </button>
                                     </div>
-                                </div>
-                            ))
-                        }
-                    </div>
-                    ) : (
+                                ))
+                            }
+                        </div>
+                    ) 
+                    : 
+                    (
                         <div className="text-center py-8 text-gray-500">
                             <Calendar className="w-16 h-16 mx-auto mb-4 opacity-30" />
                                 <p>No upcoming sessions scheduled</p>
@@ -345,7 +304,19 @@ export default function StudentDashboard()
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Calendar</h2>
                             <div className="space-y-2">
                                 {
-                                    calenderSessions.length > 0 ?
+                                    calenderLoading ? 
+                                    (
+                                        [1].map((index) => (
+                                            <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 dark:bg-gray-700 rounded-lg">
+                                                <div className="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full animate-pulse"></div>
+                                                <div className="flex-1 space-y-2">
+                                                    <div className="h-5 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                                                    <div className="h-4 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )
+                                    : calenderSessions.length > 0 ?
                                     ( 
                                         calenderSessions.map((event, index) => (
                                             <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
@@ -358,19 +329,21 @@ export default function StudentDashboard()
                                             )
                                         )
                                     )
-                                :
+                                    :
                                     (
-                                        // {/* Show 3-5 skeleton items while loading */}
-                                        [1].map((index) => (
-                                            <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 dark:bg-gray-700 rounded-lg">
-                                                <div className="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full animate-pulse"></div>
-                                                <div className="flex-1 space-y-2">
-                                                    <div className="h-5 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
-                                                    <div className="h-4 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
-                                                </div>
+                                         <div className="flex flex-col items-center justify-center py-12 px-4">
+                                            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+                                                <Calendar className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                                             </div>
-                                        ))
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                                No Sessions Scheduled
+                                            </h3>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 text-center max-w-sm">
+                                                You don't have any upcoming sessions at the moment. Check back later or schedule a new session.
+                                            </p>
+                                        </div>
                                     )
+
                                 }
                             </div>
                         </div>
