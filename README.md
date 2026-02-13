@@ -133,7 +133,7 @@ Please ensure your code follows the existing style and includes appropriate test
 
 ## 📄 License
 
-Distributed under the GNU General Public License v2.0. See `LICENSE` for more information.
+Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.
 
 ---
 
