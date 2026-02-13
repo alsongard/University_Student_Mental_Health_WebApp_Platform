@@ -11,7 +11,9 @@ export default function StudentProfile(props:any)
     const {refreshView} = props;
     const apiURL = import.meta.env.VITE_API_URL;
     let retrievedData;
-    const [isEditDetails, setIsEditDetails] = useState(false)
+    const [profileLoading, setProfileLoading] = useState(true);
+    const [isEditDetails, setIsEditDetails] = useState(false);
+    
     const [studentDetails, setStudentDetails] = useState<StudentProfile>({
         name: "",
         admissionNumber: "",
@@ -27,9 +29,8 @@ export default function StudentProfile(props:any)
         emergencyContactRelation: ""
     });
 
-    const studentId = localStorage.getItem("studentId");
-    const [studentDetailsState, setStudentDetailsState] = useState(false);
-    const [errorOnProfileFetch, seterrorOnProfileFetch] = useState(false);
+    const [studentDetailsState, setStudentDetailsState] = useState(false); // STATE CHANGED IF SUCCESS
+    const [errorOnProfileFetch, seterrorOnProfileFetch] = useState(false); // STATE FOR HANDLING ERRORS
     const getStudentDetails = useCallback(async ()=>
     {
         try
@@ -59,6 +60,7 @@ export default function StudentProfile(props:any)
                     emergencyContactPhoneNumber: retrievedData.emergencyContact.phoneNumber,
                     emergencyContactRelation: retrievedData.emergencyContact.relationship
                 });
+                setProfileLoading(false);
             }
         }
         catch(err)
@@ -175,7 +177,17 @@ export default function StudentProfile(props:any)
         <div className="space-y-6 p-5">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Profile Settings</h1>
             {
-                studentDetailsState && !errorOnProfileFetch &&
+                profileLoading ? 
+                (
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-12">
+                        <div className="flex flex-col items-center justify-center">
+                            <div className="w-16 h-16 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin mb-4"></div>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm">Loading profile...</p>
+                        </div>
+                    </div>
+                )
+                :
+                studentDetailsState && !errorOnProfileFetch ? 
                 (
                     <>
                         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md dark:shadow-gray-900/50 p-8">
@@ -470,14 +482,10 @@ export default function StudentProfile(props:any)
                         </div>        
                     </>
                 )
-            }
-            {
-                !studentDetails && errorOnProfileFetch &&
+                :!studentDetails && errorOnProfileFetch ?
                 (
                     <p className="text-red-600 dark:text-red-400">Error fetching profile details. Please try again later.</p>
-                )
-            }
-            {
+                ):
                 !studentDetailsState && !errorOnProfileFetch &&
                 (
                     <>
@@ -485,6 +493,7 @@ export default function StudentProfile(props:any)
                         <Link to="/studentdetails" className="text-blue-600 dark:text-blue-400 hover:underline">Link</Link>
                     </>
                 )
+
             }
         </div>
     )
