@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Search, Clock, Stethoscope, User, MoveRight, Calendar, Loader, View } from "lucide-react";
+import { Search, Clock, Stethoscope, User, CalendarX, Calendar, Loader, View } from "lucide-react";
 import axios from "axios";
 import type { SingleSession, AllSessionData } from "../types";
 import ViewStudentBookedInfo from "../components/viewStudentBookedInfo";
@@ -7,11 +7,13 @@ import ViewStudentBookedInfo from "../components/viewStudentBookedInfo";
 export default function StudentSessionComponent(props:any)
 {
     const {refreshView} = props;
+    const [allSessionLoading, setAllSessionLoading] = useState(true);
     // console.log("refreshView")
     // console.log(refreshView)
     const apiURL = import.meta.env.VITE_API_URL;
     const [selectedSession, setSelectedSession] = useState(null);    
     const [myUpcomingSessions, setMyUpcomingSessions] = useState<AllSessionData[]>([]);
+    let newSessions = [];
     const getAllSessions = useCallback( async()=>{
         try
 		{
@@ -21,13 +23,22 @@ export default function StudentSessionComponent(props:any)
             if (response.data.success)
                 {
                     setMyUpcomingSessions(response.data.data);
+                    newSessions = myUpcomingSessions && myUpcomingSessions.filter((session)=>{
+                        const theDate = new Date(session.date.split("T")[0]);
+                        const today = new Date()
+                        return theDate >= today
+                    });
+                    setAllSessionLoading(false);
+                    console.log('the isLoading state is changed above');
                 }
             }
-            catch(err)
-            {
-                console.log(`Error: ${err}`);
-            }
-        }, []);
+        catch(err)
+        {
+            console.log(`Error: ${err}`);
+        }
+        
+    },[]);
+
     const [studentBookedSessions, setStudentBookedSessions] = useState([]);
     const GetStudentBookedSessions = useCallback( async ()=>{
         try
@@ -203,14 +214,7 @@ export default function StudentSessionComponent(props:any)
 
     
 
-    const newSessions = myUpcomingSessions && myUpcomingSessions.filter((session)=>{
-        const theDate = new Date(session.date.split("T")[0]);
-        const today = new Date()
-        if (theDate >= today)
-        {
-            return session
-        }
-    });
+    
     console.log('new sessions');
     console.log(newSessions);
 
@@ -263,67 +267,18 @@ export default function StudentSessionComponent(props:any)
                         <div className="flex items-center justify-between">
                             <h1 className="text-3xl font-bold dark:text-white text-gray-900">Available Sessions</h1>
                             <div className="relative">
-                                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 dark:text-shadow-white text-gray-400" />
                                 <input
                                     type="text"
                                     placeholder="Search psychiatrists..."
-                                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                                    className="pl-10 pr-4 py-2 border dark:placeholder-white border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                                 />
                             </div>
                         </div>
         
                         <div className="grid lg:grid-cols-2 gap-6">
                             {
-                                newSessions?.length > 0  ? (
-                                    newSessions.map((session) => (
-                                        <div key={session._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6 hover:shadow-xl dark:hover:shadow-[0px_0px_15px_rgba(59,130,246,0.5)] transition">
-                                            <div className="flex items-start justify-between mb-4">
-                                                <div>
-                                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{session.fullName}</h3>
-                                                    <p className="text-blue-600 dark:text-blue-400 font-semibold">{session.specialization}</p>
-                                                </div>
-                                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-semibold">
-                                                    Available
-                                                </span>
-                                            </div>
-        
-                                            <div className="mb-4">
-                                                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Session Date</p>
-                                                <p className="capitalize text-gray-900 dark:text-gray-100">{new Date(session.date).toISOString().split('T')[0]}</p>  
-                                            </div>
-        
-                                            <div className="mb-4">
-                                                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Available Time Slots:</p>
-                                                <div className="space-y-2">
-                                                    <p className="flex flex-row space-x-[10px] text-gray-900 dark:text-gray-100">
-                                                        {session.startTime} &#8594; {session.endTime}
-                                                    </p>
-                                                    <p className="text-gray-900 dark:text-gray-100">Remaining Bookings: 1</p>
-                                                    <button
-                                                        className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition text-sm font-medium text-gray-700 dark:text-gray-300"
-                                                        onClick={()=>{setBookSession(true); setSingleSession(session); }}
-                                                    >
-                                                        View Session Details
-                                                    </button>
-                                                </div>
-                                            </div>
-        
-                                            <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                                                <span className="text-sm text-gray-600 dark:text-gray-400">Mode: {session.sessionMode}</span>
-                                                <button 
-                                                    onClick={()=>{
-                                                        setSingleSession(session);
-                                                        setBookSession(true);
-                                                    }} 
-                                                    className="px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold"
-                                                >
-                                                    Book Now
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))
-                                )
-                                : 
+                                allSessionLoading ? 
                                 (
                                     // {/* Show 3-6 skeleton cards while loading */}
                                     [1].map((index) => (
@@ -360,17 +315,90 @@ export default function StudentSessionComponent(props:any)
                                             </div>
                                         </div>
                                     ))
+                                    
                                 )
-                            }
-                            {
-                                myUpcomingSessions.length < 0 && 
+                                :
+                                newSessions.length > 0  ?
+                                    (
+                                        newSessions.map((session) => (
+                                            <div key={session._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-6 hover:shadow-xl dark:hover:shadow-[0px_0px_15px_rgba(59,130,246,0.5)] transition">
+                                                <div className="flex items-start justify-between mb-4">
+                                                    <div>
+                                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{session.fullName}</h3>
+                                                        <p className="text-blue-600 dark:text-blue-400 font-semibold">{session.specialization}</p>
+                                                    </div>
+                                                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-semibold">
+                                                        Available
+                                                    </span>
+                                                </div>
+            
+                                                <div className="mb-4">
+                                                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Session Date</p>
+                                                    <p className="capitalize text-gray-900 dark:text-gray-100">{new Date(session.date).toISOString().split('T')[0]}</p>  
+                                                </div>
+            
+                                                <div className="mb-4">
+                                                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Available Time Slots:</p>
+                                                    <div className="space-y-2">
+                                                        <p className="flex flex-row space-x-[10px] text-gray-900 dark:text-gray-100">
+                                                            {session.startTime} &#8594; {session.endTime}
+                                                        </p>
+                                                        <p className="text-gray-900 dark:text-gray-100">Remaining Bookings: 1</p>
+                                                        <button
+                                                            className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition text-sm font-medium text-gray-700 dark:text-gray-300"
+                                                            onClick={()=>{setBookSession(true); setSingleSession(session); }}
+                                                        >
+                                                            View Session Details
+                                                        </button>
+                                                    </div>
+                                                </div>
+            
+                                                <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                    <span className="text-sm text-gray-600 dark:text-gray-400">Mode: {session.sessionMode}</span>
+                                                    <button 
+                                                        onClick={()=>{
+                                                            setSingleSession(session);
+                                                            setBookSession(true);
+                                                        }} 
+                                                        className="px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition font-semibold"
+                                                    >
+                                                        Book Now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )
+                                    
+                                :
                                 (
-                                    <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition">
-                                        <p>Loading Sessions</p>
-                                        <Loader/>
+                                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-12 transition">
+                                        <div className="flex flex-col items-center justify-center text-center">
+                                            {/* Icon */}
+                                            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+                                                <CalendarX className="w-10 h-10 text-gray-400 dark:text-gray-500" />
+                                            </div>
+                                            
+                                            {/* Title */}
+                                            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                                                No Available Sessions
+                                            </h3>
+                                            
+                                            {/* Description */}
+                                            <p className="text-gray-600 dark:text-gray-400 max-w-md mb-6">
+                                                There are no sessions available at the moment. New sessions will appear here when they become available.
+                                            </p>
+                                            
+                                            {/* Optional CTA */}
+                                            <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-500">
+                                                <Clock className="w-4 h-4" />
+                                                <span>Check back later for updates</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 )
+                                
                             }
+                            
                         </div>
         
                         {selectedSession && (
