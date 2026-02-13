@@ -149,7 +149,7 @@ module.exports.ViewStudentBookedSessions  = async (req,res)=>{
         const foundStudentBookedSessions = await BookSession.find({studentId:studentId}).populate([{path: 'psychiatristId', select:"fullName specialization"}, {path: 'sessionId', select: 'sessionType date startTime endTime sessionMode sessionDuration sessionDuration'}] );
         if (foundStudentBookedSessions.length == 0)
         {
-            return res.status(200).json({success:true, msg:"You have no booked sessions"});
+            return res.status(200).json({success:true, data:[], msg:"You have no booked sessions"});
         }
         // console.log('found student booked sessions'); // after using cookies for auth
         // console.log(foundStudentBookedSessions);
