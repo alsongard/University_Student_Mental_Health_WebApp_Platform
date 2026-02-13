@@ -22,6 +22,7 @@ university-mental-health-app/
 │   ├── server.js              # Main application entry point
 │   ├── models/                # Mongoose schemas (User, Session, Message, etc.)
 │   ├── routes/                # REST API endpoints
+|   ├── controllers/           # logic for database interaction and API
 │   ├── middleware/            # Auth, validation, error handlers
 │   └── config/                # Database, environment configuration
 └── client/
