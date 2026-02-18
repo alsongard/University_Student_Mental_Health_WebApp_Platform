@@ -2,33 +2,41 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Plus, Edit, Trash2, Eye, CalendarPlus, X, Calendar, Clock, Video, MapPin, User, Search, Table } from 'lucide-react';
 import axios from 'axios';
 import TableRowSkeleton from "../components/skeletons/psychiatristSessionSkeleton";
-
+import type {PsySessionData} from "../types";
 export default function PsychiatristSessionsManagement(props:any) 
 {
 	const apiURL = import.meta.env.VITE_API_URL;
 	const {refreshView} = props;
 	const [view, setView] = useState('list'); // 'list', 'create', 'edit', 'view'
-	const [sessions, setSessions] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	let todaySessions = [];
+	const [sessions, setSessions] = useState<PsySessionData[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [todaySessions, setTodaySessions] = useState<PsySessionData[]>([]);
 	const getPsychiatristSessions = useCallback(async ()=>{
 		try
 		{
-			// http://localhost:5000/api/psychiatristSession/viewSession
-			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/viewSession`, {withCredentials:true})
 			const response = await axios.get(`${apiURL}/api/psychiatristSession/viewSession`, {withCredentials:true})
 			if (response.data.success)
 			{
 				setSessions(response.data.data);
-				todaySessions = sessions.filter((sessionInfo)=>{ // we will use todaySessions: why: for present and future session to display
+				const retrievedData = response.data.data;
+				setSessions(retrievedData); //  State updates are asynchronous
+				const theSessions = retrievedData.filter((sessionInfo:PsySessionData)=>{ // we will use todaySessions: why: for present and future session to display
 					const today = new Date();
+					today.setUTCHours(0,0,0,0); 
 					const theDate = new Date(sessionInfo.date);
-					if (theDate >= today)
-					{
-						return sessionInfo;
-					}
+					// console.log(`typeof : theDate ${typeof(theDate)} and today: ${typeof(today)}`);
+					// console.log(`checking boolean: ${theDate >= today}`)
+					return theDate >= today
+					// if (theDate >= today)
+					// {
+					// 	return sessionInfo;
+					// }
 				})
+				// console.log('theSessions');
+				// console.log(theSessions);
+				setTodaySessions(theSessions)
 				setIsLoading(false);	
+				// console.log(`todaySessions length: ${todaySessions.length}`)
 				// console.log('this is response.data.data');
 				// console.log(response.data.data);
 			}
@@ -43,22 +51,22 @@ export default function PsychiatristSessionsManagement(props:any)
 		getPsychiatristSessions();
 	}, [refreshView.sessions]);
 	
-	const [selectedSession, setSelectedSession] = useState(null);
+	const [selectedSession, setSelectedSession] = useState<PsySessionData | null>(null);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [filterStatus, setFilterStatus] = useState('all');
   
 
 	// filter data based on filterStatus
-	const filterSessions = sessions.length > 0 && sessions.filter((session)=>{
-		if (filterStatus == 'all')
-		{
-			return session;
-		}
-		else
-		{
-			return session.sessionStatus == filterStatus
-		}
-	})
+	// const filterSessions = sessions.length > 0 && sessions.filter((session)=>{
+	// 	if (filterStatus == 'all')
+	// 	{
+	// 		return session;
+	// 	}
+	// 	else
+	// 	{
+	// 		return session.sessionStatus == filterStatus
+	// 	}
+	// })
 	const [formData, setFormData] = useState({
 		date: '',
 		startTime: '',
@@ -93,7 +101,6 @@ export default function PsychiatristSessionsManagement(props:any)
 		e.preventDefault();
 		try
 		{
-			// const response = await axios.post("https://university-student-psychiatrist.onrender.com/api/psychiatristSession/createSession", {
 			const response = await axios.post(`${apiURL}/api/psychiatristSession/createSession`, {
 				date:formData.date,
 				startTime: formData.startTime,
@@ -204,7 +211,6 @@ export default function PsychiatristSessionsManagement(props:any)
 		{
 			if (confirmResult) // true
 			{
-				// const response = await axios.delete(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
 				const response = await axios.delete(`${apiURL}/api/psychiatristSession/deleteSession/${id}`, {withCredentials:true})
 				console.log(`response`);
 				console.log(response);
@@ -223,7 +229,7 @@ export default function PsychiatristSessionsManagement(props:any)
 		
 	};
 
-	const handleView = (session) => {
+	const handleView = (session:PsySessionData) => {
 		setSelectedSession(session);
 		setView('view');
 	};
@@ -335,6 +341,13 @@ export default function PsychiatristSessionsManagement(props:any)
 								</div>
 							</div>
 
+							<div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+									<p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Session Description</p>
+									<p className="font-bold text-gray-900 dark:text-white">
+										{selectedSession.sessionDescription ? selectedSession.sessionDescription : "No Description has been set for these session"}
+									</p>
+							</div>
+
 							<div className="flex space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
 								<button
 									onClick={() => setView('list')}
@@ -415,14 +428,14 @@ export default function PsychiatristSessionsManagement(props:any)
 
 								<div>
 									<label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-										Duration *
+										Duration (Minutes) *
 									</label>
 									<input
-										type="text"
+										type="number"
 										name="duration"
 										value={formData.duration}
 										onChange={handleChange}
-										placeholder='2h 30min'
+										placeholder='120'
 										className="w-full px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent"
 									/>
 								</div>
@@ -498,7 +511,7 @@ export default function PsychiatristSessionsManagement(props:any)
 									name="sessionDescription"
 									value={formData.sessionDescription}
 									onChange={handleChange}
-									rows="6"
+									rows={6}
 									placeholder="What went well? What could be improved? How did you feel during the session?"
 									className="w-full px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition resize-none"
 								/>
@@ -541,7 +554,9 @@ export default function PsychiatristSessionsManagement(props:any)
 		);
 	}
 
-  // List View (Default)
+	// List View (Default)
+	// console.log('todaySessions');
+	// console.log(todaySessions);
 	return (
 		<div className="min-h-screen bg-gray-50 dark:bg-gray-900 rounded-md p-8">
 			<div className="max-w-7xl mx-auto">
