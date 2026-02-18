@@ -15,6 +15,7 @@ export default function PsychiatristDashboard()
 	const apiURL = import.meta.env.VITE_API_URL;	
 	const email = useSelector((state)=>{return state.myAuthSlicer.email});
 	const role = useSelector((state)=>{return state.myAuthSlicer.role});
+	const [isLoading, setIsLoading] = useState(true);
 	// console.log('PsychiatristDashboard Email from Redux Store: ', email); // TESTING:WORKING
 	// console.log('PsychiatristDashboard Role from Redux Store: ', role); // TESTING:WORKING
 
@@ -42,6 +43,7 @@ export default function PsychiatristDashboard()
 			if (response.data.success)
 			{
 				setmyBookedSessions(response.data.data);
+				setIsLoading(false);
 				// setTimeout(() => {
 				// 	// console.log('Booked Sessions for Psychiatrist: ');
 				// 	// console.log(myBookedSessions);
@@ -130,52 +132,71 @@ export default function PsychiatristDashboard()
 				<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md dark:shadow-gray-900/50 p-6">
 					<h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Today's Schedule</h2>
 					<div className="space-y-4">
-						{myTodaySessions.length > 0 ?
-						 	myTodaySessions.map((session) => (
-							<div key={session._id} className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:border-blue-600 dark:hover:border-blue-500 transition">
-								<div className="flex items-center justify-between">
-									<div className="flex items-center space-x-4">
-										<div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-											<User className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-										</div>
-										<div>
-											<h3 className="font-bold text-gray-900 dark:text-white">{session.studentId.email}</h3>
-											<p className="text-sm text-gray-600 dark:text-gray-400">{session.sessionId.sessionType}</p>
-										</div>
-									</div>
-									<div className="text-right">
-										<p className="font-semibold text-gray-900 dark:text-white">10:00 AM</p>
-										<p className="text-sm text-gray-600 dark:text-gray-400">{session.sessionId.sessionMode}</p>
-									</div>
-								</div>
-							</div>
-						))
-						:
-						(
-							// {/* Show 3-5 skeleton session cards while loading */}
-							[1].map((index) => (
-								<div key={index} className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 transition">
-									<div className="flex items-center justify-between">
-										<div className="flex items-center space-x-4">
-											{/* Avatar skeleton */}
-											<div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+						{
+							isLoading ?
+							(
+								// {/* Show 3-5 skeleton session cards while loading */}
+								[1].map((index) => (
+									<div key={index} className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 transition">
+										<div className="flex items-center justify-between">
+											<div className="flex items-center space-x-4">
+												{/* Avatar skeleton */}
+												<div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+												
+												{/* Text content skeleton */}
+												<div className="space-y-2">
+													<div className="h-5 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+													<div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+												</div>
+											</div>
 											
-											{/* Text content skeleton */}
-											<div className="space-y-2">
-												<div className="h-5 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-												<div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+											{/* Time info skeleton */}
+											<div className="text-right space-y-2">
+												<div className="h-5 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse ml-auto"></div>
+												<div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse ml-auto"></div>
 											</div>
 										</div>
-										
-										{/* Time info skeleton */}
-										<div className="text-right space-y-2">
-											<div className="h-5 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse ml-auto"></div>
-											<div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse ml-auto"></div>
+									</div>
+								))
+							)
+							:myTodaySessions.length > 0 ?
+							(
+								myTodaySessions.map((session) => (
+								<div key={session._id} className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:border-blue-600 dark:hover:border-blue-500 transition">
+									<div className="flex items-center justify-between">
+										<div className="flex items-center space-x-4">
+											<div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+												<User className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+											</div>
+											<div>
+												<h3 className="font-bold text-gray-900 dark:text-white">{session.studentId.email}</h3>
+												<p className="text-sm text-gray-600 dark:text-gray-400">{session.sessionId.sessionType}</p>
+											</div>
+										</div>
+										<div className="text-right">
+											<p className="font-semibold text-gray-900 dark:text-white">10:00 AM</p>
+											<p className="text-sm text-gray-600 dark:text-gray-400">{session.sessionId.sessionMode}</p>
 										</div>
 									</div>
 								</div>
-							))
-						)
+								))
+							)
+							:
+							(
+								<div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8">
+									<div className="flex flex-col items-center justify-center text-center">
+										<div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+											<Calendar className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+										</div>
+										<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+											No Sessions Today
+										</h3>
+										<p className="text-sm text-gray-600 dark:text-gray-400">
+											You don't have any sessions scheduled for today. Enjoy your free time!
+										</p>
+									</div>
+								</div>
+							)
 					}
 					</div>
 				</div>
