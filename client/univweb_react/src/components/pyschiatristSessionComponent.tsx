@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Plus, Edit, Trash2, Eye, X, Calendar, Clock, Video, MapPin, User, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, CalendarPlus, X, Calendar, Clock, Video, MapPin, User, Search, Table } from 'lucide-react';
 import axios from 'axios';
 import TableRowSkeleton from "../components/skeletons/psychiatristSessionSkeleton";
 
@@ -9,15 +9,26 @@ export default function PsychiatristSessionsManagement(props:any)
 	const {refreshView} = props;
 	const [view, setView] = useState('list'); // 'list', 'create', 'edit', 'view'
 	const [sessions, setSessions] = useState([]);
-  
+	const [isLoading, setIsLoading] = useState(true);
+	let todaySessions = [];
 	const getPsychiatristSessions = useCallback(async ()=>{
 		try
 		{
+			// http://localhost:5000/api/psychiatristSession/viewSession
 			// const response = await axios.get(`https://university-student-psychiatrist.onrender.com/api/psychiatristSession/viewSession`, {withCredentials:true})
 			const response = await axios.get(`${apiURL}/api/psychiatristSession/viewSession`, {withCredentials:true})
 			if (response.data.success)
 			{
 				setSessions(response.data.data);
+				todaySessions = sessions.filter((sessionInfo)=>{ // we will use todaySessions: why: for present and future session to display
+					const today = new Date();
+					const theDate = new Date(sessionInfo.date);
+					if (theDate >= today)
+					{
+						return sessionInfo;
+					}
+				})
+				setIsLoading(false);	
 				// console.log('this is response.data.data');
 				// console.log(response.data.data);
 			}
@@ -36,6 +47,18 @@ export default function PsychiatristSessionsManagement(props:any)
 	const [searchQuery, setSearchQuery] = useState('');
 	const [filterStatus, setFilterStatus] = useState('all');
   
+
+	// filter data based on filterStatus
+	const filterSessions = sessions.length > 0 && sessions.filter((session)=>{
+		if (filterStatus == 'all')
+		{
+			return session;
+		}
+		else
+		{
+			return session.sessionStatus == filterStatus
+		}
+	})
 	const [formData, setFormData] = useState({
 		date: '',
 		startTime: '',
@@ -220,15 +243,7 @@ export default function PsychiatristSessionsManagement(props:any)
 		setSelectedSession(null);
 	};
 
-	const todaySessions = sessions.filter((sessionInfo)=>{
-		const today = new Date();
-		const theDate = new Date(sessionInfo.date);
-		if (theDate >= today)
-		{
-			return sessionInfo;
-		}
-	})
-
+	
 	const filteredSessions = todaySessions.length > 0 &&
 	(
 		todaySessions.filter(session => {
@@ -600,8 +615,12 @@ export default function PsychiatristSessionsManagement(props:any)
 				{/* Sessions List */}
 				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 overflow-hidden">
 					{
-						sessions.length > 0 ? 
+						isLoading ? 
 						(
+							<TableRowSkeleton/>
+						)
+						:todaySessions.length > 0 ?  // session is greater
+						(		
 							<div className="overflow-x-auto">
 								<table className="w-full">
 									<thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -616,7 +635,7 @@ export default function PsychiatristSessionsManagement(props:any)
 										</tr>
 									</thead>
 									<tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-										{filteredSessions.length > 0 ? filteredSessions.map((session) => (
+										{filteredSessions.map((session) => (
 											<tr key={session._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
 												<td className="px-6 py-4">
 													<div>
@@ -678,11 +697,7 @@ export default function PsychiatristSessionsManagement(props:any)
 													</div>
 												</td>
 											</tr>
-										))
-										: 
-										(
-											<TableRowSkeleton/>
-										)
+											))
 										}
 									</tbody>
 								</table>
@@ -690,13 +705,35 @@ export default function PsychiatristSessionsManagement(props:any)
 						)
 						: 
 						(
+							<div className="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50 p-12">
+								<div className="flex flex-col items-center justify-center text-center">
+									<div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+										<CalendarPlus className="w-10 h-10 text-gray-400 dark:text-gray-500" />
+									</div>
+									<h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+										No Sessions Created Yet
+									</h3>
+									<p className="text-sm text-gray-600 dark:text-gray-400 max-w-md mb-6">
+										You have no session for today or in the near future. Create one to proceed
+									</p>
+									<button className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium rounded-lg transition">
+										Create Session
+									</button>
+								</div>
+							</div>
+						)
+					}
+
+						
+						
+						{/* (
 							<div className="text-center py-12">
 								<Calendar className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
 								<p className="text-gray-600 dark:text-gray-400 text-lg">No sessions found</p>
 								<p className="text-gray-500 dark:text-gray-500 text-sm">Try adjusting your search or filters</p>
 							</div>
-						)
-					}
+						) */}
+					
 				</div>
 			</div>
 		</div>
