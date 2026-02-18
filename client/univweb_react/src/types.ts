@@ -131,3 +131,25 @@ export interface AllContactChatSideBar {
     psychiatristId: string,
     specilization: string
 }
+
+
+
+// PSYCHIATRIST TYPES
+
+export interface PsySessionData  {
+    _id: string,
+    psychiatristId: string,
+    date: string,
+    startTime: string,
+    endTime: string,
+    sessionMode: string,
+    sessionDuration: string,
+    sessionType: string,
+    sessionStatus: string,
+    currentBookings: number,
+    maxBookings: number,
+    sessionDescription: string,
+    createdAt: string,
+    updatedAt: string,
+    __v: number,
+}
