@@ -1,17 +1,19 @@
 // booking session controller
 
 const BookSession = require("../models/bookSession.model");
+
 const PsychiatristDetails = require("../models/psychiatristdetail.model");
 const Student = require("../models/student.model");
 const StudentDetails = require("../models/studentDetails.model");
 const mongoose = require("mongoose");
 const PsychiatristSession = require("../models/psychiatristSession.model");
-
+const cron = require("node-cron");
 
 // create BookingSession
 module.exports.CreateBookingSession = async (req, res)=>
 {
-    console.log('entering createBook Session Student')
+    console.log('entering createBook Session Student');
+
     const studentId = req.userId;
     const role = req.role;
     if (role !== "student")
@@ -416,4 +418,62 @@ module.exports.getFutureStudentSessions = async (req, res)=>
         console.log(`Error: ${err}`);
         return res.status(500).json({success:false, msg:`Server Error: ${err}`});
     }   
+}
+
+const runQueryForUpdatingBookedSession = async ()=>{
+    try
+    {
+        const pastBookedSessionSheduleTrue = await BookSession.aggregate([
+            // extract only the sessionId, maybe add status
+            // {$project: {sessionId: 1, _id: 1, status:1}},
+            {
+                $lookup: {
+                    from: "psychiatristsessions",//databaseName
+                    localField: "sessionId",
+                    foreignField: "_id",
+                    as: "sessionInfo"
+                }
+            },
+            {
+                $unwind: "$sessionInfo" // this unwinds the PsychiatristSession e.g Date,  psychiatristId
+            },
+            { 
+                $match: {
+                    'sessionInfo.date': {$lt: today}, // in this match we check if Date is less than today    
+                    status: 'scheduled'
+                }
+            },
+            {
+                $project: {_id: 1} // get the id for the BookedSession._id only 
+            }
+        ])
+        console.log("pastBookedSessionSheduleTrue");
+        for (let i = 0; i < pastBookedSessionSheduleTrue.length; i++)
+        {
+            console.log(pastBookedSessionSheduleTrue[i]);
+        }
+        const resultAfterUpate = await BookSession.updateMany(
+            {_id: {$in: pastBookedSessionSheduleTrue.map((doc)=>{
+                console.log("doc");
+                console.log(doc);
+                return doc._id})}},
+            {$set: {status:"completed"}},
+            {new: true}
+        );
+
+        console.log("resultAfterUpate");
+        console.log(resultAfterUpate);
+    }
+    catch(err)
+    {
+        console.log(`Error: ${err}`);
+    }
+};
+
+// cron job for checking session: session date < todayDate: change bookSession to completed
+module.exports.jobStatusUpdater =  ()=>{
+    cron.schedule("1  00 * * 1-6",async ()=>{
+        console.log('will run on the first minute:midnight(12:00AM|0000hrs): every day of month: every month: mon-sat');
+        await runQueryForUpdatingBookedSession();
+    })
 }
