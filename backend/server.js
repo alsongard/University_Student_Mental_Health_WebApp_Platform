@@ -20,7 +20,7 @@ const sendMessage = require("./controllers/message.controller").sendMessage;
 const multer = require('multer');
 const cloudinary = require("cloudinary").v2;
 const {specs} = require("./swagger");
-
+const jobStatusUpdater = require("./controllers/bookingSessionController");
 const httpServer = createServer(app);
 
 
@@ -180,7 +180,7 @@ app.post("/api/uploadFile",getAuthenticated, upload.array("files"), async (req, 
 
 } )
 
-// app.post("/api/trial/studentCreate",  registerStudent );
+// app.post("/api/trial/studentCreate",  registerStudent ); 
 app.use("/api/student", authStudentRouter);
 app.use("/api/psychiatrist", authPsychatriastRouter);
 app.use("/api/psychiatristSession", psychiatristSession);
@@ -305,7 +305,8 @@ const serverStart = async()=>
 {
     try
     {
-        connectDB();
+        await connectDB();
+        await jobStatusUpdater();
         // LISTENING 
         httpServer.listen(PORT, ()=>{
             console.log(`Listening on port http://localhost:${PORT}`);
