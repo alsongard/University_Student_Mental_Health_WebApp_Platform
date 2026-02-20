@@ -473,7 +473,7 @@ const runQueryForUpdatingBookedSession = async ()=>{
 // cron job for checking session: session date < todayDate: change bookSession to completed
 module.exports.jobStatusUpdater =  ()=>{
     cron.schedule("1  00 * * 1-6",async ()=>{
-        console.log('will run on the first minute:midnight(12:00AM|0000hrs): every day of month: every month: mon-sat');
+        console.log('will run on the first minute:midnight(12:01AM|0000hrs): every day of month: every month: mon-sat');
         await runQueryForUpdatingBookedSession();
     })
 }

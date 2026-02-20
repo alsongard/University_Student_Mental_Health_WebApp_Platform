@@ -20,7 +20,7 @@ const sendMessage = require("./controllers/message.controller").sendMessage;
 const multer = require('multer');
 const cloudinary = require("cloudinary").v2;
 const {specs} = require("./swagger");
-const jobStatusUpdater = require("./controllers/bookingSessionController");
+const {jobStatusUpdater} = require("./controllers/bookingSessionController");
 const httpServer = createServer(app);
 
 
