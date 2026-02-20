@@ -22,6 +22,7 @@ import TrialStudentSessions from "./pages/trials/TrialPage";
 import {Analytics} from "@vercel/analytics/react";
 import OtpPage from "./pages/otp/otpPage";
 import { ThemeProvider } from "./components/themeContext";
+
 export default function App()
 {
 	
@@ -76,8 +77,8 @@ export default function App()
 
 	
 	const ProtectedStudentDashboard = requireAuth(StudentDashboard, ['student']);
-	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard, ['psychiatrist', 'Counselor']);
-	const ProtectedPsychiatristDetails = requireAuth(PsychiatristDetails, ['psychiatrist', 'Counselor']);
+	const ProtectedPsychiatristDashboard = requireAuth(PsychiatristDashboard, ['psychiatrist', 'counselor']);
+	const ProtectedPsychiatristDetails = requireAuth(PsychiatristDetails, ['psychiatrist', 'counselor']);
 	const ProtectedStudentDetails = requireAuth(StudentDetailsRegistration,['student']);
 	// how to handle persistence
 
