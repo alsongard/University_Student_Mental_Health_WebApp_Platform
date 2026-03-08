@@ -1,0 +1,22 @@
+FROM node:24 AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+ENV CI=true
+WORKDIR /client
+COPY univweb_react/package.json univweb_react/pnpm-lock.yaml ./ 
+
+RUN node --version
+RUN pnpm --version
+RUN pnpm i -g nodemon
+# ./ means current working directory
+
+# FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install  --frozen-lockfile
+COPY ./univweb_react /client
+
+
+# For development, we'll mount source code at runtime, so no COPY here
+# adjust to your app's port
+EXPOSE 5173   
+CMD ["pnpm", "dev", "--host"]
