@@ -1,0 +1,14 @@
+services:
+  univbackend: 
+    image: myunivserver
+    build: .
+    container_name: myunivserver
+    environment:
+      - ALLOWEDOMAIN=value
+
+  frontend:
+    image: clientfrontend:v1
+    build: .
+    container_name: myunivclient
+    environment:
+      - BACKENDAPIURL=value
