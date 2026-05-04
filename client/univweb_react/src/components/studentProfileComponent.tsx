@@ -193,11 +193,25 @@ export default function StudentProfile(props:any)
                         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md dark:shadow-gray-900/50 p-8">
                             <div className="flex justify-between items-end mb-8">
                                 <div className="flex flex-row space-x-6">
-                                    <img
-                                        src={studentDetails.image ? studentDetails.image : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"}
-                                        alt={studentDetails.name}
-                                        className="w-24 h-24 rounded-full object-cover border-4 border-blue-600 dark:border-blue-500"
-                                    />
+                                    {
+                                        studentDetails.image ?
+                                        (
+                                            <img
+                                                src={studentDetails.image}
+                                                alt={studentDetails.name}
+                                                className="w-24 h-24 rounded-full object-cover border-4 border-blue-600 dark:border-blue-500"
+                                            />
+                                        )
+                                        : 
+                                        (
+                                            <div className="bg-blue-400 rounded-full w-[75px] h-[75px]">
+                                                <h1 className="text-center leading-[75px] ">{studentDetails.name.split(" ")[0][0]}{studentDetails.name.split(" ")[1][0]}</h1>
+                                            </div>
+                                        )
+
+                                    }
+                                    
+                                
                                     <div>
                                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{studentDetails.name}</h2>
                                         <p className="text-gray-600 dark:text-gray-300">{studentDetails.admissionNumber}</p>
