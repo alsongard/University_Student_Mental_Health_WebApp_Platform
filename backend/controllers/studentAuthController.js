@@ -135,7 +135,7 @@ const getOTPUser = async (req,res)=>{
             foundStudent.verifyOtp = 0;
             foundStudent.verifyOtpExpiresIn = 0;
             await foundStudent.save();
-            const authToken = jwt.sign({userId: foundStudent._id, role: 'student', email: foundStudent.email}, process.env.JWT_SECRET, {expiresIn: "240"});
+            const authToken = jwt.sign({userId: foundStudent._id, role: 'student', email: foundStudent.email}, process.env.JWT_SECRET, {expiresIn: "240m"});
             console.log("authToken");
             console.log(authToken);
             res.clearCookie('tempToken');
