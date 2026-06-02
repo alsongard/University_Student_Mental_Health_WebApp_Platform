@@ -2,6 +2,7 @@
 
 A full-stack web application designed to bridge the gap between university students and mental health counseling services. The platform facilitates secure booking, communication, and support within an educational environment.
 
+Presentation Document: [link](https://gamma.app/docs/MindBridge-Connecting-Students-to-Mental-Healthcare-tq3u1b9nlfdyxoh)
 ---
 
 ## ✨ Key Features
